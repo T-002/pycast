@@ -90,6 +90,30 @@ class TimeSeries(object):
         """
         return """{[%s]}""" % ",".join([str(entry) for entry in self._timeseriesData])
 
+    @classmethod
+    def from_json(self, jsonBaseString):
+        """Creates a new TimeSeries instance from the given json string.
+
+        @param jsonBaseString JSON string, containing the time series data. This
+                              should be a string created by to_json().
+
+        @return Returns a TimeSeries instance containing the data.
+
+        @todo This is an unsafe version! Only use it with the original version.
+              All assumtions regarding normalization and sort order will be ignored
+              and set to default.
+        """
+        ## remove the JSON encapsulation
+        jsonString = jsonBaseString[1:-1]
+
+        ## create and fill the given TimeSeries
+        ts = TimeSeries()
+        for entry in eval(jsonString):
+            ts.add_entry(*entry)
+
+        return ts
+
+
     def __len__(self):
         """Returns the number of data entries that are part of the time series.
 
@@ -232,7 +256,7 @@ class TimeSeries(object):
         for entry in data:
             newTS.add_entry(*entry)
 
-        newTs._sorted = ascending
+        newTS._sorted = ascending
 
         return newTS
 
