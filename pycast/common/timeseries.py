@@ -22,6 +22,8 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import time
+
 ## Time series levels that can be used for normalization.
 NormalizationLevels = {
     "second":  1,
@@ -320,9 +322,9 @@ class TimeSeries(object):
                 continue
 
             ## calculate and fill in missing values
-            missingValues = interpolationMethod(lastValue, buckets[idx][1], missingCount)
+            missingValues = interpolationMethod(buckets[lastIdx][1], buckets[idx][1], missingCount)
             for idx2 in xrange(1, missingCount + 1):
-                buckets[lastIdx + idx2][1] = missingValues[idx2 - 1]
+                buckets[lastIdx + idx2].append(missingValues[idx2 - 1])
 
             lastIdx = idx
             missingCount = 0
@@ -342,7 +344,7 @@ class TimeSeries(object):
     def apply(self, method):
         """Applies the given ForecastingAlgorithm or SmoothingMethod from the pycast.forecasting and
         pycast.smoothingmodule to the TimeSeries.
-        
+
         @param method Method that should be used with the TimeSeries.
                       For more information about the methods take a look into
                       their corresponding documentation.
@@ -352,5 +354,5 @@ class TimeSeries(object):
             self.normalize()
         elif method.has_to_be_sorted():
             self.sort_timeseries()
-        
+
         return method.execute(self)
