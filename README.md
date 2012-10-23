@@ -10,8 +10,8 @@ Typical usage often looks like this:
 
     #!/usr/bin/env python
     
-    from pycast.common.timeseries             import TimeSeries
-    from pycast.smoothing.simplemovingaverage import SimpleMovingAverage
+    from pycast.common.timeseries           import TimeSeries
+    from pycast.methods.simplemovingaverage import SimpleMovingAverage
     
     ts = TimeSeries()
     ts.add_entry(0.0, 0.0)
