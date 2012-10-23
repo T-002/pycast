@@ -47,6 +47,8 @@ class SimpleMovingAverage(SmoothingMethod):
         """Creates a new TimeSeries containing the SMA values for the predefined windowsize.
 
         @return TimeSeries object containing the smooth moving average.
+        
+        @todo This implementation aims to support independent for loop execution.
         """
         res = TimeSeries()
 
