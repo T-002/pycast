@@ -50,7 +50,7 @@ ts1.add_entry(2.1, 0.9)
 ts1.add_entry(3.2, 1.3)
 ts1.add_entry(4.0, 2.0)
 
-from pycast.smoothing.simplemovingaverage import SimpleMovingAverage
+from pycast.methods.simplemovingaverage import SimpleMovingAverage
 sma = SimpleMovingAverage(3)
 ts1.normalize("second")
 print ts1.apply(sma)
