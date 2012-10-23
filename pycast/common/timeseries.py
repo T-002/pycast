@@ -80,7 +80,15 @@ class TimeSeries(object):
         @return Returns a string representing the TimeSeries in the format:
                 TimeSeries([timestamp, data], [timestamp, data], [timestamp, data]).
         """
-        return "TimeSeries(%s)" % ", ".join([str(entry) for entry in self._timeseriesData])
+        return """TimeSeries(%s)""" % ",".join([str(entry) for entry in self._timeseriesData])
+
+    def to_json(self):
+        """Returns a JSON representation of the TimeSeries data.
+
+        @return Returns a basestring, containing the JSON representation of the current
+        data stored within the TimeSeries.
+        """
+        return """{[%s]}""" % ",".join([str(entry) for entry in self._timeseriesData])
 
     def __len__(self):
         """Returns the number of data entries that are part of the time series.
