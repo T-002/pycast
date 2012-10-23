@@ -22,10 +22,10 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from smoothingmethod import SmoothingMethod
+from basemethod import BaseMethod
 from pycast.common.timeseries import TimeSeries
 
-class SimpleMovingAverage(SmoothingMethod):
+class SimpleMovingAverage(BaseMethod):
     """Implements the simple moving average.
 
     The SMA algorithm will calculate the average value at time t based on the
