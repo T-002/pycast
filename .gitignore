@@ -1,2 +1,3 @@
 *.pyc
 /pycast.kpf
+/pycast/.DS_Store
