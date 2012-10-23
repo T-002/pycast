@@ -66,7 +66,7 @@ class TimeSeries(object):
         super(TimeSeries, self).__init__()
         self._normalized           = normalized
         self._predefinedNormalized = normalized
-        
+
         self._sorted               = ordered
         self._predefinedSorted     = ordered
 
@@ -170,7 +170,7 @@ class TimeSeries(object):
 
         @param data      Data points information.
                          This has to be a float for now.
-        
+
         @param format    Format of the given timestamp. This is used to convert the
                          timestamp into UNIX epochs, if necessary. For valid examples
                          take a look into the time.strptime() documentation.
@@ -180,7 +180,7 @@ class TimeSeries(object):
 
         if isinstance(timestamp, basestring):
             timestamp = self._convert_timestamp_to_epoch(timestamp, format)
-        
+
         self._timeseriesData.append([timestamp, data])
 
     def sort_timeseries(self, ascending=True):
@@ -193,19 +193,19 @@ class TimeSeries(object):
         # the time series is sorted by default
         if ascending and self._sorted:
             return
-        
+
         sortorder = 1
         if not ascending:
             sortorder = -1
             self._predefinedSorted = False
-        
+
         self._timeseriesData.sort(key=lambda i: sortorder * i[0])
-        
+
         self._sorted = ascending
 
     def sorted_timeseries(self, ascending=True):
         """Returns a sorted copy of the TimeSeries, preserving the original one.
-        
+
         As an assumtion this new TimeSeries is not ordered anymore by default.
 
         @param ascending Determines if the TimeSeries will be ordered ascending or decending.
@@ -217,11 +217,11 @@ class TimeSeries(object):
             sortorder = -1
 
         data = sorted(self._timeseriesData, key=lambda i: sortorder * i[0])
-        
+
         newTS = TimeSeries(self._normalized)
         for entry in data:
             newTS.add_entry(*entry)
-        
+
         newTs._sorted = ascending
 
         return newTS
@@ -339,21 +339,24 @@ class TimeSeries(object):
         """
         return self._normalized
 
-    def apply_smoothing(self, smoothingMethod):
+    def smooth(self, smoothingMethod):
         """Applies the given SmoothingMethod from the pycast.smoothing module to the TimeSeries.
 
         @param smoothingMethod SmoothingMethod that should be applied to the time series.
                                For more information about the smoothing methods look into
                                their corresponding documentation in the pycast.smoothing module.
+
+        @return Returns a new TimeSeries containing the smoothed values.
         """
+        print self
         ## sort and normalize, if necessary
         if smoothingMethod.has_to_be_normalized():
-            if not self._normalized:
-                self.normalize()
-            elif smoothingMethod.has_to_be_sorted():
-                self.sort_timeseries()
-        
-        
+            self.normalize()
+        elif smoothingMethod.has_to_be_sorted():
+            self.sort_timeseries()
+
+        print self
+        return smoothingMethod.execute(self)
 
     def apply_forecasting(self, forecastingAlgorithm):
         """Applies the given ForecastingAlgorithm from the pycast.forecasting module to the TimeSeries.
