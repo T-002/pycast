@@ -339,31 +339,18 @@ class TimeSeries(object):
         """
         return self._normalized
 
-    def smooth(self, smoothingMethod):
-        """Applies the given SmoothingMethod from the pycast.smoothing module to the TimeSeries.
-
-        @param smoothingMethod SmoothingMethod that should be applied to the time series.
-                               For more information about the smoothing methods look into
-                               their corresponding documentation in the pycast.smoothing module.
-
-        @return Returns a new TimeSeries containing the smoothed values.
+    def apply(self, method):
+        """Applies the given ForecastingAlgorithm or SmoothingMethod from the pycast.forecasting and
+        pycast.smoothingmodule to the TimeSeries.
+        
+        @param method Method that should be used with the TimeSeries.
+                      For more information about the methods take a look into
+                      their corresponding documentation.
         """
-        print self
         ## sort and normalize, if necessary
-        if smoothingMethod.has_to_be_normalized():
+        if method.has_to_be_normalized():
             self.normalize()
-        elif smoothingMethod.has_to_be_sorted():
+        elif method.has_to_be_sorted():
             self.sort_timeseries()
-
-        print self
-        return smoothingMethod.execute(self)
-
-    def apply_forecasting(self, forecastingAlgorithm):
-        """Applies the given ForecastingAlgorithm from the pycast.forecasting module to the TimeSeries.
-
-        @param forecastingAlgorithm ForecastingAlgorithm that should be used with the TimeSeries.
-                                    Fore more information about the forecasting algorithms look into
-                                    their corresponding documentation in the pycasst.forecasting module.
-        """
-        ## @todo This is not implemetned yet.
-        ## @todo Check, if this interface definition works good with GridSearch or HookeJeaves opimization.
+        
+        return method.execute(self)

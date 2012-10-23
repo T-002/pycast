@@ -31,13 +31,26 @@
 #result =linear_interpolation(v1,v2,4)
 #assert(result == [1.0, 2.0, 3.0, 4.0])
 
+#from pycast.common.timeseries import TimeSeries
+#ts1 = TimeSeries()
+#ts1.add_entry(0.0, 0.0)
+#ts1.add_entry(1.0, 0.8)
+#ts1.add_entry(1.1, 0.9)
+#ts1.add_entry(1.2, 1.3)
+#ts1.add_entry(2.0, 2.0)
+#
+#ts1.normalize("second", "average", "linear")
+#print ts1
+
 from pycast.common.timeseries import TimeSeries
 ts1 = TimeSeries()
 ts1.add_entry(0.0, 0.0)
 ts1.add_entry(1.0, 0.8)
-ts1.add_entry(1.1, 0.9)
-ts1.add_entry(1.2, 1.3)
-ts1.add_entry(2.0, 2.0)
+ts1.add_entry(2.1, 0.9)
+ts1.add_entry(3.2, 1.3)
+ts1.add_entry(4.0, 2.0)
 
-ts1.normalize("second", "average", "linear")
-print ts1
+from pycast.smoothing.simplemovingaverage import SimpleMovingAverage
+sma = SimpleMovingAverage(3)
+ts1.normalize("second")
+print ts1.apply(sma)
