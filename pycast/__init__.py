@@ -26,6 +26,5 @@
 ##
 
 import common
-import forecasting
+import methods
 import optimization
-import smoothing
