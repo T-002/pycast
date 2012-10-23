@@ -10,19 +10,28 @@ Typical usage often looks like this:
 
     #!/usr/bin/env python
     
-    from pycast.common.timeseries import TimeSeries
-    # more code will follow here
+    from pycast.common.timeseries             import TimeSeries
+    from pycast.smoothing.simplemovingaverage import SimpleMovingAverage
+    
+    ts = TimeSeries()
+    ts.add_entry(0.0, 0.0)
+    ts.add_entry(1.0, 0.8)
+    ts.add_entry(2.1, 0.9)
+    ts.add_entry(3.2, 1.3)
+    ts.add_entry(4.0, 2.0)
+    
+    ts.normalize("second")
+    sma = SimpleMovingAverage(3)
+    ts.smooth(sma)
+    
 
 Some usage examples of pycast in combination with other tools like gnuplot
 can be found in ``bin/examples``
 
-Paragraphs are separated by blank lines. *Italics*, **bold**,
-and ``monospace`` look like this.
-
 Basic pycast objects
 ====================
 
-pycast.commonf.timeseries.TimeSeries
+pycast.common.timeseries.TimeSeries
 ------------------------------------
 An instance of TimeSeries is used to store and use your timeseries data
 
@@ -65,4 +74,4 @@ Christian Schwarz
 
 References
 ==========
-* `Project site: https://github.com/T-002/pycast`_.
+* `Project site: https://github.com/T-002/pycast`.
