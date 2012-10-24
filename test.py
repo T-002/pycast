@@ -54,3 +54,13 @@ from pycast.methods.simplemovingaverage import SimpleMovingAverage
 sma = SimpleMovingAverage(3)
 ts1.normalize("second")
 print ts1.apply(sma)
+
+from pycast.methods.exponentialsmoothing import ExponentialSmoothing
+es = ExponentialSmoothing(0.1, 2)
+ts1.normalize("second")
+
+sts = ts1.apply(es)
+assert(len(ts1) + 1 == len(sts))
+print "Exponential smoothed timeseries contains an additional value :)"
+print ts1
+print sts

@@ -31,19 +31,48 @@ class ExponentialSmoothing(BaseMethod):
     Explanation: http://en.wikipedia.org/wiki/Exponential_smoothing
     """
 
-    def __init__(self, smoothingFactor=0.1):
+    def __init__(self, smoothingFactor=0.1, valuesToForecast=1):
         """Initializes the ExponentialSmoothing.
         """
-        super(SimpleMovingAverage, self).__init__(["smoothingFactor"], True, True)
+        super(ExponentialSmoothing, self).__init__(["smoothingFactor", "valuesToForecast"], True, True)
         self.add_parameter("smoothingFactor", smoothingFactor)
+        self.add_parameter("valuesToForecast", valuesToForecast)
 
     def execute(self, timeSeries):
         """Creates a new TimeSeries containing the exponentially smoothed values.
 
         @return TimeSeries object containing the smooth moving average.
         
-        @todo This implementation aims to support independent for loop execution.
+        @todo Double check if it is correct not to add the first original value to the result.
+        @todo Currently the first normalized value is simply chosen as the starting point.
         """
+        ## initialize the result TimeSeries
         res = TimeSeries()
 
+        ## extract the required parameters, performance improvement
+        alpha            = self._parameters["smoothingFactor"]
+        valuesToForecast = self._parameters["valuesToForecast"]
+
+        ## smooth the existing TimeSeries data
+        for idx in xrange(len(timeSeries)):
+            if 0 == idx:
+                s = timeSeries[idx][1]
+                continue
+
+            s = (alpha * timeSeries[idx-1][1]) + ((1 - alpha) * s)
+
+            res.add_entry(timeSeries[idx][0], s)
+
+        ## forecast additional values if requested
+        if valuesToForecast > 0:
+            startTime          = res[-1][0]
+            normalizedTimeDiff = startTime - res[-2][0]
+
+            for idx in xrange(self._parameters["valuesToForecast"]):
+                startTime += normalizedTimeDiff
+
+                s = (alpha * res[-1][1]) + ((1 - alpha) * s)
+                res.add_entry(startTime, s)
+
+        ## return the resulting TimeSeries :)
         return res
