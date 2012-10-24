@@ -31,10 +31,11 @@ class ExponentialSmoothing(BaseMethod):
     Explanation: http://en.wikipedia.org/wiki/Exponential_smoothing
     """
 
-    def __init__(self):
+    def __init__(self, smoothingFactor=0.1):
         """Initializes the ExponentialSmoothing.
         """
-        super(SimpleMovingAverage, self).__init__([], True, True)
+        super(SimpleMovingAverage, self).__init__(["smoothingFactor"], True, True)
+        self.add_parameter("smoothingFactor", smoothingFactor)
 
     def execute(self, timeSeries):
         """Creates a new TimeSeries containing the exponentially smoothed values.
