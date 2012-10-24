@@ -64,3 +64,9 @@ assert(len(ts1) + 1 == len(sts))
 print "Exponential smoothed timeseries contains an additional value :)"
 print ts1
 print sts
+
+from pycast.methods.exponentialsmoothing import HoltMethod
+hm  = HoltMethod(smoothingFactor=0.1, trendSmoothingFactor=0.5, valuesToForecast=3)
+fts = ts1.apply(hm)
+assert(len(fts) == len(ts1) + 2)
+print "Holt's method is working"
