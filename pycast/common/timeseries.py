@@ -24,6 +24,9 @@
 
 import time
 
+## some string constants
+_STR_EPOCHS = "UNIX-epochs"
+
 ## Time series levels that can be used for normalization.
 NormalizationLevels = {
     "second":  1,
@@ -82,6 +85,36 @@ class TimeSeries(object):
         """
         return """TimeSeries(%s)""" % ",".join([str(entry) for entry in self._timeseriesData])
 
+    def to_gnuplot_datafile(self, datafilepath, format=None):
+        """Dumps the TimeSeries into a gnuplot compatible data file.
+
+        @param datafilepath Path used to create the file. If that file already exists, it will be overwritten!
+        @param format    Format of the timestamp. For valid examples take a look into the
+                         time.strptime() documentation. If format is set to None, UNIX-epochs will be used.
+
+        @return Returns True if the data could be written, False otherwise.
+        """
+        try:
+            datafile = file(datafilepath, "wb")
+        except:
+            return False
+        
+        formatval = format
+        if None == format:
+            formatval = _STR_EPOCHS
+
+        datafile.write("## time_as_<%s> value" % formatval)
+
+        for datapoint in self._timeseriesData:
+            timestamp, value = datapoint
+            if None != format:
+                timestamp = self._epoch_to_timestamp(timestamp, format)
+
+            datafile.write("%s %s" % (timestamp, value))
+
+        datafile.close()
+        return True
+
     def to_json(self):
         """Returns a JSON representation of the TimeSeries data.
 
@@ -112,7 +145,6 @@ class TimeSeries(object):
             ts.add_entry(*entry)
 
         return ts
-
 
     def __len__(self):
         """Returns the number of data entries that are part of the time series.
@@ -175,7 +207,6 @@ class TimeSeries(object):
         """Sets the item at the index-th position of the TimeSeries.
 
         @param index Index of the element that should be set.
-
         @param value A list of the form [timestamp, data]
 
         @exception IndexError if the index is out of range.
@@ -183,16 +214,26 @@ class TimeSeries(object):
         self._timeseriesData[idx] = value
 
     def _convert_timestamp_to_epoch(self, timestamp, format):
-        """Converts the given timestamp into a float representing UNIX epochs.
+        """Converts the given timestamp into a float representing UNIX-epochs.
 
         @param timestamp Timestamp in the defined format.
-
         @param format    Format of the timestamp. For valid examples take a look into the
                          time.strptime() documentation.
 
         @return Returns an float, representing the UNIX-epochs for the given timestamp.
         """
         return time.mktime(time.strptime(timestamp, format))
+
+    def _convert_epoch_to_timestamp(self, timestamp, format):
+        """Converts the given float representing UNIX-epochs into an actual timestamp.
+
+        @param timestamp Timestamp as UNIX-epochs.
+        @param format    Format of the timestamp. For valid examples take a look into the
+                         time.strptime() documentation.
+
+        @return Returns an timestamp as defined by format. 
+        """
+        return time.strftime(format, time.localtime(timestamp))
 
     ## @todo: only floats as data for now. (2012-10-09 Christian)
     def add_entry(self, timestamp, data, format="%Y-%m-%d_%H:%M"):
@@ -201,10 +242,8 @@ class TimeSeries(object):
         @param timestamp Time stamp of the datas occurence.
                          This has either to be a float representing the UNIX epochs
                          or a string containing a timestamp in the given format.
-
         @param data      Data points information.
                          This has to be a float for now.
-
         @param format    Format of the given timestamp. This is used to convert the
                          timestamp into UNIX epochs, if necessary. For valid examples
                          take a look into the time.strptime() documentation.
@@ -269,11 +308,9 @@ class TimeSeries(object):
         @param normalizationLevel Level of normalization that has to be applied.
                                   The available normalization levels are defined
                                   in timeseries.NormalizationLevels.
-
         @param method Normalization method that has to be used if multiple data entries
                       exist within the same normalization bucket.
                       The available methods are defined in timeseries.FusionMethods.
-
         @param interpolation Interpolation method that is used if a data entry at a specific
                              time is missing.
                              The available interpolation methods are defined in
