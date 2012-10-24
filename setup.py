@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name             = "pycast",
-    version          = "0.0.1-prealpha",
+    version          = "0.0.2-prealpha",
     author           = "Christian S",
     author_email     = "pixeldreck@gmail.com",
     packages         = ["pycast"],

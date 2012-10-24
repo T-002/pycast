@@ -24,3 +24,4 @@
 
 import basemethod
 import simplemovingaverage
+import exponentialsmoothing

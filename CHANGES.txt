@@ -1,2 +1,3 @@
+v0.0.2-prealpha, 2012-23-10 -- Added Exponential Smoothing and Holt Forecast methods
 v0.0.1-prealpha, 2012-23-10 -- SMA method implemented
 v0.0.0-prealpha, 2012-14-10 -- Initial release will follow soon.
