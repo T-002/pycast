@@ -21,7 +21,7 @@ Typical usage often looks like this:
     ts.add_entry(4.0, 2.0)
     
     ts.normalize("second")
-    smootedTS = ts.apply(SimpleMovingAverage(3))
+    smoothedTS = ts.apply(SimpleMovingAverage(3))
     
 
 Some usage examples of pycast in combination with other tools like gnuplot
