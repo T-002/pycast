@@ -123,9 +123,9 @@ class HoltMethod(BaseMethod):
         valuesToForecast = self._parameters["valuesToForecast"]
 
         ## smooth the existing TimeSeries data
-       for idx in xrange(len(timeSeries)):
-           ## initialization for s_1 and b_1
-           if 0 == idx:
+        for idx in xrange(len(timeSeries)):
+            ## initialization for s_1 and b_1
+            if 0 == idx:
                sOld = timeSeries[idx][1]
                b = timeSeries[idx+1][1]-timeSeries[idx][1]
                continue
@@ -200,4 +200,4 @@ class HoltWintersMethod(BaseMethod):
         ## @todo THIS IS NOT IMPLEMENTED YET
 
         ## return the resulting TimeSeries :)
-        return res
+        return re
