@@ -89,8 +89,9 @@ class TimeSeries(object):
         """Dumps the TimeSeries into a gnuplot compatible data file.
 
         @param datafilepath Path used to create the file. If that file already exists, it will be overwritten!
-        @param format    Format of the timestamp. For valid examples take a look into the
-                         time.strptime() documentation. If format is set to None, UNIX-epochs will be used.
+        @param format    Format of the timestamp. This is used to convert the
+                         timestamp from UNIX epochs, if necessary. For valid examples
+                         take a look into the time.strptime() documentation.
 
         @return Returns True if the data could be written, False otherwise.
         """
@@ -115,20 +116,39 @@ class TimeSeries(object):
         datafile.close()
         return True
 
-    def to_json(self):
+    def to_json(self, format=None):
         """Returns a JSON representation of the TimeSeries data.
+
+        @param format    Format of the timestamp. This is used to convert the
+                         timestamp from UNIX epochs, if necessary. For valid examples
+                         take a look into the time.strptime() documentation.
 
         @return Returns a basestring, containing the JSON representation of the current
         data stored within the TimeSeries.
         """
-        return """{[%s]}""" % ",".join([str(entry) for entry in self._timeseriesData])
+        ## return the simple way if no timestamp format was requested
+        if None == format:
+            return """{[%s]}""" % ",".join([str(entry) for entry in self._timeseriesData])
+
+        ## initialize the result
+        valuepairs = []
+        append = valuepairs.append
+
+        for entry in self._timeseriesData:
+            append("""["%s",%s]""" % (self._epoch_to_timestamp(entry[0], format), entry[1]))
+
+        ## return the result
+        return """{[%s]}""" % ",".join(valuepairs)
 
     @classmethod
-    def from_json(self, jsonBaseString):
+    def from_json(self, jsonBaseString, format=None):
         """Creates a new TimeSeries instance from the given json string.
 
         @param jsonBaseString JSON string, containing the time series data. This
                               should be a string created by to_json().
+        @param format    Format of the given timestamp. This is used to convert the
+                         timestamp into UNIX epochs, if necessary. For valid examples
+                         take a look into the time.strptime() documentation.
 
         @return Returns a TimeSeries instance containing the data.
 
@@ -142,9 +162,49 @@ class TimeSeries(object):
         ## create and fill the given TimeSeries
         ts = TimeSeries()
         for entry in eval(jsonString):
-            ts.add_entry(*entry)
+            ts.add_entry(*entry, format=format)
 
         return ts
+
+    def initialize_from_sql_cursor(self, sqlcursor, format=None, sorted=False):
+        """Initializes the TimeSeries's data from the given SQL cursor.
+
+        @param sqlcursor Cursor that was holds the SQL result for any given
+                         "SELECT timestamp, value, ... FROM ..." SQL query.
+                         Only the first two attributes of the SQL result will
+                         be used.
+        @param format    Format of the given timestamp. This is used to convert the
+                         timestamp into UNIX epochs, if necessary. For valid examples
+                         take a look into the time.strptime() documentation.
+        @param sorted Determines if the SQL result is already sorted. If this
+                      is False, the TimeSeries instance sorts itself after all
+                      values are read.
+
+        @return Returns the number of entries added to the TimeSeries.
+
+        @todo This function is not bulletprove, yet.
+        """
+        ## initialize the result
+        tuples = 0
+
+        ## add the SQL result to the timeseries
+        data = sqlcursor.fetchmany()
+        while 0 < len(data):
+            for entry in data:
+                self.add_entry(*entry[:2], format=format)
+
+            data = sqlcursor.fetchmany()
+
+
+
+        ## sort the TimeSeries, if necessary
+        if False == sorted:
+            self.sort_timeseries()
+        
+        self._sorted = True
+
+        ## return the number of tuples added to the timeseries.
+        return tuples
 
     def __len__(self):
         """Returns the number of data entries that are part of the time series.
@@ -236,7 +296,7 @@ class TimeSeries(object):
         return time.strftime(format, time.localtime(timestamp))
 
     ## @todo: only floats as data for now. (2012-10-09 Christian)
-    def add_entry(self, timestamp, data, format="%Y-%m-%d_%H:%M"):
+    def add_entry(self, timestamp, data, format=None):
         """Adds a new data entry to the TimeSeries.
 
         @param timestamp Time stamp of the datas occurence.
@@ -251,7 +311,7 @@ class TimeSeries(object):
         self._normalized = self._predefinedNormalized
         self._sorted     = self._predefinedSorted
 
-        if isinstance(timestamp, basestring):
+        if None != format:
             timestamp = self._convert_timestamp_to_epoch(timestamp, format)
 
         self._timeseriesData.append([timestamp, data])
