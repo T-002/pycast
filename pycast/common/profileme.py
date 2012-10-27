@@ -29,18 +29,17 @@ except ImportError:
     import profile
 
 class _ProfileDecorator(object):
-    """Baseclass for the profiling decorator classes.
+    """Decorator class that build a wrapper around any function.
 
-    The baseclasses should only implement the __call__ method."""
-    
-    def __init__(self, func, filelocation):
+    @warning The decorator does not take recursive calls into account!
+    """
+    def __init__(self, filelocation):
         """Initializes the ProfileMe decorator.
 
         @param func Function that will be profiles.
         @param filelocation Location for the profiling results.
         """
         super(_ProfileDecorator, self).__init__()
-        self._func         = func
         self._filelocation = filelocation
 
     @property
@@ -50,28 +49,33 @@ class _ProfileDecorator(object):
     def __repr__(self):
         return self._func.__repr__()
 
-class _ProfileMe(_ProfileDecorator):
-    """Decorator class that build a wrapper around any function.
+    def __call__(self, func):
+        """Returns a wrapped version of the called function.
 
-    @warning The decorator does not take recursive calls into account!
-    """
+        @param func Function that should be wrapped.
 
-    def __call__(self, *args, **kwargs):
-        """This function gets executed, if the wrapped function gets called.
 
-        It automatically created a performance profile for the corresonding function call.
+        @return Returns a wrapped version of the called function.
         """
-        ## create the profiler and execute the called function
-        profiler = profile.Profile()
-        result   = profiler.runcall(self._func, *args, **kwargs)
+        def wrapped_func(*args, **kwargs):
+            """This function gets executed, if the wrapped function gets called.
 
-        ## store the performance profile
-        filename = "%s.cstats" % (self._filelocation)
-        profiler.dump_stats(filename))
+            It automatically created a performance profile for the corresonding function call.
+            """
+            ## create the profiler and execute the called function
+            profiler = profile.Profile()
+            result   = profiler.runcall(func, *args, **kwargs)
 
-        ## return the result
-        return result
+            ## store the performance profile
+            filename = "%s" % (self._filelocation)
+            profiler.dump_stats(filename)
+            
+            ## return the result
+            return result
+
+        self._func = func
+        return wrapped_func
 
 ## This is the "real decorator"
 ### Usage: @profileMe
-profileMe = _ProfileMe
+profileMe = _ProfileDecorator

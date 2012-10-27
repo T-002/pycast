@@ -23,4 +23,4 @@
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import timeseries
-import profileme.profileMe as profileMe
+from profileme import profileMe
