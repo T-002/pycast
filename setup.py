@@ -2,8 +2,8 @@ from distutils.core import setup
 
 setup(
     name             = "pycast",
-    version          = "0.0.2-prealpha",
-    author           = "Christian S",
+    version          = "v0.0.3-prealpha",
+    author           = "Christian Schwarz",
     author_email     = "pixeldreck@gmail.com",
     packages         = ["pycast"],
     scripts          = ["bin"],
