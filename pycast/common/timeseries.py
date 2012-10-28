@@ -51,7 +51,10 @@ InterpolationMethods = {
 }
 
 class TimeSeries(object):
-    """Represents the base class for all time series data."""
+    """Represents the base class for all time series data.
+
+    @warning TimeSeries instances are NOT threadsafe.
+    """
 
     def __init__(self, normalized=False, ordered=False):
         """Initializes the TimeSeries.
@@ -417,10 +420,25 @@ class TimeSeries(object):
         buckets         = [[bucketstart + idx * normalizationLevel] for idx in xrange(bucketcnt)]
 
         ## Step One: Populate buckets
+        ### idx used instead of for buckets in buckets to make a possible C transfer easier
+        ### @todo Check, if a non-independant loop will perform faster.
         for idx in xrange(bucketcnt):
+            ## get the bucket to avoid multiple calls of buckets.__getitem__()
+            bucket = buckets[idx]
+            
             ## get all valid data entries for the given bucket
-            bucketstart = buckets[idx][0] - buckethalfwidth
-            bucketend   = buckets[idx][0] + buckethalfwidth
+            bucketstart = bucket[0] - buckethalfwidth
+            bucketend   = bucket[0] + buckethalfwidth
+
+            ## @todo Performance
+            ###      Move this to a step zero where all values are mapped
+            ###      into their corresponding buckets.
+            ###      Those predefined buckets should then simply be summed
+            ###      to avoid the massive number of filter calls executed
+            ###      within this function
+            ###
+            ###      Property that TimeSeries is sorted is not yet taken
+            ###      into account!
             values = filter(lambda i: bucketstart <= i[0] < bucketend, self._timeseriesData)
 
             ## continue, if no valid data entries exist
@@ -429,7 +447,7 @@ class TimeSeries(object):
 
             ## use the given fusion method to calculate the fusioned value
             values = [i[1] for i in values]
-            buckets[idx].append(fusionMethod(values))
+            bucket.append(fusionMethod(values))
 
         ## Step Two: Fill missing buckets
         missingCount   = 0

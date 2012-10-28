@@ -72,7 +72,7 @@ from pycast.common import profileMe
 #assert(len(fts) == len(ts1) + 2)
 #print "Holt's method is working"
 
-@profileMe("statfile.cstats")
+@profileMe("statfile2.cstats")
 def db_run():
     import sqlite3
     con = sqlite3.connect("bin/examples/energy.db")
@@ -91,5 +91,5 @@ def db_run():
 db_run()
 
 import pstats
-p = pstats.Stats("statfile.cstats")
-p.strip_dirs().sort_stats(-1).print_stats()
+p = pstats.Stats("statfile2.cstats")
+p.strip_dirs().sort_stats("cumulative").print_stats()
