@@ -419,35 +419,32 @@ class TimeSeries(object):
         bucketstart     = start + buckethalfwidth
         buckets         = [[bucketstart + idx * normalizationLevel] for idx in xrange(bucketcnt)]
 
-        ## Step One: Populate buckets
-        ### idx used instead of for buckets in buckets to make a possible C transfer easier
-        ### @todo Check, if a non-independant loop will perform faster.
+        # Step One: Populate buckets
+        ## Initialize the timeseries data iterators
+        tsdStartIdx = 0
+        tsdEndIdx   = 0
+        tsdlength   = len(self)
+
         for idx in xrange(bucketcnt):
             ## get the bucket to avoid multiple calls of buckets.__getitem__()
             bucket = buckets[idx]
             
-            ## get all valid data entries for the given bucket
-            bucketstart = bucket[0] - buckethalfwidth
+            ## get the range for the given bucket
             bucketend   = bucket[0] + buckethalfwidth
-
-            ## @todo Performance
-            ###      Move this to a step zero where all values are mapped
-            ###      into their corresponding buckets.
-            ###      Those predefined buckets should then simply be summed
-            ###      to avoid the massive number of filter calls executed
-            ###      within this function
-            ###
-            ###      Property that TimeSeries is sorted is not yet taken
-            ###      into account!
-            values = filter(lambda i: bucketstart <= i[0] < bucketend, self._timeseriesData)
+            
+            while tsdEndIdx < tsdlength and self._timeseriesData[tsdEndIdx][0] < bucketend:
+                tsdEndIdx += 1
 
             ## continue, if no valid data entries exist
-            if 0 == len(values):
+            if tsdStartIdx == tsdEndIdx:
                 continue
-
+        
             ## use the given fusion method to calculate the fusioned value
-            values = [i[1] for i in values]
+            values = [i[1] for i in self._timeseriesData[tsdStartIdx:tsdEndIdx]]
             bucket.append(fusionMethod(values))
+
+            ## set the new timeseries data index
+            tsdStartIdx = tsdEndIdx
 
         ## Step Two: Fill missing buckets
         missingCount   = 0
