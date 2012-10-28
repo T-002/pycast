@@ -2,3 +2,4 @@
 /pycast.kpf
 /pycast/.DS_Store
 .DS_Store
+*.cstats
