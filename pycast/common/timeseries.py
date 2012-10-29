@@ -38,7 +38,8 @@ NormalizationLevels = {
     "4week":   1 * 60 * 60 * 24 * 7 * 4
 }
 
-## Fusion methods that can be used to fusionate multiple data points within the same time bucket.
+## Fusion methods that can be used to fusionate multiple data points within
+## the same time bucket.
 FusionMethods = {
     "average": lambda l: sum(l) / len(l),
     "median":  lambda l: sorted(l)[len(l)//2]
@@ -91,7 +92,8 @@ class TimeSeries(object):
     def to_gnuplot_datafile(self, datafilepath, format=None):
         """Dumps the TimeSeries into a gnuplot compatible data file.
 
-        @param datafilepath Path used to create the file. If that file already exists, it will be overwritten!
+        @param datafilepath Path used to create the file. If that file already exists,
+                            it will be overwritten!
         @param format    Format of the timestamp. This is used to convert the
                          timestamp from UNIX epochs, if necessary. For valid examples
                          take a look into the time.strptime() documentation.
@@ -169,6 +171,23 @@ class TimeSeries(object):
 
         return ts
 
+    def initialize_from_twodim_list(self, datalist, format=None, sorted=False):
+        """Initializes the TimeSeries's data from the two dimensional list.
+
+        @param datalist List containing multiple iterables with at least two values.
+                        The first item will always be used as timestamp in the
+                        predefined format, the second represents the value. All other
+                        items in those sublists will be ignored.
+        @param format   Format of the given timestamp. This is used to convert the
+                        timestamp into UNIX epochs, if necessary. For valid examples
+                        take a look into the time.strptime() documentation.
+        @param sorted   Determines if the datalist is sorted by the timestamps. If this
+                        is False, the TimeSeries instance sorts itself after all
+                        values are read.
+        """
+        for entry in datalist:
+            self.add_entry(*entry[:2], format=format)        
+
     def initialize_from_sql_cursor(self, sqlcursor, format=None, sorted=False):
         """Initializes the TimeSeries's data from the given SQL cursor.
 
@@ -212,7 +231,8 @@ class TimeSeries(object):
     def __len__(self):
         """Returns the number of data entries that are part of the time series.
 
-        @return Returns an Integer representing the number on data entries stored within the TimeSeries.
+        @return Returns an Integer representing the number on data entries stored
+        within the TimeSeries.
         """
         return len(self._timeseriesData)
 
@@ -280,8 +300,8 @@ class TimeSeries(object):
         """Converts the given timestamp into a float representing UNIX-epochs.
 
         @param timestamp Timestamp in the defined format.
-        @param format    Format of the timestamp. For valid examples take a look into the
-                         time.strptime() documentation.
+        @param format    Format of the timestamp. For valid examples take a look
+                         into the time.strptime() documentation.
 
         @return Returns an float, representing the UNIX-epochs for the given timestamp.
         """
@@ -291,8 +311,8 @@ class TimeSeries(object):
         """Converts the given float representing UNIX-epochs into an actual timestamp.
 
         @param timestamp Timestamp as UNIX-epochs.
-        @param format    Format of the timestamp. For valid examples take a look into the
-                         time.strptime() documentation.
+        @param format    Format of the timestamp. For valid examples take a look
+                         into the time.strptime() documentation.
 
         @return Returns an timestamp as defined by format. 
         """
@@ -320,11 +340,12 @@ class TimeSeries(object):
         self._timeseriesData.append([timestamp, data])
 
     def sort_timeseries(self, ascending=True):
-        """Sorts the data points within the TimeSeries according to their occurence inline.
+        """Sorts the data points within the TimeSeries according to their occurence
+        inline.
 
-        @param ascending Determines if the TimeSeries will be ordered ascending or decending.
-                         If this is set to decending once, the ordered parameter defined in
-                         __init__() will be set to False FOREVER.
+        @param ascending Determines if the TimeSeries will be ordered ascending or
+                         decending. If this is set to decending once, the ordered
+                         parameter defined in __init__() will be set to False FOREVER.
         """
         # the time series is sorted by default
         if ascending and self._sorted:
@@ -344,7 +365,8 @@ class TimeSeries(object):
 
         As an assumtion this new TimeSeries is not ordered anymore by default.
 
-        @param ascending Determines if the TimeSeries will be ordered ascending or decending.
+        @param ascending Determines if the TimeSeries will be ordered ascending
+               or decending.
 
         @return Returns a new TimeSeries instance sorted in the requested order.
         """
@@ -365,22 +387,22 @@ class TimeSeries(object):
     def normalize(self, normalizationLevel="minute", fusionMethod="average", interpolationMethod="linear"):
         """Normalizes the TimeSeries data points.
 
-        If this function is called, the TimeSeries gets ordered ascending automatically.
-        The new timestamps will represent the center of each time bucket.
+        If this function is called, the TimeSeries gets ordered ascending
+        automatically. The new timestamps will represent the center of each time
+        bucket.
 
         @param normalizationLevel Level of normalization that has to be applied.
                                   The available normalization levels are defined
                                   in timeseries.NormalizationLevels.
-        @param method Normalization method that has to be used if multiple data entries
-                      exist within the same normalization bucket.
+        @param method Normalization method that has to be used if multiple data
+                      entries exist within the same normalization bucket.
                       The available methods are defined in timeseries.FusionMethods.
-        @param interpolation Interpolation method that is used if a data entry at a specific
-                             time is missing.
-                             The available interpolation methods are defined in
-                             timeseries.InterpolationMethods.
+        @param interpolation Interpolation method that is used if a data entry at a
+                             specific time is missing. The available interpolation
+                             methods are defined in timeseries.InterpolationMethods.
         """
-        ## do not normalize the TimeSeries if it is already normalized, either by definition or a prior
-        ## call of normalize(*)
+        ## do not normalize the TimeSeries if it is already normalized, either by
+        ## definition or a prior call of normalize(*)
         if self._normalized:
             return
 
@@ -486,8 +508,8 @@ class TimeSeries(object):
         return self._normalized
 
     def apply(self, method):
-        """Applies the given ForecastingAlgorithm or SmoothingMethod from the pycast.forecasting and
-        pycast.smoothingmodule to the TimeSeries.
+        """Applies the given ForecastingAlgorithm or SmoothingMethod from the
+        pycast.methods module to the TimeSeries.
 
         @param method Method that should be used with the TimeSeries.
                       For more information about the methods take a look into
