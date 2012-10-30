@@ -5,3 +5,4 @@
 *.cstats
 /docs/tests/debug.log
 /.coverage
+/docs/tests/status.dat
