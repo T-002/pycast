@@ -158,5 +158,3 @@ class DatabaseConnectorTest(unittest.TestCase):
         assert nbrOfTuples == len(tsAuto)
         assert len(tsManual) == len(tsAuto)
         assert tsManual == tsAuto
-
-
