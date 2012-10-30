@@ -24,13 +24,7 @@
 
 ## This module contains helper functions that will be moved later
 
-
 import time
-
-
-
-def _to_timestamp(self, epoch):
-    return time.strftime("%m-%d_%H:%M", time.localtime(epoch))
 
 ## @todo define a more general interface!
 def linear_interpolation(first, last, steps):
