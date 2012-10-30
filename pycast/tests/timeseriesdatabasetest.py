@@ -38,7 +38,7 @@ class DatabaseConnectorTest(unittest.TestCase):
     def setUp(self):
         """Initializes the environment for each test."""
         self._db = sqlite3.connect(":memory:")
-        self.add_data_into_db(self._db, random.randint(10000,10000000))
+        self.add_data_into_db(self._db, random.randint(100,10000))
 
     def tearDown(self):
         """This function gets called after each test funtion."""
@@ -150,8 +150,7 @@ class DatabaseConnectorTest(unittest.TestCase):
         tsAuto.initialize_from_sql_cursor(self._db.cursor().execute(sqlstmt))
 
         ## check if those TimeSeries are equal
-        #assert len(tsManual) == len(tsAuto)
-        assert (True == False)
-        #assert tsManual == tsAuto
+        assert len(tsManual) == len(tsAuto)
+        assert tsManual == tsAuto
 
 
