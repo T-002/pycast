@@ -44,6 +44,10 @@ Currently, there are some restrictions:
 1. TimeSeries can only contain single dimensional, floating point timeseries
 2. For internal representation, the UNIX epochs are used
 
+Requirements
+============
+* nose >= 1.2.1
+
 License
 =======
 Copyright (c) 2012 Christian Schwarz

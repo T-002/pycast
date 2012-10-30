@@ -11,7 +11,6 @@ setup(
     license          = "LICENSE.txt",
     description      = "A Python Forecasting and Smoothing Library",
     long_description = open("README.txt").read(),
-    install_requires = []
-#        "Django >= 1.1.1",
+    install_requires = ["nose >= 1.2.1"]
 #        "caldav == 0.1.4",
 )
