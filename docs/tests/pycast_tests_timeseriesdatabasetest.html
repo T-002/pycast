@@ -5,7 +5,7 @@
     
     
     <meta http-equiv='X-UA-Compatible' content='IE=emulateIE7' />
-    <title>Coverage for pycast.tests.timeseriesdatabasetest: 96%</title>
+    <title>Coverage for pycast.tests.timeseriesdatabasetest: 100%</title>
     <link rel='stylesheet' href='style.css' type='text/css'>
     
     <script type='text/javascript' src='jquery-1.4.3.min.js'></script>
@@ -21,13 +21,13 @@
 <div id='header'>
     <div class='content'>
         <h1>Coverage for <b>pycast.tests.timeseriesdatabasetest</b> :
-            <span class='pc_cov'>96%</span>
+            <span class='pc_cov'>100%</span>
         </h1>
         <img id='keyboard_icon' src='keybd_closed.png'>
         <h2 class='stats'>
-            50 statements &nbsp;
-            <span class='run hide_run shortkey_r button_toggle_run'>48 run</span>
-            <span class='mis shortkey_m button_toggle_mis'>2 missing</span>
+            54 statements &nbsp;
+            <span class='run hide_run shortkey_r button_toggle_run'>54 run</span>
+            <span class='mis shortkey_m button_toggle_mis'>0 missing</span>
             <span class='exc shortkey_x button_toggle_exc'>0 excluded</span>
             
                 <span class='par run hide_run shortkey_p button_toggle_par'>0 partial</span>
@@ -203,22 +203,28 @@
 <p id='n138' class='pln'><a href='#n138'>138</a></p>
 <p id='n139' class='pln'><a href='#n139'>139</a></p>
 <p id='n140' class='stm run hide_run'><a href='#n140'>140</a></p>
-<p id='n141' class='pln'><a href='#n141'>141</a></p>
+<p id='n141' class='stm run hide_run'><a href='#n141'>141</a></p>
 <p id='n142' class='pln'><a href='#n142'>142</a></p>
-<p id='n143' class='stm run hide_run'><a href='#n143'>143</a></p>
+<p id='n143' class='pln'><a href='#n143'>143</a></p>
 <p id='n144' class='stm run hide_run'><a href='#n144'>144</a></p>
-<p id='n145' class='stm run hide_run'><a href='#n145'>145</a></p>
-<p id='n146' class='stm run hide_run'><a href='#n146'>146</a></p>
-<p id='n147' class='pln'><a href='#n147'>147</a></p>
-<p id='n148' class='pln'><a href='#n148'>148</a></p>
+<p id='n145' class='pln'><a href='#n145'>145</a></p>
+<p id='n146' class='pln'><a href='#n146'>146</a></p>
+<p id='n147' class='stm run hide_run'><a href='#n147'>147</a></p>
+<p id='n148' class='stm run hide_run'><a href='#n148'>148</a></p>
 <p id='n149' class='stm run hide_run'><a href='#n149'>149</a></p>
 <p id='n150' class='stm run hide_run'><a href='#n150'>150</a></p>
 <p id='n151' class='pln'><a href='#n151'>151</a></p>
 <p id='n152' class='pln'><a href='#n152'>152</a></p>
-<p id='n153' class='stm mis'><a href='#n153'>153</a></p>
-<p id='n154' class='stm mis'><a href='#n154'>154</a></p>
+<p id='n153' class='stm run hide_run'><a href='#n153'>153</a></p>
+<p id='n154' class='stm run hide_run'><a href='#n154'>154</a></p>
 <p id='n155' class='pln'><a href='#n155'>155</a></p>
 <p id='n156' class='pln'><a href='#n156'>156</a></p>
+<p id='n157' class='stm run hide_run'><a href='#n157'>157</a></p>
+<p id='n158' class='stm run hide_run'><a href='#n158'>158</a></p>
+<p id='n159' class='stm run hide_run'><a href='#n159'>159</a></p>
+<p id='n160' class='stm run hide_run'><a href='#n160'>160</a></p>
+<p id='n161' class='pln'><a href='#n161'>161</a></p>
+<p id='n162' class='pln'><a href='#n162'>162</a></p>
                 
             </td>
             <td class='text' valign='top'>
@@ -360,24 +366,30 @@
 <p id='t136' class='pln'><span class='strut'>&nbsp;</span></p>
 <p id='t137' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>check_for_consistency_test</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
 <p id='t138' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;Tests if database initialization and manual initialization create equal TimeSeries instances.&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
-<p id='t139' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'>## SQL extraction statement</span><span class='strut'>&nbsp;</span></p>
-<p id='t140' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>sqlstmt</span> <span class='op'>=</span> <span class='str'>&quot;&quot;&quot;SELECT timestamp, value FROM TestTable&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
-<p id='t141' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t142' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'>## Initialize one TimeSeries instance manually</span><span class='strut'>&nbsp;</span></p>
-<p id='t143' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tsManual</span> <span class='op'>=</span> <span class='nam'>TimeSeries</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t144' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>data</span>&nbsp; &nbsp;&nbsp; <span class='op'>=</span> <span class='nam'>self</span><span class='op'>.</span><span class='nam'>_db</span><span class='op'>.</span><span class='nam'>cursor</span><span class='op'>(</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>execute</span><span class='op'>(</span><span class='nam'>sqlstmt</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>fetchall</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t145' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>for</span> <span class='nam'>entry</span> <span class='key'>in</span> <span class='nam'>data</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t146' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tsManual</span><span class='op'>.</span><span class='nam'>add_entry</span><span class='op'>(</span><span class='op'>*</span><span class='nam'>entry</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t147' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t148' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'>## Initialize one TimeSeries from SQL cursor</span><span class='strut'>&nbsp;</span></p>
-<p id='t149' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tsAuto</span> <span class='op'>=</span> <span class='nam'>TimeSeries</span><span class='strut'>&nbsp;</span></p>
-<p id='t150' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tsAuto</span><span class='op'>.</span><span class='nam'>initialize_from_sql_cursor</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>.</span><span class='nam'>_db</span><span class='op'>.</span><span class='nam'>cursor</span><span class='op'>(</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>execute</span><span class='op'>(</span><span class='nam'>sqlstmt</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t139' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'>## read the number of rows from the database</span><span class='strut'>&nbsp;</span></p>
+<p id='t140' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>cur</span> <span class='op'>=</span> <span class='nam'>self</span><span class='op'>.</span><span class='nam'>_db</span><span class='op'>.</span><span class='nam'>cursor</span><span class='op'>(</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>execute</span><span class='op'>(</span><span class='str'>&quot;&quot;&quot;SELECT COUNT(*) from TestTable&quot;&quot;&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t141' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>nbrOfTuples</span> <span class='op'>=</span> <span class='nam'>cur</span><span class='op'>.</span><span class='nam'>fetchall</span><span class='op'>(</span><span class='op'>)</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='strut'>&nbsp;</span></p>
+<p id='t142' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t143' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'>## SQL extraction statement</span><span class='strut'>&nbsp;</span></p>
+<p id='t144' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>sqlstmt</span> <span class='op'>=</span> <span class='str'>&quot;&quot;&quot;SELECT timestamp, value FROM TestTable&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t145' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t146' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'>## Initialize one TimeSeries instance manually</span><span class='strut'>&nbsp;</span></p>
+<p id='t147' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tsManual</span> <span class='op'>=</span> <span class='nam'>TimeSeries</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t148' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>data</span>&nbsp; &nbsp;&nbsp; <span class='op'>=</span> <span class='nam'>self</span><span class='op'>.</span><span class='nam'>_db</span><span class='op'>.</span><span class='nam'>cursor</span><span class='op'>(</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>execute</span><span class='op'>(</span><span class='nam'>sqlstmt</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>fetchall</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t149' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>for</span> <span class='nam'>entry</span> <span class='key'>in</span> <span class='nam'>data</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t150' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tsManual</span><span class='op'>.</span><span class='nam'>add_entry</span><span class='op'>(</span><span class='op'>*</span><span class='nam'>entry</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t151' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t152' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'>## check if those TimeSeries are equal</span><span class='strut'>&nbsp;</span></p>
-<p id='t153' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>assert</span> <span class='nam'>len</span><span class='op'>(</span><span class='nam'>tsManual</span><span class='op'>)</span> <span class='op'>==</span> <span class='nam'>len</span><span class='op'>(</span><span class='nam'>tsAuto</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t154' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>assert</span> <span class='nam'>tsManual</span> <span class='op'>==</span> <span class='nam'>tsAuto</span><span class='strut'>&nbsp;</span></p>
+<p id='t152' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'>## Initialize one TimeSeries from SQL cursor</span><span class='strut'>&nbsp;</span></p>
+<p id='t153' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tsAuto</span> <span class='op'>=</span> <span class='nam'>TimeSeries</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t154' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tsAuto</span><span class='op'>.</span><span class='nam'>initialize_from_sql_cursor</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>.</span><span class='nam'>_db</span><span class='op'>.</span><span class='nam'>cursor</span><span class='op'>(</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>execute</span><span class='op'>(</span><span class='nam'>sqlstmt</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t155' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t156' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t156' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'>## check if those TimeSeries are equal</span><span class='strut'>&nbsp;</span></p>
+<p id='t157' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>assert</span> <span class='nam'>nbrOfTuples</span> <span class='op'>==</span> <span class='nam'>len</span><span class='op'>(</span><span class='nam'>tsManual</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t158' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>assert</span> <span class='nam'>nbrOfTuples</span> <span class='op'>==</span> <span class='nam'>len</span><span class='op'>(</span><span class='nam'>tsAuto</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t159' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>assert</span> <span class='nam'>len</span><span class='op'>(</span><span class='nam'>tsManual</span><span class='op'>)</span> <span class='op'>==</span> <span class='nam'>len</span><span class='op'>(</span><span class='nam'>tsAuto</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t160' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>assert</span> <span class='nam'>tsManual</span> <span class='op'>==</span> <span class='nam'>tsAuto</span><span class='strut'>&nbsp;</span></p>
+<p id='t161' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t162' class='pln'><span class='strut'>&nbsp;</span></p>
                 
             </td>
         </tr>

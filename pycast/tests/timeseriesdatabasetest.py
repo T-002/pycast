@@ -136,6 +136,10 @@ class DatabaseConnectorTest(unittest.TestCase):
 
     def check_for_consistency_test(self):
         """Tests if database initialization and manual initialization create equal TimeSeries instances."""
+        ## read the number of rows from the database
+        cur = self._db.cursor().execute("""SELECT COUNT(*) from TestTable""")
+        nbrOfTuples = cur.fetchall()[0][0]
+
         ## SQL extraction statement
         sqlstmt = """SELECT timestamp, value FROM TestTable"""
 
@@ -146,10 +150,12 @@ class DatabaseConnectorTest(unittest.TestCase):
             tsManual.add_entry(*entry)
 
         ## Initialize one TimeSeries from SQL cursor
-        tsAuto = TimeSeries
+        tsAuto = TimeSeries()
         tsAuto.initialize_from_sql_cursor(self._db.cursor().execute(sqlstmt))
 
         ## check if those TimeSeries are equal
+        assert nbrOfTuples == len(tsManual)
+        assert nbrOfTuples == len(tsAuto)
         assert len(tsManual) == len(tsAuto)
         assert tsManual == tsAuto
 
