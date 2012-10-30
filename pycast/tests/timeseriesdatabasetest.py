@@ -25,52 +25,133 @@
 ## Tests concerning the database connection of pycast.common.TimeSeries
 ## SQLite is used for connector tests
 
+## required external modules
 from nose import with_setup
-import unittest
+import unittest, random, sqlite3
 
+## required modules from pycast
+from pycast.common.timeseries import TimeSeries
 
 class DatabaseConnectorTest(unittest.TestCase):
-    """Testclass for all database connection relevant tests."""
-
-    def __init__(self):
-        """Initializes the DatabaseConnectorTest.
-
-        The sample database is populated within this function.
-        """
-        super(DatabaseConnectorTest, self).__init__()
+    """Testclass for all database connection related tests."""
 
     def setUp(self):
         """Initializes the environment for each test."""
+        self._db = sqlite3.connect(":memory:")
+        self.add_data_into_db(self._db, random.randint(10000,10000000))
 
     def tearDown(self):
         """This function gets called after each test funtion."""
+        self._db.close()
+        del self._db
 
-    @with_setup(setUp, tearDown)
-    def sampleTest(self):
-        """This function tests nothing.
+    def add_data_into_db(self, database, numberOfTuples):
+        """Inserts a numberOfTuples tuples into the given database.
 
-        It is only used to demonstrate the signature for possible tests.
+        This automatically creates a table called TestTable with the following schema:
+            timestamp REAL
+            value     REAL
+            junk_one  REAL
+            junk_two  TEXT
+
+        The time stamps will be inserted as an ordered sequence.
+
+        @param database dbapi2.connection Instance for the used database.
+        @param numberOfTuples Number of tuples that have to be created.
         """
+        ## create the test table
+        cur = database.cursor()
+        cur.execute("""
+            CREATE TABLE TestTable(
+                timestamp REAL,
+                value     REAL,
+                junk_one  REAL,
+                junk_two  TEXT
+            )
+            """)
+        database.commit()
 
-#def db_run():
-#    import sqlite3
-#    con = sqlite3.connect("bin/examples/energy.db")
-#    cur = con.cursor()
-#    cur.execute("""SELECT timestamp, curPower FROM Energy""")
-#    
-#    ts = TimeSeries()
-#    ts.initialize_from_sql_cursor(cur)
-#    print "Length: %s" % len(ts)
-#    from pycast.methods.exponentialsmoothing import HoltMethod
-#    hm  = HoltMethod(smoothingFactor=0.1, trendSmoothingFactor=0.5, valuesToForecast=10)
-#    fts = ts.apply(hm)
-#    print "Length: %s" % len(ts)
-#    
-#    assert(len(ts) + 9 == len(fts))
-#    print "Holt's method is working"    
-#
-#db_run()
-#
-#import pstats
-#p = pstats.Stats("statfile3.cstats")
-#p.strip_dirs().sort_stats("cumulative").print_stats()
+        ## initialize all required values
+        timestamp = 0
+        junk_two = ["test"]
+        tuples = []
+        append = tuples.append
+
+        ## create the tuples
+        for item in xrange(numberOfTuples):
+            timestamp += random.random() 
+            value     = random.random() * 1000
+            junkOne   = random.random()
+            junkTwo   = random.choice(junk_two)
+
+            append([timestamp, value,junkOne, junkTwo])
+
+        ## insert the tuples into the database
+        cur.executemany("""INSERT INTO TestTable VALUES (?,?,?,?)""", tuples)
+        database.commit()
+
+    def select_to_many_attributes_test(self):
+        """SELECT timestamp, value, junk, FROM TestTable
+
+        This function tests if statements like 
+
+        SELECT timestamp, value, junk, ... FROM
+
+        can be used to initialize a TimeSeries instance. TimeSeries should therefore only
+        take the first two attributes for data initialization, regardless of their names.
+        """
+        ## read the number of rows from the database
+        cur = self._db.cursor().execute("""SELECT COUNT(*) from TestTable""")
+        nbrOfTuples = cur.fetchall()[0][0]
+
+        ## initialize a TimeSeries instance from a database cursor
+        cur = self._db.cursor().execute("""SELECT timestamp, value, junk_one, junk_two FROM TestTable""")
+        ts = TimeSeries()
+        ts.initialize_from_sql_cursor(cur)
+
+        ## check if all values of the database got inserted into the TimeSeries
+        assert len(ts) == nbrOfTuples
+
+    def select_star_test(self):
+        """SELECT * FROM TestTable
+
+        This function tests if statements like 
+
+        SELECT * FROM
+
+        can be used to initialize a TimeSeries instance. TimeSeries should therefore only
+        take the first two attributes for data initialization, regardless of their names.
+        """
+        ## read the number of rows from the database
+        cur = self._db.cursor().execute("""SELECT COUNT(*) from TestTable""")
+        nbrOfTuples = cur.fetchall()[0][0]
+
+        ## initialize a TimeSeries instance from a database cursor
+        cur = self._db.cursor().execute("""SELECT * FROM TestTable""")
+        ts = TimeSeries()
+        ts.initialize_from_sql_cursor(cur)
+
+        ## check if all values of the database got inserted into the TimeSeries
+        assert len(ts) == nbrOfTuples
+
+    def check_for_consistency_test(self):
+        """Tests if database initialization and manual initialization create equal TimeSeries instances."""
+        ## SQL extraction statement
+        sqlstmt = """SELECT timestamp, value FROM TestTable"""
+
+        ## Initialize one TimeSeries instance manually
+        tsManual = TimeSeries()
+        data     = self._db.cursor().execute(sqlstmt).fetchall()
+        for entry in data:
+            tsManual.add_entry(*entry)
+
+        ## Initialize one TimeSeries from SQL cursor
+        tsAuto = TimeSeries
+        tsAuto.initialize_from_sql_cursor(self._db.cursor().execute(sqlstmt))
+
+        ## check if those TimeSeries are equal
+        #assert len(tsManual) == len(tsAuto)
+        assert (True == False)
+        #assert tsManual == tsAuto
+
+

@@ -3,3 +3,4 @@
 /pycast/.DS_Store
 .DS_Store
 *.cstats
+/docs/tests/debug.log
