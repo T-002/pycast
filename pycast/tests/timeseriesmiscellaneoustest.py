@@ -37,6 +37,8 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
 
     def tearDown(self):
         """This function gets called after each test function."""
+        if os.path.isfile("temp_plot.dat"):
+            os.remove("temp_plot.dat")
 
     def validity_of___str___test(self):
         """Test the validity of __str__ for a given TimeSeries."""
@@ -116,11 +118,6 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         if (tsThree == tsFive):  raise AssertionError
         if (tsFour == tsFive):   raise AssertionError
 
-    def tear_down_gnuplot(self):
-        """Remove the temporary gnuplot data file."""
-        os.remove("temp_plot.dat")
-
-    @with_setup(setUp, tear_down_gnuplot)
     def gnuplot_serialization_without_format_test(self):
         """Test serialization of timeSeries into gnuplot file."""
         data  = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
@@ -129,7 +126,6 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         
         assert os.path.isfile("temp_plot.dat")
 
-    @with_setup(setUp, tear_down_gnuplot)
     def gnuplot_serialization_with_format_test(self):
         """Test serialization of timeSeries into gnuplot file."""
         data  = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
