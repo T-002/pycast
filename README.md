@@ -44,6 +44,13 @@ Currently, there are some restrictions:
 1. TimeSeries can only contain single dimensional, floating point timeseries
 2. For internal representation, the UNIX epochs are used
 
+pycast.methods.simplemovingaverage
+----------------------------------
+Implements the simple moving average algorithm for a given TimeSeries.
+
+pycast.methods.exponentialsmoothing
+-----------------------------------
+
 Requirements
 ============
 * nose >= 1.2.1
