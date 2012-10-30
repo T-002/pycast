@@ -1,14 +1,3 @@
-#from pycast.common.timeseries import TimeSeries
-#from pycast.common import profileMe
-#
-#ts1 = TimeSeries()
-#ts1.add_entry(0.0, 0.0)
-#ts1.add_entry(0.1, 0.2)
-#
-#print ts1
-#print str(ts1)
-#print ts1.__repr__()
-#
 #ts2 = ts1.sorted_timeseries()
 #assert(ts1 == ts2)
 #ts2.add_entry(0.11, 0.2)

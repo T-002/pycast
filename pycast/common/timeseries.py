@@ -114,7 +114,7 @@ class TimeSeries(object):
         for datapoint in self._timeseriesData:
             timestamp, value = datapoint
             if None != format:
-                timestamp = self._epoch_to_timestamp(timestamp, format)
+                timestamp = self._convert_epoch_to_timestamp(timestamp, format)
 
             datafile.write("%s %s" % (timestamp, value))
 
@@ -245,7 +245,7 @@ class TimeSeries(object):
         return len(self._timeseriesData)
 
     def __eq__(self, otherTimeSeries):
-        """Returns if the TimeSeries equal another one.
+        """Returns if the TimeSeries equals another one.
 
         TimeSeries are equal to each other if:
             - they contain the same number of entries
@@ -302,7 +302,7 @@ class TimeSeries(object):
 
         @exception IndexError if the index is out of range.
         """
-        self._timeseriesData[idx] = value
+        self._timeseriesData[index] = value
 
     def _convert_timestamp_to_epoch(self, timestamp, format):
         """Converts the given timestamp into a float representing UNIX-epochs.
@@ -408,22 +408,24 @@ class TimeSeries(object):
         @param interpolation Interpolation method that is used if a data entry at a
                              specific time is missing. The available interpolation
                              methods are defined in timeseries.InterpolationMethods.
+
+        @return True if the normalization was successfull, False otherwise.
         """
         ## do not normalize the TimeSeries if it is already normalized, either by
         ## definition or a prior call of normalize(*)
         if self._normalized:
-            return
+            return True
 
         ## check if all parameters are defined correctly
         if not normalizationLevel in NormalizationLevels:
             print "Normalization level %s is unknown." % normalizationLevel
-            return
+            return False
         if not fusionMethod in FusionMethods:
             print "Fusion method %s is unknown." % fusionMethod
-            return
+            return False
         if not interpolationMethod in InterpolationMethods:
             print "Interpolation method %s is unknown." % interpolationMethod
-            return
+            return False
 
         ## get the defined methods and parameter
         normalizationLevel  = NormalizationLevels[normalizationLevel]
@@ -437,13 +439,13 @@ class TimeSeries(object):
         start           = self._timeseriesData[0][0]
         end             = self._timeseriesData[-1][0]
         span            = end - start
-        bucketcnt       = span / normalizationLevel
+        bucketcnt       = int(span / normalizationLevel)+ 1
 
-        ## add a bucket, if the last value is at the end of a bucket
-        if bucketcnt != int(bucketcnt):
-            bucketcnt += 1
-
-        bucketcnt = int(bucketcnt)
+#        ## add a bucket, if the last value is at the end of a bucket
+#        if bucketcnt != int(bucketcnt):
+#            bucketcnt += 1
+#
+#        bucketcnt = int(bucketcnt) + 1
 
         buckethalfwidth = normalizationLevel / 2.0
         bucketstart     = start + buckethalfwidth
@@ -507,6 +509,8 @@ class TimeSeries(object):
 
         ## at the end set self._normalized to True
         self._normalized = True
+
+        return True
 
     def is_normalized(self):
         """Returns if the TimeSeries is normalized.

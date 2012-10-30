@@ -61,8 +61,8 @@ class ProfileMeDecoratorTest(unittest.TestCase):
 
         booleanVal = dummy_func()
 
-        assert booleanVal == True
-        assert os.path.isfile(statfile)
+        if not (booleanVal):               raise AssertionError
+        if not (os.path.isfile(statfile)): raise AssertionError
 
     def profile_function_name_test(self):
         """Test the validity of __name__ for any decorated function."""
@@ -84,8 +84,8 @@ class ProfileMeDecoratorTest(unittest.TestCase):
 
         booleanVal = dummy_func()
 
-        assert booleanVal == True
-        assert dummy_func.__name__ == "dummy_func"
+        if not (booleanVal):                          raise AssertionError
+        if not (dummy_func.__name__ == "dummy_func"): raise AssertionError
 
     def profile_doc_string_test(self):
         """Test the validity of __doc__ for any decorated function."""
@@ -103,6 +103,6 @@ class ProfileMeDecoratorTest(unittest.TestCase):
 
         booleanVal = dummy_func()
 
-        assert booleanVal == True
-        assert dummy_func.__doc__ == """StupidDocString"""
+        if not (booleanVal):                                  raise AssertionError
+        if not (dummy_func.__doc__ == """StupidDocString"""): raise AssertionError
 

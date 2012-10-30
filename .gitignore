@@ -6,3 +6,4 @@
 /docs/tests/debug.log
 /.coverage
 /docs/tests/status.dat
+/temp_plot.dat

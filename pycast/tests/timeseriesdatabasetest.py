@@ -154,7 +154,7 @@ class DatabaseConnectorTest(unittest.TestCase):
         tsAuto.initialize_from_sql_cursor(self._db.cursor().execute(sqlstmt))
 
         ## check if those TimeSeries are equal
-        assert nbrOfTuples == len(tsManual)
-        assert nbrOfTuples == len(tsAuto)
-        assert len(tsManual) == len(tsAuto)
-        assert tsManual == tsAuto
+        if not (nbrOfTuples   == len(tsManual)): raise AssertionError
+        if not (nbrOfTuples   == len(tsAuto)):   raise AssertionError
+        if not (len(tsManual) == len(tsAuto)):   raise AssertionError
+        if not (tsManual      == tsAuto):        raise AssertionError
