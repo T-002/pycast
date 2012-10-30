@@ -69,7 +69,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
 
 
     def json_serialization_format_test(self):
-        """Test the json serialialization without predefined format."""
+        """Test the json serialialization with predefined format."""
         tsOrg = TimeSeries()
         tsOrg.add_entry(0.0, 0.0)
         tsOrg.add_entry(1.0, 0.1)
