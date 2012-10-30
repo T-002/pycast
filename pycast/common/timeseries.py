@@ -57,27 +57,27 @@ class TimeSeries(object):
     @warning TimeSeries instances are NOT threadsafe.
     """
 
-    def __init__(self, normalized=False, ordered=False):
+    def __init__(self, isNormalized=False, isSorted=False):
         """Initializes the TimeSeries.
 
-        @param normalized Within a normalized TimeSeries, all data points
-                          have the same temporal distance to each other.
-                          When this is True, the memory consumption of the
-                          TimeSeries might be reduced. Also some algorithms
-                          will probably run faster on normalized TimeSeries.
-                          This should only be set to True, if the TimeSeries
-                          is realy normalized!
-                          TimeSeries normalization can be forced, by executing
-                          normalize().
-        @param ordered    If all data points added to the time series are added
-                          in their ascending temporal order, this should set to True.
+        @param isNormalized Within a normalized TimeSeries, all data points
+                            have the same temporal distance to each other.
+                            When this is True, the memory consumption of the
+                            TimeSeries might be reduced. Also some algorithms
+                            will probably run faster on normalized TimeSeries.
+                            This should only be set to True, if the TimeSeries
+                            is realy normalized!
+                            TimeSeries normalization can be forced, by executing
+                            normalize().
+        @param isSorted     If all data points added to the time series are added
+                            in their ascending temporal order, this should set to True.
         """
         super(TimeSeries, self).__init__()
-        self._normalized           = normalized
-        self._predefinedNormalized = normalized
+        self._normalized           = isNormalized
+        self._predefinedNormalized = isNormalized
 
-        self._sorted               = ordered
-        self._predefinedSorted     = ordered
+        self._sorted               = isSorted
+        self._predefinedSorted     = isSorted
 
         self._timeseriesData = []
 
@@ -140,13 +140,13 @@ class TimeSeries(object):
         append = valuepairs.append
 
         for entry in self._timeseriesData:
-            append("""["%s",%s]""" % (self._epoch_to_timestamp(entry[0], format), entry[1]))
+            append("""["%s",%s]""" % (self._convert_epoch_to_timestamp(entry[0], format), entry[1]))
 
         ## return the result
         return """{[%s]}""" % ",".join(valuepairs)
 
     @classmethod
-    def from_json(self, jsonBaseString, format=None):
+    def from_json(cls, jsonBaseString, format=None):
         """Creates a new TimeSeries instance from the given json string.
 
         @param jsonBaseString JSON string, containing the time series data. This
@@ -171,7 +171,8 @@ class TimeSeries(object):
 
         return ts
 
-    def initialize_from_twodim_list(self, datalist, format=None, sorted=False):
+    @classmethod
+    def from_twodim_list(cls, datalist, format=None, isSorted=False):
         """Initializes the TimeSeries's data from the two dimensional list.
 
         @param datalist List containing multiple iterables with at least two values.
@@ -181,12 +182,19 @@ class TimeSeries(object):
         @param format   Format of the given timestamp. This is used to convert the
                         timestamp into UNIX epochs, if necessary. For valid examples
                         take a look into the time.strptime() documentation.
-        @param sorted   Determines if the datalist is sorted by the timestamps. If this
+        @param isSorted Determines if the datalist is sorted by the timestamps. If this
                         is False, the TimeSeries instance sorts itself after all
                         values are read.
+
+        @return         Returns a TimeSeries instance containing the data from datalist.
         """
+        ## create and fill the given TimeSeries
+        ts = TimeSeries(isSorted=isSorted)
+
         for entry in datalist:
-            self.add_entry(*entry[:2], format=format)        
+            ts.add_entry(*entry[:2], format=format)        
+
+        return ts
 
     def initialize_from_sql_cursor(self, sqlcursor, format=None, sorted=False):
         """Initializes the TimeSeries's data from the given SQL cursor.

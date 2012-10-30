@@ -42,13 +42,6 @@ class _ProfileDecorator(object):
         super(_ProfileDecorator, self).__init__()
         self._filelocation = filelocation
 
-    @property
-    def __name__(self):
-        return self._func.__name__
-
-    def __repr__(self):
-        return self._func.__repr__()
-
     def __call__(self, func):
         """Returns a wrapped version of the called function.
 
@@ -74,6 +67,11 @@ class _ProfileDecorator(object):
             return result
 
         self._func = func
+        setattr(wrapped_func, "__name__", self._func.__name__)
+        setattr(wrapped_func, "__repr__", self._func.__repr__)
+        setattr(wrapped_func, "__str__", self._func.__str__)
+        setattr(wrapped_func, "__doc__", self._func.__doc__)
+
         return wrapped_func
 
 ## This is the "real decorator"

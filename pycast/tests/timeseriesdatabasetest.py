@@ -41,7 +41,7 @@ class DatabaseConnectorTest(unittest.TestCase):
         self.add_data_into_db(self._db, random.randint(100,10000))
 
     def tearDown(self):
-        """This function gets called after each test funtion."""
+        """This function gets called after each test function."""
         self._db.close()
         del self._db
 

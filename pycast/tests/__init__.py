@@ -22,4 +22,9 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+## TimeSeries related tests
 from timeseriesdatabasetest import DatabaseConnectorTest
+from timeseriesmiscellaneoustest import TimeSeriesMiscellaneousTest
+
+## profileMe decorator related tests
+from profilemetest import ProfileMeDecoratorTest

@@ -1,5 +1,5 @@
-from pycast.common.timeseries import TimeSeries
-from pycast.common import profileMe
+#from pycast.common.timeseries import TimeSeries
+#from pycast.common import profileMe
 #
 #ts1 = TimeSeries()
 #ts1.add_entry(0.0, 0.0)
@@ -71,27 +71,3 @@ from pycast.common import profileMe
 #fts = ts1.apply(hm)
 #assert(len(fts) == len(ts1) + 2)
 #print "Holt's method is working"
-
-@profileMe("statfile3.cstats")
-def db_run():
-    import sqlite3
-    con = sqlite3.connect("bin/examples/energy.db")
-    cur = con.cursor()
-    cur.execute("""SELECT timestamp, curPower FROM Energy""")
-    
-    ts = TimeSeries()
-    ts.initialize_from_sql_cursor(cur)
-    print "Length: %s" % len(ts)
-    from pycast.methods.exponentialsmoothing import HoltMethod
-    hm  = HoltMethod(smoothingFactor=0.1, trendSmoothingFactor=0.5, valuesToForecast=10)
-    fts = ts.apply(hm)
-    print "Length: %s" % len(ts)
-    
-    assert(len(ts) + 9 == len(fts))
-    print "Holt's method is working"    
-
-db_run()
-
-import pstats
-p = pstats.Stats("statfile3.cstats")
-p.strip_dirs().sort_stats("cumulative").print_stats()
