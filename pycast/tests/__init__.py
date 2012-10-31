@@ -33,4 +33,4 @@ from profilemetest import ProfileMeDecoratorTest
 from helpertest import HelperTest
 
 ## method tests
-from methodtest import BaseMethodTest, SimpleMovingAverageTest, ExponentialSmoothingTest
+from methodtest import BaseMethodTest, SimpleMovingAverageTest, ExponentialSmoothingTest, HoltMethodTest
