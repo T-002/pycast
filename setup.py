@@ -11,6 +11,6 @@ setup(
     license          = "LICENSE.txt",
     description      = "A Python Forecasting and Smoothing Library",
     long_description = open("README.txt").read(),
-    install_requires = ["nose >= 1.2.1", "coverage >= 3.5.3"]
+    install_requires = ["nose >= 1.2.1", "coverage >= 3.5.3", "doxypy >= 0.4.2"]
 #        "caldav == 0.1.4",
 )

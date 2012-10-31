@@ -53,8 +53,9 @@ pycast.methods.exponentialsmoothing
 
 Requirements
 ============
-* nose >= 1.2.1
+* nose     >= 1.2.1
 * coverage >= 3.5.3
+* doxypy   >=0.4.2
 
 License
 =======
