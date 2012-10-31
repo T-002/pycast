@@ -54,9 +54,11 @@ class SimpleMovingAverage(BaseMethod):
 
         minIdx = len(timeSeries) / 2
 
-        windowsize = self._parameters["windowsize"]
-        tsLength = len(timeSeries)
-        for idx in xrange(tsLength - windowsize + 1):
+        windowsize    = self._parameters["windowsize"]
+        tsLength      = len(timeSeries)
+        nbrOfLoopRuns = tsLength - windowsize + 1
+        
+        for idx in xrange(nbrOfLoopRuns):
             end = idx + windowsize
             data = timeSeries[idx:end]
 
