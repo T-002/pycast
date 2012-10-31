@@ -22,12 +22,24 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## TimeSeries related tests
-from timeseriesdatabasetest import DatabaseConnectorTest
-from timeseriesmiscellaneoustest import TimeSeriesMiscellaneousTest
+## required external modules
+from nose import with_setup
+import unittest, os
 
-## profileMe decorator related tests
-from profilemetest import ProfileMeDecoratorTest
+## required modules from pycast
+from pycast.common.helper import *
 
-## helper tests
-from helpertest import HelperTest
+class HelperTest(unittest.TestCase):
+    """Test class containing all tests for pycasts helper module."""
+
+    def linear_interpolation_test(self):
+    	"""Testing linear interpolation."""
+    	val1 = 1.0
+ 
+    	val2 = 3.0
+    	result = linear_interpolation(val1, val2, 1)
+    	if not result == [2.0]:      raise AssertionError
+
+        val2 = 4.0
+    	result = linear_interpolation(val1, val2, 2)
+    	if not result == [2.0, 3.0]: raise AssertionError
