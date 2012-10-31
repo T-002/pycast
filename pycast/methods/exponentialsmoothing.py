@@ -39,13 +39,13 @@ class ExponentialSmoothing(BaseMethod):
         @param valuesToForecast Defines the number of forecasted values that will
                be part of the result.
 
-        @raises ValueError, when smoothingFactor has an invalid value.
+        @throw ValueError, when smoothingFactor has an invalid value.
         """
         super(ExponentialSmoothing, self).__init__(["smoothingFactor", "valuesToForecast"], True, True)
 
         if not 0.0 <= smoothingFactor <= 1.0:
             raise ValueError("smoothingFactor has to be in [0.0, 1.0].")
-        
+
         self.add_parameter("smoothingFactor", smoothingFactor)
         self.add_parameter("valuesToForecast", valuesToForecast)
 
@@ -99,14 +99,23 @@ class HoltMethod(BaseMethod):
         """Initializes the HoltMethod.
 
         @param smoothingFactor Defines the alpha for the HoltMethod.
+                               Valid values are [0.0, 1.0].
         @param trendSmoothingFactor Defines the beta for the HoltMethod.
+                                    Valid values are [0.0, 1.0].
         @param valuesToForecast Defines the number of forecasted values that will
                be part of the result.
+
+        @raises ValueError, when smoothingFactor or trendSmoothingFactor has an invalid value.
         """
         super(HoltMethod, self).__init__(["smoothingFactor",
                                           "trendSmoothingFactor", 
                                           "valuesToForecast"],
                                           True, True)
+
+        if not 0.0 <= smoothingFactor <= 1.0:
+            raise ValueError("smoothingFactor has to be in [0.0, 1.0].")
+        if not 0.0 <= trendSmoothingFactor <= 1.0:
+            raise ValueError("trendSmoothingFactor has to be in [0.0, 1.0].")
 
         self.add_parameter("smoothingFactor",      smoothingFactor)
         self.add_parameter("trendSmoothingFactor", trendSmoothingFactor)

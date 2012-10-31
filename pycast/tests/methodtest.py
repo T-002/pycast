@@ -122,5 +122,40 @@ class ExponentialSmoothingTest(unittest.TestCase):
 
         assert True
 
+    def smoothing_test(self):
+    	"""Test smoothing part of ExponentialSmoothing."""
+        data  = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
+        tsSrc = TimeSeries.from_twodim_list(data)
+        tsSrc.normalize("second")
 
+        ## Initialize a correct result.
+        ### The numbers look a little bit odd, based on the binary translation problem
+        data  = [[1.5, 0.0],[2.5, 0.1],[3.5, 0.2],[4.5, 0.3]]
+        tsDst = TimeSeries.from_twodim_list(data)
 
+        ## Initialize the method
+        es = ExponentialSmoothing(1.0, 0)
+        res = tsSrc.apply(es)
+        if not res == tsDst: raise AssertionError
+
+        ## Initialize a correct result.
+        ### The numbers look a little bit odd, based on the binary translation problem
+        data  = [[1.5, 0.0],[2.5, 0.010000000000000002],[3.5, 0.029000000000000005],[4.5, 0.056100000000000004]]
+        tsDst = TimeSeries.from_twodim_list(data)
+
+        ## Initialize the method
+        es = ExponentialSmoothing(0.1, 0)
+        res = tsSrc.apply(es)
+        if not res == tsDst: raise AssertionError
+
+    def forecasting_test(self):
+    	"""Test forecast part of ExponentialSmoothing."""
+    	data  = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
+        tsSrc = TimeSeries.from_twodim_list(data)
+        tsSrc.normalize("second")
+    	
+    	es = ExponentialSmoothing(0.1, 5)
+    	res = tsSrc.apply(es)
+
+        ## test if the correct number of values have been forecasted
+    	assert len(tsSrc) + 4 == len(res)
