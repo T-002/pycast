@@ -1,9 +1,6 @@
 *.pyc
-/pycast.kpf
-/pycast/.DS_Store
-.DS_Store
 *.cstats
-/docs/tests/debug.log
+/pycast.kpf
+.DS_Store
 /.coverage
-/docs/tests/status.dat
 /temp_plot.dat
