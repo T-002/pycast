@@ -67,10 +67,15 @@ class BaseMethodTest(unittest.TestCase):
     def execute_not_implemented_exception_test(self):
         """Test the correct interface of BaseMethod."""
         b = BaseMethod(["param1", "param2"])
+
+        data  = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
+        ts = TimeSeries.from_twodim_list(data)
+        ts.normalize("second")
+
         try:
-            self.execute()
+            b.execute(ts)
             assert False
-        except:
+        except NotImplementedError:
             assert True
 
 class SimpleMovingAverageTest(unittest.TestCase):

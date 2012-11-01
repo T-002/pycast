@@ -86,6 +86,6 @@ class BaseMethod(object):
 
         @param timeSeries TimeSeries object that fullfills all requirements (normalization, sortOrder).
 
-        @return Returrns a TimeSeries object containing the smoothed/forecasted values.
+        @return Returns a TimeSeries object containing the smoothed/forecasted values.
         """
         raise NotImplementedError
