@@ -31,6 +31,19 @@ class BaseErrorMeasure(object):
 
         self._error = None
 
+    def __lt__(self, otherErrorMeasure):
+        """Returns if the error is smaller than the error of otherErrorMeasure.
+
+        @return Returns True, if the error is smaller, False otherwise.
+
+        @throw Throws a value error, of self and otherErrorMeasure are not an instance
+               of the same error measure.
+        """
+        if not self.__class__ == otherErrorMeasure.__class__:
+            raise ValueError("Only error measures of the same class can be compared.")
+
+        return self._error < otherErrorMeasure.get_error()
+    
     def get_error(self):
         """Returns the overall error.
 

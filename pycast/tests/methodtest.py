@@ -74,9 +74,10 @@ class BaseMethodTest(unittest.TestCase):
 
         try:
             b.execute(ts)
-            assert False
         except NotImplementedError:
             assert True
+
+        assert False
 
 class SimpleMovingAverageTest(unittest.TestCase):
     """Test class for the SimpleMovingAverage method."""
