@@ -81,14 +81,6 @@ class TimeSeries(object):
 
         self._timeseriesData = []
 
-    def __str__(self):
-        """Returns a string representation of the TimeSeries.
-
-        @return Returns a string representing the TimeSeries in the format:
-                TimeSeries([timestamp, data], [timestamp, data], [timestamp, data]).
-        """
-        return """TimeSeries(%s)""" % ",".join([str(entry) for entry in self._timeseriesData])
-
     def to_gnuplot_datafile(self, datafilepath, format=None):
         """Dumps the TimeSeries into a gnuplot compatible data file.
 
@@ -111,10 +103,11 @@ class TimeSeries(object):
 
         datafile.write("## time_as_<%s> value" % formatval)
 
+        convert = self._convert_epoch_to_timestamp
         for datapoint in self._timeseriesData:
             timestamp, value = datapoint
             if None != format:
-                timestamp = self._convert_epoch_to_timestamp(timestamp, format)
+                timestamp = convert(timestamp, format)
 
             datafile.write("%s %s" % (timestamp, value))
 
@@ -137,10 +130,11 @@ class TimeSeries(object):
 
         ## initialize the result
         valuepairs = []
-        append = valuepairs.append
-
+        append     = valuepairs.append
+        convert    = self._convert_epoch_to_timestamp
+        
         for entry in self._timeseriesData:
-            append("""["%s",%s]""" % (self._convert_epoch_to_timestamp(entry[0], format), entry[1]))
+            append("""["%s",%s]""" % (convert(entry[0], format), entry[1]))
 
         ## return the result
         return """{[%s]}""" % ",".join(valuepairs)
@@ -171,6 +165,26 @@ class TimeSeries(object):
 
         return ts
 
+    def to_twodim_list(self, format=None):
+        """Serializes the TimeSeries data into a two dimensional list of [timestamp, value] pairs.
+
+        @param format    Format of the timestamp. This is used to convert the
+                         timestamp from UNIX epochs, if necessary. For valid examples
+                         take a look into the time.strptime() documentation.
+
+        @return Returns a two dimensional list containing [timestamp, value] pairs.
+        """
+        if None == format:
+            return self._timeseriesData
+
+        datalist = []
+        append   = datalist.append
+        convert  = self._convert_epoch_to_timestamp
+        for entry in self._timeseriesData:
+            append([convert(entry[0], format), entry[1]])
+
+        return datalist
+
     @classmethod
     def from_twodim_list(cls, datalist, format=None, isSorted=False):
         """Initializes the TimeSeries's data from the two dimensional list.
@@ -196,7 +210,7 @@ class TimeSeries(object):
 
         return ts
 
-    def initialize_from_sql_cursor(self, sqlcursor, format=None, sorted=False):
+    def initialize_from_sql_cursor(self, sqlcursor, format=None, isSorted=False):
         """Initializes the TimeSeries's data from the given SQL cursor.
 
         @param sqlcursor Cursor that was holds the SQL result for any given
@@ -206,9 +220,9 @@ class TimeSeries(object):
         @param format    Format of the given timestamp. This is used to convert the
                          timestamp into UNIX epochs, if necessary. For valid examples
                          take a look into the time.strptime() documentation.
-        @param sorted Determines if the SQL result is already sorted. If this
-                      is False, the TimeSeries instance sorts itself after all
-                      values are read.
+        @param isSorted  Determines if the SQL result is already sorted. If this
+                         is False, the TimeSeries instance sorts itself after all
+                         values are read.
 
         @return Returns the number of entries added to the TimeSeries.
 
@@ -228,13 +242,32 @@ class TimeSeries(object):
 
 
         ## sort the TimeSeries, if necessary
-        if False == sorted:
+        if False == isSorted:
             self.sort_timeseries()
         
         self._sorted = True
 
         ## return the number of tuples added to the timeseries.
         return tuples
+
+    def __str__(self):
+        """Returns a string representation of the TimeSeries.
+
+        @return Returns a string representing the TimeSeries in the format:
+                TimeSeries([timestamp, data], [timestamp, data], [timestamp, data]).
+        """
+        return """TimeSeries(%s)""" % ",".join([str(entry) for entry in self._timeseriesData])
+
+    def __add__(self, otherTimeSeries):
+        """Creates a new TimeSeries instance containing hte data of self and otherTimeSeries.
+
+        @param otherTimeSeries TimeSeries instance that will be merged with self.
+
+        @return Returns a new TimeSeries instance containing the data entries of self and otherTimeSeries.
+                This TimeSeries will be sorted.
+        """
+        data = self._timeseriesData + otherTimeSeries.to_twodim_list()
+        return TimeSeries.from_twodim_list(data).sort_timeseries()
 
     def __len__(self):
         """Returns the number of data entries that are part of the time series.
@@ -354,6 +387,8 @@ class TimeSeries(object):
         @param ascending Determines if the TimeSeries will be ordered ascending or
                          decending. If this is set to decending once, the ordered
                          parameter defined in __init__() will be set to False FOREVER.
+
+        @return Returns self for convenience.
         """
         # the time series is sorted by default
         if ascending and self._sorted:
@@ -367,6 +402,8 @@ class TimeSeries(object):
         self._timeseriesData.sort(key=lambda i: sortorder * i[0])
 
         self._sorted = ascending
+
+        return self
 
     def sorted_timeseries(self, ascending=True):
         """Returns a sorted copy of the TimeSeries, preserving the original one.
@@ -441,11 +478,11 @@ class TimeSeries(object):
         span            = end - start
         bucketcnt       = int(span / normalizationLevel)+ 1
 
-#        ## add a bucket, if the last value is at the end of a bucket
-#        if bucketcnt != int(bucketcnt):
-#            bucketcnt += 1
-#
-#        bucketcnt = int(bucketcnt) + 1
+        ### add a bucket, if the last value is at the end of a bucket
+        #if bucketcnt != int(bucketcnt):
+        #    bucketcnt += 1
+        #
+        #bucketcnt = int(bucketcnt) + 1
 
         buckethalfwidth = normalizationLevel / 2.0
         bucketstart     = start + buckethalfwidth

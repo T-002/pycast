@@ -96,6 +96,26 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         if not (len(tsOne) == len(tsTwo)): raise AssertionError
         if not (tsOne == tsTwo):          raise AssertionError
 
+    def list_serialization_formatfree_test(self):
+        """Test the format free list serialization."""
+        data = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
+        tsOne = TimeSeries.from_twodim_list(data)
+
+        data = tsOne.to_twodim_list()
+        tsTwo = TimeSeries.from_twodim_list(data)
+
+        assert tsOne == tsTwo
+
+    def list_serialization_format_test(self):
+        """Test the list serialization including time foramtting instructions."""
+        data = [[0.0, 0.0], [1.0, 0.1], [2.0, 0.2], [3.0, 0.3], [4.0, 0.4], [5.0, 0.5]]
+        tsOne = TimeSeries.from_twodim_list(data)
+
+        data = tsOne.to_twodim_list(format="%Y-%m-%d_%H:%M:%S")
+        tsTwo = TimeSeries.from_twodim_list(data, format="%Y-%m-%d_%H:%M:%S")
+
+        assert tsOne == tsTwo
+
     def equal_test(self):
         """Test the == operator for TimeSeries instances."""
         data  = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
