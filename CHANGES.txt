@@ -1,6 +1,7 @@
-v0.0.5-prealpha, 2012-30-10 -- Included test suite with code coverage into pycast
-v0.0.4-prealpha, 2012-28-10 -- Major performance improvement, while reducing the scale out capabilities
-v0.0.3-prealpha, 2012-27-10 -- Added profileMe decorator and database support
-v0.0.2-prealpha, 2012-24-10 -- Added Exponential Smoothing and Holt Forecast methods
-v0.0.1-prealpha, 2012-23-10 -- SMA method implemented
-v0.0.0-prealpha, 2012-14-10 -- Initial release will follow soon.
+v0.0.6-prealpha, 2012-11-01 -- Started implementation of error measures
+v0.0.5-prealpha, 2012-10-20 -- Included test suite with code coverage into pycast
+v0.0.4-prealpha, 2012-10-28 -- Major performance improvement, while reducing the scale out capabilities
+v0.0.3-prealpha, 2012-10-27 -- Added profileMe decorator and database support
+v0.0.2-prealpha, 2012-10-24 -- Added Exponential Smoothing and Holt Forecast methods
+v0.0.1-prealpha, 2012-10-23 -- SMA method implemented
+v0.0.0-prealpha, 2012-10-14 -- Initial release will follow soon.
