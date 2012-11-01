@@ -29,7 +29,7 @@ import unittest, os, random
 from pycast.common.timeseries import TimeSeries
 from pycast.methods.basemethod import BaseMethod
 from pycast.methods.simplemovingaverage import SimpleMovingAverage
-from pycast.methods.exponentialsmoothing import ExponentialSmoothing, HoltMethod
+from pycast.methods.exponentialsmoothing import ExponentialSmoothing, HoltMethod, HoltWintersMethod
 
 class BaseMethodTest(unittest.TestCase):
     """Test class containing all tests for pycast.method.basemethod."""
@@ -140,7 +140,7 @@ class ExponentialSmoothingTest(unittest.TestCase):
         assert True
 
     def smoothing_test(self):
-    	"""Test smoothing part of ExponentialSmoothing."""
+        """Test smoothing part of ExponentialSmoothing."""
         data  = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
         tsSrc = TimeSeries.from_twodim_list(data)
         tsSrc.normalize("second")
@@ -164,8 +164,6 @@ class ExponentialSmoothingTest(unittest.TestCase):
         
         es = ExponentialSmoothing(0.1, 5)
         res = tsSrc.apply(es)
-
-        print res
 
         ## test if the correct number of values have been forecasted
         assert len(tsSrc) + 4 == len(res)
@@ -197,6 +195,70 @@ class HoltMethodTest(unittest.TestCase):
 
         try:
             HoltMethod(0.3, 2.3)
+            assert False
+        except ValueError:
+            pass
+
+        assert True
+
+    def smoothing_test(self):
+        """Test smoothing part of ExponentialSmoothing."""
+        data  = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
+        tsSrc = TimeSeries.from_twodim_list(data)
+        tsSrc.normalize("second")
+
+        ## Initialize a correct result.
+        ### The numbers look a little bit odd, based on the binary translation problem
+        data  = [[1.5, 0.0],[2.5, 0.1],[3.5, 0.15000000000000002],[4.5, 0.22499999999999998]]
+        tsDst = TimeSeries.from_twodim_list(data)
+
+        ## Initialize the method
+        hm = HoltMethod(0.2, 0.3)
+        res = tsSrc.apply(hm)
+
+        print res
+
+        if not res == tsDst: raise AssertionError
+
+    def forecasting_test(self):
+        """Test forecast part of ExponentialSmoothing."""
+        data  = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
+        tsSrc = TimeSeries.from_twodim_list(data)
+        tsSrc.normalize("second")
+        
+        hm = HoltMethod(0.2, 0.3, 5)
+        res = tsSrc.apply(hm)
+
+        ## test if the correct number of values have been forecasted
+        assert len(tsSrc) + 4 == len(res)
+
+class HoltWintersMethodTest(unittest.TestCase):
+    """Test class for the HoltWintersMethod method."""
+    
+    def initialization_test(self):
+        """Test the initialization of the HoltWintersMethod method."""
+        HoltWintersMethod(0.2, 0.3)
+        
+        try:
+            HoltWintersMethod(-0.1, 0.3)
+            assert False
+        except ValueError:
+            pass
+
+        try:
+            HoltWintersMethod(0.3, -0.3)
+            assert False
+        except ValueError:
+            pass
+
+        try:
+            HoltWintersMethod(1.1, 0.3)
+            assert False
+        except ValueError:
+            pass
+
+        try:
+            HoltWintersMethod(0.3, 2.3)
             assert False
         except ValueError:
             pass

@@ -84,7 +84,7 @@ class ExponentialSmoothing(BaseMethod):
 
             ## add the first value to the resultList without any correction
             if 0 == len(resultList):
-                resultList.append([t[0], estimator])
+                append([t[0], estimator])
                 lastT = t
                 continue
 
@@ -131,9 +131,9 @@ class HoltMethod(BaseMethod):
         """Initializes the HoltMethod.
 
         @param smoothingFactor Defines the alpha for the HoltMethod.
-                               Valid values are [0.0, 1.0].
+                               Valid values are (0.0, 1.0).
         @param trendSmoothingFactor Defines the beta for the HoltMethod.
-                                    Valid values are [0.0, 1.0].
+                                    Valid values are (0.0, 1.0).
         @param valuesToForecast Defines the number of forecasted values that will
                be part of the result.
 
@@ -144,10 +144,10 @@ class HoltMethod(BaseMethod):
                                           "valuesToForecast"],
                                           True, True)
 
-        if not 0.0 <= smoothingFactor <= 1.0:
-            raise ValueError("smoothingFactor has to be in [0.0, 1.0].")
-        if not 0.0 <= trendSmoothingFactor <= 1.0:
-            raise ValueError("trendSmoothingFactor has to be in [0.0, 1.0].")
+        if not 0.0 < smoothingFactor < 1.0:
+            raise ValueError("smoothingFactor has to be in (0.0, 1.0).")
+        if not 0.0 < trendSmoothingFactor < 1.0:
+            raise ValueError("trendSmoothingFactor has to be in (0.0, 1.0).")
 
         self.add_parameter("smoothingFactor",      smoothingFactor)
         self.add_parameter("trendSmoothingFactor", trendSmoothingFactor)
@@ -159,46 +159,79 @@ class HoltMethod(BaseMethod):
         @return TimeSeries object containing the exponentially smoothed TimeSeries,
                 including the forecasted values.
         
-        @todo Double check if it is correct not to add the first original value to the result.
         @todo Currently the first normalized value is simply chosen as the starting point.
         """
-        ## initialize the result TimeSeries
-        res = TimeSeries()
-
         ## extract the required parameters, performance improvement
         alpha            = self._parameters["smoothingFactor"]
         beta             = self._parameters["trendSmoothingFactor"]
         valuesToForecast = self._parameters["valuesToForecast"]
 
+        ## initialize some variables
+        resultList  = []
+        estimator   = None
+        trend       = None
+        lastT       = None
+
+        ## "It's always about performance!"
+        append = resultList.append
+
         ## smooth the existing TimeSeries data
         for idx in xrange(len(timeSeries)):
-            ## initialization for s_1 and b_1
-            if 0 == idx:
-               sOld = timeSeries[idx][1]
-               b = timeSeries[idx+1][1]-timeSeries[idx][1]
-               continue
+            ## get the current to increase performance
+            t = timeSeries[idx]
 
-            sNew = (alpha * timeSeries[idx-1][1]) + ((1 - alpha) * (sOld + b))
-            b    = (beta * (sNew - sOld)) + ((1 - beta) * b)
-            sOld = sNew
+            ## get the initial estimate
+            if None == estimator:
+                estimator = t[1]
+                continue
 
-            res.add_entry(timeSeries[idx][0], sOld)
+            ## add the first value to the resultList without any correction
+            if 0 == len(resultList):
+                append([t[0], estimator])
+
+                lastT = t
+                trend = t[1] - lastT[1]
+                continue
+
+            ## calculate the error made during the last estimation
+            error = lastT[1] - estimator
+
+            ## calculate the new estimator, based on the last occured value, the error and the smoothingFactor
+            estimator = alpha * lastT[1] + (1 - alpha) * (error + trend)
+
+            ## save the current value for the next iteration
+            lastT         = t
+            lastEstimator = estimator
+            trend         = beta * (estimator - lastEstimator) + (1 - beta) * trend
+
+
+            ## add an entry to the result
+            append([t[0], estimator])
 
         ## forecast additional values if requested
         if valuesToForecast > 0:
-            startTime          = res[-1][0]
-            normalizedTimeDiff = startTime - res[-2][0]
+            currentTime        = resultList[-1][0]
+            normalizedTimeDiff = currentTime - resultList[-2][0]
 
             for idx in xrange(valuesToForecast):
-                startTime += normalizedTimeDiff
+                currentTime += normalizedTimeDiff
 
-                s = sOld + idx * b
-                res.add_entry(startTime, s)
+                ## reuse everything
+                error     = lastT[1] - estimator
+                estimator = alpha * lastT[1] + (1 - alpha) * (error + trend)
 
-        ## return the resulting TimeSeries :)
-        return res
+                ## add a forecasted value
+                append([currentTime, estimator])
+
+                ## set variables for next iteration
+                lastT         = t
+                lastEstimator = estimator
+                trend         = beta * (estimator - lastEstimator) + (1 - beta) * trend
+
+        ## return a TimeSeries, containing the result
+        return TimeSeries.from_twodim_list(resultList)
     
-    ## TODO:A second method, referred to as either Brown's linear exponential smoothing (LES) or Brown's double exponential smoothing works as follows.[9]
+## TODO:A second method, referred to as either Brown's linear exponential smoothing (LES) or Brown's double exponential smoothing works as follows.[9]
 
 class HoltWintersMethod(BaseMethod):
     """Implements the Holt-Winters algorithm.
@@ -212,7 +245,9 @@ class HoltWintersMethod(BaseMethod):
         """Initializes the HoltWintersMethod.
 
         @param smoothingFactor Defines the alpha for the HoltMethod.
+                               Valid values are (0.0, 1.0).
         @param trendSmoothingFactor Defines the beta for the HoltMethod.
+                                    Valid values are (0.0, 1.0).
         @param seasonLength The expected length for the seasons. Please use a good estimate here!
         @param valuesToForecast Defines the number of forecasted values that will
                be part of the result.
@@ -223,9 +258,14 @@ class HoltWintersMethod(BaseMethod):
                                           "seasonLength"],
                                           True, True)
 
+        if not 0.0 < smoothingFactor < 1.0:
+            raise ValueError("smoothingFactor has to be in (0.0, 1.0).")
+        if not 0.0 < trendSmoothingFactor < 1.0:
+            raise ValueError("trendSmoothingFactor has to be in (0.0, 1.0).")
+
         self.add_parameter("smoothingFactor",      smoothingFactor)
         self.add_parameter("trendSmoothingFactor", trendSmoothingFactor)
-        seld.add_parameter("seasonLength",         seasonLength)
+        self.add_parameter("seasonLength",         seasonLength)
         self.add_parameter("valuesToForecast",     valuesToForecast)
 
     def execute(self, timeSeries):
@@ -237,15 +277,4 @@ class HoltWintersMethod(BaseMethod):
         @todo Double check if it is correct not to add the first original value to the result.
         @todo Currently the first normalized value is simply chosen as the starting point.
         """
-        ## initialize the result TimeSeries
-        res = TimeSeries()
-
-        ## extract the required parameters, performance improvement
-        alpha            = self._parameters["smoothingFactor"]
-        beta             = self._parameters["trendSmoothingFactor"]
-        valuesToForecast = self._parameters["valuesToForecast"]
-
-        ## @todo THIS IS NOT IMPLEMENTED YET
-
-        ## return the resulting TimeSeries :)
-        return re
+        raise NotImplementedError
