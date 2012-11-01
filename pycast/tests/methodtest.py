@@ -218,7 +218,7 @@ class HoltMethodTest(unittest.TestCase):
         tsDst = TimeSeries.from_twodim_list(data)
 
         ## Initialize the method
-        hm = HoltMethod(0.2, 0.3)
+        hm = HoltMethod(0.2, 0.3, valuesToForecast=0)
         res = tsSrc.apply(hm)
 
         print res
