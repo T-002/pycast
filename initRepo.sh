@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nosetest -c nose.cfg
+nosetests -c nose.cfg
