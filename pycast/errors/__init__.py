@@ -22,18 +22,4 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## TimeSeries related tests
-from timeseriesdatabasetest import DatabaseConnectorTest
-from timeseriesmiscellaneoustest import TimeSeriesMiscellaneousTest
-
-## profileMe decorator related tests
-from profilemetest import ProfileMeDecoratorTest
-
-## helper tests
-from helpertest import HelperTest
-
-## method tests
-from methodtest import BaseMethodTest, SimpleMovingAverageTest, ExponentialSmoothingTest, HoltMethodTest, HoltWintersMethodTest
-
-## error measure tests
-from errormeasuretest import BaseErrorMeasureTest
+from baseerrormeasure import BaseErrorMeasure

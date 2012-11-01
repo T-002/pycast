@@ -22,18 +22,41 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## TimeSeries related tests
-from timeseriesdatabasetest import DatabaseConnectorTest
-from timeseriesmiscellaneoustest import TimeSeriesMiscellaneousTest
+## required external modules
+import unittest
 
-## profileMe decorator related tests
-from profilemetest import ProfileMeDecoratorTest
+## required modules from pycast
+from pycast.errors.baseerrormeasure import BaseErrorMeasure
+from pycast.common.timeseries import TimeSeries
 
-## helper tests
-from helpertest import HelperTest
+class BaseErrorMeasureTest(unittest.TestCase):
+    """Test class for the BaseErrorMeasure interface."""
 
-## method tests
-from methodtest import BaseMethodTest, SimpleMovingAverageTest, ExponentialSmoothingTest, HoltMethodTest, HoltWintersMethodTest
+    def initialization_test(self):
+        """Test the BaseErrorMeasure initialization."""
+        bem = BaseErrorMeasure()
 
-## error measure tests
-from errormeasuretest import BaseErrorMeasureTest
+    def get_error_test(self):
+        """Test the get_error of BaseErrorMeasure."""
+        bem = BaseErrorMeasure()
+
+        if not None == bem.get_error(): raise AssertionError
+
+        bem._error = 3
+        if not bem._error == 3:         raise AssertionError
+
+    def calculate_test(self):
+        """Test if calculate throws an error as expected."""
+        data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
+        tsOrg  = TimeSeries.from_twodim_list(data)
+        tsCalc = TimeSeries.from_twodim_list(data)
+
+        bem = BaseErrorMeasure()
+
+        try:
+            bem.calculate(tsOrg, tsCalc)
+            assert False
+        except NotImplementedError:
+            pass
+
+        

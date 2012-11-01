@@ -22,18 +22,28 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## TimeSeries related tests
-from timeseriesdatabasetest import DatabaseConnectorTest
-from timeseriesmiscellaneoustest import TimeSeriesMiscellaneousTest
+class BaseErrorMeasure(object):
+    """Baseclass for all error measures."""
 
-## profileMe decorator related tests
-from profilemetest import ProfileMeDecoratorTest
+    def __init__(self):
+        """Initializes the error measure."""
+        super(BaseErrorMeasure, self).__init__()
 
-## helper tests
-from helpertest import HelperTest
+        self._error = None
 
-## method tests
-from methodtest import BaseMethodTest, SimpleMovingAverageTest, ExponentialSmoothingTest, HoltMethodTest, HoltWintersMethodTest
+    def get_error(self):
+        """Returns the overall error.
 
-## error measure tests
-from errormeasuretest import BaseErrorMeasureTest
+        @return Returns a float representing the error value of the error measure.
+                Returns None if the error was not calculate(d) yet.
+        """
+        return self._error
+
+    def calculate(self, originalTimeSeries, calculatedTimeSeries):
+        """Calculates the error for the given calculated TimeSeries.
+
+        @param originalTimeSeries   TimeSeries containing the original data.
+        @param calculatedTimeSeries TimeSeries containing calculated data.
+                                    Calculated data is smoothed or forecasted data.
+        """
+        raise NotImplementedError
