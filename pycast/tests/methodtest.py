@@ -75,9 +75,9 @@ class BaseMethodTest(unittest.TestCase):
         try:
             b.execute(ts)
         except NotImplementedError:
-            assert True
-
-        assert False
+            pass
+        else:
+            assert False    # pragma: no cover
 
 class SimpleMovingAverageTest(unittest.TestCase):
     """Test class for the SimpleMovingAverage method."""
@@ -116,29 +116,31 @@ class ExponentialSmoothingTest(unittest.TestCase):
         
         try:
             sm = ExponentialSmoothing(-0.1, random.randint(0, 100))
-            assert False
         except ValueError:
             pass
+        else:
+            assert False    # pragma: no cover
 
         try:
             sm = ExponentialSmoothing(1.1, random.randint(0, 100))
-            assert False
         except ValueError:
             pass
+        else:
+            assert False    # pragma: no cover
 
         try:
             sm = ExponentialSmoothing(0.0, random.randint(0, 100))
-            assert False
         except ValueError:
             pass
+        else:
+            assert False    # pragma: no cover
 
         try:
             sm = ExponentialSmoothing(1.0, random.randint(0, 100))
-            assert False
         except ValueError:
             pass
-
-        assert True
+        else:
+            assert False    # pragma: no cover
 
     def smoothing_test(self):
         """Test smoothing part of ExponentialSmoothing."""
@@ -178,29 +180,31 @@ class HoltMethodTest(unittest.TestCase):
         
         try:
             HoltMethod(-0.1, 0.3)
-            assert False
         except ValueError:
             pass
+        else:
+            assert False    # pragma: no cover
 
         try:
             HoltMethod(0.3, -0.3)
-            assert False
         except ValueError:
             pass
+        else:
+            assert False    # pragma: no cover
 
         try:
             HoltMethod(1.1, 0.3)
-            assert False
         except ValueError:
             pass
+        else:
+            assert False    # pragma: no cover
 
         try:
             HoltMethod(0.3, 2.3)
-            assert False
         except ValueError:
             pass
-
-        assert True
+        else:
+            assert False    # pragma: no cover
 
     def smoothing_test(self):
         """Test smoothing part of ExponentialSmoothing."""
@@ -242,26 +246,28 @@ class HoltWintersMethodTest(unittest.TestCase):
         
         try:
             HoltWintersMethod(-0.1, 0.3)
-            assert False
         except ValueError:
             pass
+        else:
+            assert False    # pragma: no cover
 
         try:
             HoltWintersMethod(0.3, -0.3)
-            assert False
         except ValueError:
             pass
+        else:
+            assert False    # pragma: no cover
 
         try:
             HoltWintersMethod(1.1, 0.3)
-            assert False
         except ValueError:
             pass
+        else:
+            assert False    # pragma: no cover
 
         try:
             HoltWintersMethod(0.3, 2.3)
-            assert False
         except ValueError:
             pass
-
-        assert True
+        else:
+            assert False    # pragma: no cover

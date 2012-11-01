@@ -28,6 +28,7 @@ import unittest, re, os
 
 ## required modules from pycast
 from pycast.common.timeseries import TimeSeries
+from pycast.methods.basemethod import BaseMethod
 
 class TimeSeriesMiscellaneousTest(unittest.TestCase):
     """Test class containing tests for miscallaneous TimeSeries functions."""
@@ -39,6 +40,51 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         """This function gets called after each test function."""
         if os.path.isfile("temp_plot.dat"):
             os.remove("temp_plot.dat")
+
+    def method_test(self):
+        """Test if TimeSeries apply branches work correctly.
+
+        This is mainly to increase code coverage."""
+        mOne   = BaseMethod([], hasToBeSorted=True, hasToBeNormalized=True)
+        mTwo   = BaseMethod([], hasToBeSorted=False, hasToBeNormalized=True)
+        mThree = BaseMethod([], hasToBeSorted=True, hasToBeNormalized=False)
+        mFour  = BaseMethod([], hasToBeSorted=False, hasToBeNormalized=False)
+
+        ts = TimeSeries()
+        ts.add_entry(0.0, 0.0)
+        ts.add_entry(0.1, 0.1)
+        ts.add_entry(0.2, 0.2)
+        ts.add_entry(0.3, 0.3)
+        ts.add_entry(0.4, 0.4)
+
+        try:
+            ts.apply(mOne)
+        except NotImplementedError:
+            pass
+        else:
+            assert False    # pragma: no cover
+
+        try:
+            ts.apply(mTwo)
+        except NotImplementedError:
+            pass
+        else:
+            assert False    # pragma: no cover
+
+        try:
+            ts.apply(mThree)
+        except NotImplementedError:
+            pass
+        else:
+            assert False    # pragma: no cover
+
+        try:
+            ts.apply(mFour)
+        except NotImplementedError:
+            pass
+        else:
+            assert False    # pragma: no cover
+
 
     def validity_of___str___test(self):
         """Test the validity of __str__ for a given TimeSeries."""
@@ -171,8 +217,6 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         ts = TimeSeries(isSorted=True)
         ts.sort_timeseries()
 
-        assert True
-
     def timeseries_sorted_test(self):
         """Test the sorted_timeseries function."""
         data  = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
@@ -206,6 +250,19 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
             if not entry[0] == data[idx][0]: raise AssertionError
             if not entry[1] == data[idx][1]: raise AssertionError
             idx += 1
+
+    def addition_test(self):
+        """Test the addition operator for TimeSeries instances."""
+        dataOne = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
+        dataTwo = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
+        dataThree = dataOne + dataTwo
+        dataThree.sort(key=lambda item:item[0])
+
+        tsOne = TimeSeries.from_twodim_list(dataOne)
+        tsTwo = TimeSeries.from_twodim_list(dataTwo)
+        tsThree = TimeSeries.from_twodim_list(dataThree)
+
+        if not tsThree == tsOne + tsTwo: raise AssertionError
 
     def is_normalized_test(self):
         """Test TimeSeries.is_normalized()."""

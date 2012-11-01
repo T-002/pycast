@@ -55,8 +55,27 @@ class BaseErrorMeasureTest(unittest.TestCase):
 
         try:
             bem.calculate(tsOrg, tsCalc)
-            assert False
         except NotImplementedError:
             pass
+        else:
+            assert False    # pragma: no cover
+
+    def lower_than_test(self):
+        """Test __lt__ for BaseErrorMeasure."""
+        bemOne  = BaseErrorMeasure()
+        bemTwo  = BaseErrorMeasure()
+        bemNone = None
+
+        bemOne._error = 0
+        bemTwo._error = 1
+
+        if not bemOne < bemTwo: raise AssertionError
+
+        try:
+            result = bemOne < None
+        except ValueError:
+            pass
+        else:
+            assert False    # pragma: no cover
 
         

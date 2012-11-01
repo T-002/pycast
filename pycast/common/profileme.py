@@ -25,8 +25,8 @@ import os, sys, datetime
 
 try:
     import cProfile as profile
-except ImportError:
-    import profile
+except ImportError:   # pragma: no cover
+    import profile    # pragma: no cover
 
 class _ProfileDecorator(object):
     """Decorator class that build a wrapper around any function.

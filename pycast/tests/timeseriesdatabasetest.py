@@ -141,7 +141,7 @@ class DatabaseConnectorTest(unittest.TestCase):
         nbrOfTuples = cur.fetchall()[0][0]
 
         ## SQL extraction statement
-        sqlstmt = """SELECT timestamp, value FROM TestTable"""
+        sqlstmt = """SELECT timestamp, value FROM TestTable ORDER BY timestamp ASC"""
 
         ## Initialize one TimeSeries instance manually
         tsManual = TimeSeries()
@@ -151,7 +151,7 @@ class DatabaseConnectorTest(unittest.TestCase):
 
         ## Initialize one TimeSeries from SQL cursor
         tsAuto = TimeSeries()
-        tsAuto.initialize_from_sql_cursor(self._db.cursor().execute(sqlstmt))
+        tsAuto.initialize_from_sql_cursor(self._db.cursor().execute(sqlstmt), isSorted=True)
 
         ## check if those TimeSeries are equal
         if not (nbrOfTuples   == len(tsManual)): raise AssertionError
