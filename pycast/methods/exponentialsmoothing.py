@@ -28,41 +28,34 @@ from pycast.common.timeseries import TimeSeries
 class ExponentialSmoothing(BaseMethod):
     """Implements an exponential smoothing algorithm.
 
-    Be carefull: It is not a good idea to foreast more than one value!
-    You will end up in a flat line by nature.
-
     Explanation: http://en.wikipedia.org/wiki/Exponential_smoothing
     """
 
-    def __init__(self, smoothingFactor=0.1, valuesToForecast=1):
+    def __init__(self, smoothingFactor=0.1):
         """Initializes the ExponentialSmoothing.
 
         @param smoothingFactor Defines the alpha for the ExponentialSmoothing.
                                Valid values are (0.0, 1.0).
-        @param valuesToForecast Defines the number of forecasted values that will
-               be part of the result.
 
         @throw ValueError, when smoothingFactor has an invalid value.
         """
-        super(ExponentialSmoothing, self).__init__(["smoothingFactor", "valuesToForecast"], True, True)
+        super(ExponentialSmoothing, self).__init__(["smoothingFactor"], True, True)
 
         if not 0.0 < smoothingFactor < 1.0:
             raise ValueError("smoothingFactor has to be in (0.0, 1.0).")
 
-        self.add_parameter("smoothingFactor", smoothingFactor)
-        self.add_parameter("valuesToForecast", valuesToForecast)
+        self.add_parameter("smoothingFactor",  smoothingFactor)
 
     def execute(self, timeSeries):
-        """Creates a new TimeSeries containing the smoothed values.
+        """Creates a new TimeSeries containing the smoothed values and one forecasted one.
 
         @return TimeSeries object containing the exponentially smoothed TimeSeries,
-                including the forecasted values.
+                including the forecasted value.
         
         @todo Currently the first normalized value is simply chosen as the starting point.
         """
         ## extract the required parameters, performance improvement
         alpha            = self._parameters["smoothingFactor"]
-        valuesToForecast = self._parameters["valuesToForecast"]
 
         ## initialize some variables
         resultList  = []
@@ -101,22 +94,14 @@ class ExponentialSmoothing(BaseMethod):
             append([t[0], estimator])
 
         ## forecast additional values if requested
-        if valuesToForecast > 0:
-            currentTime        = resultList[-1][0]
-            normalizedTimeDiff = currentTime - resultList[-2][0]
+        currentTime = resultList[-1][0] + (resultList[-1][0] - resultList[-2][0])
 
-            for idx in xrange(valuesToForecast):
-                currentTime += normalizedTimeDiff
+        ## reuse everything
+        error     = lastT[1] - estimator
+        estimator = alpha * lastT[1] + (1 - alpha) * error
 
-                ## reuse everything
-                error     = lastT[1] - estimator
-                estimator = alpha * lastT[1] + (1 - alpha) * error
-
-                ## add a forecasted value
-                append([currentTime, estimator])
-
-                ## reset lastT for multipleForecasts
-                lastT     = resultList[-1]
+        ## add a forecasted value
+        append([currentTime, estimator])
 
         ## return a TimeSeries, containing the result
         return TimeSeries.from_twodim_list(resultList)
@@ -277,4 +262,4 @@ class HoltWintersMethod(BaseMethod):
         @todo Double check if it is correct not to add the first original value to the result.
         @todo Currently the first normalized value is simply chosen as the starting point.
         """
-        raise NotImplementedError
+        raise NotImplementedError    # pragma: no cover

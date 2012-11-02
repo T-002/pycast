@@ -112,31 +112,31 @@ class ExponentialSmoothingTest(unittest.TestCase):
     
     def initialization_test(self):
         """Test the initialization of the ExponentialSmoothing method."""
-        sm = ExponentialSmoothing(0.2, random.randint(0, 100))
+        sm = ExponentialSmoothing(0.2)
         
         try:
-            sm = ExponentialSmoothing(-0.1, random.randint(0, 100))
+            sm = ExponentialSmoothing(-0.1)
         except ValueError:
             pass
         else:
             assert False    # pragma: no cover
 
         try:
-            sm = ExponentialSmoothing(1.1, random.randint(0, 100))
+            sm = ExponentialSmoothing(1.1)
         except ValueError:
             pass
         else:
             assert False    # pragma: no cover
 
         try:
-            sm = ExponentialSmoothing(0.0, random.randint(0, 100))
+            sm = ExponentialSmoothing(0.0)
         except ValueError:
             pass
         else:
             assert False    # pragma: no cover
 
         try:
-            sm = ExponentialSmoothing(1.0, random.randint(0, 100))
+            sm = ExponentialSmoothing(1.0)
         except ValueError:
             pass
         else:
@@ -150,11 +150,11 @@ class ExponentialSmoothingTest(unittest.TestCase):
 
         ## Initialize a correct result.
         ### The numbers look a little bit odd, based on the binary translation problem
-        data  = [[1.5, 0.0],[2.5, 0.1],[3.5, 0.15000000000000002],[4.5, 0.22499999999999998]]
+        data  = [[1.5, 0.0],[2.5, 0.1],[3.5, 0.15000000000000002],[4.5, 0.22499999999999998],[5.5, 0.28750000000000003]]
         tsDst = TimeSeries.from_twodim_list(data)
 
         ## Initialize the method
-        es = ExponentialSmoothing(0.5, 0)
+        es = ExponentialSmoothing(0.5)
         res = tsSrc.apply(es)
 
         if not res == tsDst: raise AssertionError
@@ -165,11 +165,11 @@ class ExponentialSmoothingTest(unittest.TestCase):
         tsSrc = TimeSeries.from_twodim_list(data)
         tsSrc.normalize("second")
         
-        es = ExponentialSmoothing(0.1, 5)
+        es = ExponentialSmoothing(0.1)
         res = tsSrc.apply(es)
 
         ## test if the correct number of values have been forecasted
-        assert len(tsSrc) + 4 == len(res)
+        assert len(tsSrc) == len(res)
 
 class HoltMethodTest(unittest.TestCase):
     """Test class for the HoltMethod method."""
@@ -214,14 +214,12 @@ class HoltMethodTest(unittest.TestCase):
 
         ## Initialize a correct result.
         ### The numbers look a little bit odd, based on the binary translation problem
-        data  = [[1.5, 0.0],[2.5, 0.1],[3.5, 0.15000000000000002],[4.5, 0.22499999999999998]]
+        data  = [[1.5, 0.0],[2.5, 0.10000000000000002],[3.5, 0.12000000000000001],[4.5, 0.204]]
         tsDst = TimeSeries.from_twodim_list(data)
 
         ## Initialize the method
         hm = HoltMethod(0.2, 0.3, valuesToForecast=0)
         res = tsSrc.apply(hm)
-
-        print res
 
         if not res == tsDst: raise AssertionError
 
