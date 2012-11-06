@@ -144,24 +144,24 @@ class ExponentialSmoothingTest(unittest.TestCase):
 
     def smoothing_test(self):
         """Test smoothing part of ExponentialSmoothing."""
-        data  = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
+        data  = [[0, 10], [1, 18], [2, 29], [3, 15], [4, 30], [5, 30], [6, 12], [7, 16]]
         tsSrc = TimeSeries.from_twodim_list(data)
         tsSrc.normalize("second")
 
         ## Initialize a correct result.
         ### The numbers look a little bit odd, based on the binary translation problem
-        data  = [[1.5, 0.0],[2.5, 0.1],[3.5, 0.15000000000000002],[4.5, 0.22499999999999998],[5.5, 0.28750000000000003]]
+        data  = [[1.5, 10],[2.5, 12.4],[3.5, 17.380000000000003],[4.5, 16.666],[5.5, 20.6662],[6.5, 23.46634],[7.5, 20.026438],[8.5, 18.8185066]]
         tsDst = TimeSeries.from_twodim_list(data)
 
         ## Initialize the method
-        es = ExponentialSmoothing(0.5)
+        es = ExponentialSmoothing(0.3)
         res = tsSrc.apply(es)
 
         if not res == tsDst: raise AssertionError
 
     def forecasting_test(self):
         """Test forecast part of ExponentialSmoothing."""
-        data  = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
+        data  = [[0, 10], [1, 18], [2, 29], [3, 15], [4, 30], [5, 30], [6, 12], [7, 16]]
         tsSrc = TimeSeries.from_twodim_list(data)
         tsSrc.normalize("second")
         

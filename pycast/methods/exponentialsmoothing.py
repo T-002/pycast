@@ -28,7 +28,8 @@ from pycast.common.timeseries import TimeSeries
 class ExponentialSmoothing(BaseMethod):
     """Implements an exponential smoothing algorithm.
 
-    Explanation: http://en.wikipedia.org/wiki/Exponential_smoothing
+    Explanation:
+        http://www.youtube.com/watch?v=J4iODLa9hYw
     """
 
     def __init__(self, smoothingFactor=0.1):
@@ -85,7 +86,7 @@ class ExponentialSmoothing(BaseMethod):
             error = lastT[1] - estimator
 
             ## calculate the new estimator, based on the last occured value, the error and the smoothingFactor
-            estimator = alpha * lastT[1] + (1 - alpha) * error
+            estimator = estimator + alpha * error
 
             ## save the current value for the next iteration
             lastT = t
@@ -98,7 +99,7 @@ class ExponentialSmoothing(BaseMethod):
 
         ## reuse everything
         error     = lastT[1] - estimator
-        estimator = alpha * lastT[1] + (1 - alpha) * error
+        estimator = estimator + alpha * error
 
         ## add a forecasted value
         append([currentTime, estimator])
@@ -109,7 +110,8 @@ class ExponentialSmoothing(BaseMethod):
 class HoltMethod(BaseMethod):
     """Implements the Holt algorithm.
 
-    Explanation: http://en.wikipedia.org/wiki/Exponential_smoothing#Double_exponential_smoothing
+    Explanation:
+        http://en.wikipedia.org/wiki/Exponential_smoothing#Double_exponential_smoothing
     """
 
     def __init__(self, smoothingFactor=0.1, trendSmoothingFactor=0.5, valuesToForecast=1):
@@ -221,7 +223,8 @@ class HoltMethod(BaseMethod):
 class HoltWintersMethod(BaseMethod):
     """Implements the Holt-Winters algorithm.
 
-    Explanation: http://en.wikipedia.org/wiki/Exponential_smoothing#Triple_exponential_smoothing
+    Explanation:
+        http://en.wikipedia.org/wiki/Exponential_smoothing#Triple_exponential_smoothing
 
     @todo NotImplementedYet
     """
