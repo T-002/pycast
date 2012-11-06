@@ -112,64 +112,44 @@ class ExponentialSmoothingTest(unittest.TestCase):
     
     def initialization_test(self):
         """Test the initialization of the ExponentialSmoothing method."""
-        sm = ExponentialSmoothing(0.2)
+        sm = ExponentialSmoothing(0.2, 0)
         
-        try:
-            sm = ExponentialSmoothing(-0.1)
-        except ValueError:
-            pass
-        else:
-            assert False    # pragma: no cover
-
-        try:
-            sm = ExponentialSmoothing(1.1)
-        except ValueError:
-            pass
-        else:
-            assert False    # pragma: no cover
-
-        try:
-            sm = ExponentialSmoothing(0.0)
-        except ValueError:
-            pass
-        else:
-            assert False    # pragma: no cover
-
-        try:
-            sm = ExponentialSmoothing(1.0)
-        except ValueError:
-            pass
-        else:
-            assert False    # pragma: no cover
+        for alpha in [-0.1, 1.1, 3.1, -4.2]:
+            try:
+                ExponentialSmoothing(alpha)
+            except ValueError:
+                pass
+            else:
+                assert False    # pragma: no cover
 
     def smoothing_test(self):
         """Test smoothing part of ExponentialSmoothing."""
-        data  = [[0, 10], [1, 18], [2, 29], [3, 15], [4, 30], [5, 30], [6, 12], [7, 16]]
+        data  = [[0, 10.0], [1, 18.0], [2, 29.0], [3, 15.0], [4, 30.0], [5, 30.0], [6, 12.0], [7, 16.0]]
         tsSrc = TimeSeries.from_twodim_list(data)
         tsSrc.normalize("second")
 
         ## Initialize a correct result.
         ### The numbers look a little bit odd, based on the binary translation problem
-        data  = [[1.5, 10],[2.5, 12.4],[3.5, 17.380000000000003],[4.5, 16.666],[5.5, 20.6662],[6.5, 23.46634],[7.5, 20.026438],[8.5, 18.8185066]]
+        data  = [[1.5, 10.0],[2.5, 12.4],[3.5, 17.380000000000003],[4.5, 16.666],[5.5, 20.6662],[6.5, 23.46634],[7.5, 20.026438],[8.5, 18.8185066]]
         tsDst = TimeSeries.from_twodim_list(data)
 
         ## Initialize the method
-        es = ExponentialSmoothing(0.3)
+        es = ExponentialSmoothing(0.3, 1)
         res = tsSrc.apply(es)
 
         if not res == tsDst: raise AssertionError
 
     def forecasting_test(self):
         """Test forecast part of ExponentialSmoothing."""
-        data  = [[0, 10], [1, 18], [2, 29], [3, 15], [4, 30], [5, 30], [6, 12], [7, 16]]
+        data  = [[0, 10.0], [1, 18.0], [2, 29.0], [3, 15.0], [4, 30.0], [5, 30.0], [6, 12.0], [7, 16.0]]
         tsSrc = TimeSeries.from_twodim_list(data)
         tsSrc.normalize("second")
         
-        es = ExponentialSmoothing(0.1)
+        es = ExponentialSmoothing(0.1, 7)
         res = tsSrc.apply(es)
 
         ## test if the correct number of values have been forecasted
-        assert len(tsSrc) == len(res)
+        assert len(tsSrc)  + 6 == len(res)
 
 class HoltMethodTest(unittest.TestCase):
     """Test class for the HoltMethod method."""
@@ -178,33 +158,14 @@ class HoltMethodTest(unittest.TestCase):
         """Test the initialization of the HoltMethod method."""
         HoltMethod(0.2, 0.3)
         
-        try:
-            HoltMethod(-0.1, 0.3)
-        except ValueError:
-            pass
-        else:
-            assert False    # pragma: no cover
-
-        try:
-            HoltMethod(0.3, -0.3)
-        except ValueError:
-            pass
-        else:
-            assert False    # pragma: no cover
-
-        try:
-            HoltMethod(1.1, 0.3)
-        except ValueError:
-            pass
-        else:
-            assert False    # pragma: no cover
-
-        try:
-            HoltMethod(0.3, 2.3)
-        except ValueError:
-            pass
-        else:
-            assert False    # pragma: no cover
+        for alpha in [-0.1, 1.1]:
+            for beta in [-1.4, 3.2]:
+                try:
+                    HoltMethod(alpha, beta)
+                except ValueError:
+                    pass
+                else:
+                    assert False    # pragma: no cover
 
     def smoothing_test(self):
         """Test smoothing part of ExponentialSmoothing."""
@@ -240,32 +201,14 @@ class HoltWintersMethodTest(unittest.TestCase):
     
     def initialization_test(self):
         """Test the initialization of the HoltWintersMethod method."""
-        HoltWintersMethod(0.2, 0.3)
+        HoltWintersMethod(0.2, 0.3, 0.4)
         
-        try:
-            HoltWintersMethod(-0.1, 0.3)
-        except ValueError:
-            pass
-        else:
-            assert False    # pragma: no cover
-
-        try:
-            HoltWintersMethod(0.3, -0.3)
-        except ValueError:
-            pass
-        else:
-            assert False    # pragma: no cover
-
-        try:
-            HoltWintersMethod(1.1, 0.3)
-        except ValueError:
-            pass
-        else:
-            assert False    # pragma: no cover
-
-        try:
-            HoltWintersMethod(0.3, 2.3)
-        except ValueError:
-            pass
-        else:
-            assert False    # pragma: no cover
+        for alpha in [-0.1, 1.1]:
+            for beta in [-1.4, 3.2]:
+                for gamma in [-0.05, 1.3]:
+                    try:
+                        HoltWintersMethod(alpha, beta, gamma)
+                    except ValueError:
+                        pass
+                    else:
+                        assert False    # pragma: no cover

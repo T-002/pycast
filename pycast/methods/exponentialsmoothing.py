@@ -32,20 +32,23 @@ class ExponentialSmoothing(BaseMethod):
         http://www.youtube.com/watch?v=J4iODLa9hYw
     """
 
-    def __init__(self, smoothingFactor=0.1):
+    def __init__(self, smoothingFactor=0.1, valuesToForecast=1):
         """Initializes the ExponentialSmoothing.
 
         @param smoothingFactor Defines the alpha for the ExponentialSmoothing.
                                Valid values are (0.0, 1.0).
+        œparam valuesToForecast Number of values that should be forecasted.
 
         @throw ValueError, when smoothingFactor has an invalid value.
         """
-        super(ExponentialSmoothing, self).__init__(["smoothingFactor"], True, True)
+        super(ExponentialSmoothing, self).__init__(["smoothingFactor", "valuesToForecast"], True, True)
 
         if not 0.0 < smoothingFactor < 1.0:
             raise ValueError("smoothingFactor has to be in (0.0, 1.0).")
 
         self.add_parameter("smoothingFactor",  smoothingFactor)
+        self.add_parameter("valuesToForecast", valuesToForecast)
+
 
     def execute(self, timeSeries):
         """Creates a new TimeSeries containing the smoothed values and one forecasted one.
@@ -57,6 +60,7 @@ class ExponentialSmoothing(BaseMethod):
         """
         ## extract the required parameters, performance improvement
         alpha            = self._parameters["smoothingFactor"]
+        valuesToForecast = self._parameters["valuesToForecast"]
 
         ## initialize some variables
         resultList  = []
@@ -95,15 +99,23 @@ class ExponentialSmoothing(BaseMethod):
             append([t[0], estimator])
 
         ## forecast additional values if requested
-        currentTime = resultList[-1][0] + (resultList[-1][0] - resultList[-2][0])
+        if valuesToForecast > 0:
+            currentTime        = resultList[-1][0]
+            normalizedTimeDiff = currentTime - resultList[-2][0]
 
-        ## reuse everything
-        error     = lastT[1] - estimator
-        estimator = estimator + alpha * error
+            for idx in xrange(valuesToForecast):
+                currentTime += normalizedTimeDiff
 
-        ## add a forecasted value
-        append([currentTime, estimator])
+                ## reuse everything
+                error     = lastT[1] - estimator
+                estimator = estimator + alpha * error
 
+                ## add a forecasted value
+                append([currentTime, estimator])
+
+                ## set variables for next iteration
+                lastT         = resultList[-1]
+        
         ## return a TimeSeries, containing the result
         return TimeSeries.from_twodim_list(resultList)
 
@@ -229,19 +241,22 @@ class HoltWintersMethod(BaseMethod):
     @todo NotImplementedYet
     """
 
-    def __init__(self, smoothingFactor=0.1, trendSmoothingFactor=0.5, seasonLength=42, valuesToForecast=1):
+    def __init__(self, smoothingFactor=0.1, trendSmoothingFactor=0.5, seasonSmoothingFactor=0.5, seasonLength=42, valuesToForecast=1):
         """Initializes the HoltWintersMethod.
 
-        @param smoothingFactor Defines the alpha for the HoltMethod.
+        @param smoothingFactor Defines the alpha for the Holt-Winters algorithm.
                                Valid values are (0.0, 1.0).
-        @param trendSmoothingFactor Defines the beta for the HoltMethod.
+        @param trendSmoothingFactor Defines the beta for the Holt-Winters algorithm..
                                     Valid values are (0.0, 1.0).
+        @param seasonSmoothingFactor Defines the gamma for the Holt-Winters algorithm.
+                                     Valid values are (0.0, 1.0). 
         @param seasonLength The expected length for the seasons. Please use a good estimate here!
         @param valuesToForecast Defines the number of forecasted values that will
                be part of the result.
         """
         super(HoltWintersMethod, self).__init__(["smoothingFactor",
-                                          "trendSmoothingFactor", 
+                                          "trendSmoothingFactor",
+                                          "seasonSmoothingFactor"
                                           "valuesToForecast",
                                           "seasonLength"],
                                           True, True)
@@ -250,9 +265,12 @@ class HoltWintersMethod(BaseMethod):
             raise ValueError("smoothingFactor has to be in (0.0, 1.0).")
         if not 0.0 < trendSmoothingFactor < 1.0:
             raise ValueError("trendSmoothingFactor has to be in (0.0, 1.0).")
+        if not 0.0 < seasonSmoothingFactor < 1.0:
+            raise ValueError("seasonSmoothingFactor has to be in (0.0, 1.0).")
 
         self.add_parameter("smoothingFactor",      smoothingFactor)
         self.add_parameter("trendSmoothingFactor", trendSmoothingFactor)
+        self.add_parameter("seasonSmoothingFactor", seasonSmoothingFactor)
         self.add_parameter("seasonLength",         seasonLength)
         self.add_parameter("valuesToForecast",     valuesToForecast)
 
