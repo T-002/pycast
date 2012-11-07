@@ -211,7 +211,7 @@ class HoltMethod(BaseMethod):
             currentTime        = resultList[-1][0]
             normalizedTimeDiff = currentTime - resultList[-2][0]
 
-            for idx in xrange(valuesToForecast):
+            for idx in xrange(1, valuesToForecast + 1):
                 currentTime += normalizedTimeDiff
 
                 ## reuse everything
