@@ -34,8 +34,56 @@ class MeanSquaredError(BaseErrorMeasure):
     def calculate(self, originalTimeSeries, calculatedTimeSeries):
         """Calculates the error for the given calculated TimeSeries.
 
+        To calculate the error between the given TimeSeries instances, only entries with
+        matching timestamps are considered. To optimize the calculation, both TimeSeries
+        instances will be sorted inplace.
+
         @param originalTimeSeries   TimeSeries containing the original data.
         @param calculatedTimeSeries TimeSeries containing calculated data.
                                     Calculated data is smoothed or forecasted data.
+
+        @return Returns True if an error could be calculated, False otherwise.
         """
-        raise NotImplementedError
+        ## sort the TimeSeries to reduce the required comparison operations
+        originalTimeSeries.sort_timeseries()
+        calculatedTimeSeries.sort_timeseries()
+
+        ## Performance optimization
+        append      = self._errorValues.append
+        minCalcIdx  = 0
+        local_error = self.local_error
+
+        ## calculate all valid local errors
+        for orgPair in originalTimeSeries:
+            for calcIdx in xrange(minCalcIdx, len(calculatedTimeSeries)):
+                calcPair = calculatedTimeSeries[calcIdx]
+
+                ## Skip values that can not be compared
+                if calcPair[0] < orgPair[0]:
+                    continue
+                if calcPair[0] > orgPair[0]:
+                    break
+
+                append(local_error(orgPair[1], calcPair[1]))
+
+        ## return False, if the error cannot be calculated
+        if len(self._errorValues) < self._minimalErrorCalculationPercentage * len(originalTimeSeries):
+            self._errorValues = []
+            return False
+
+        ## calculate the resulting error
+        self._error = float(sum(self._errorValues) / float(len(self._errorValues)))
+
+        return True
+
+    def local_error(self, originalValue, calculatedValue):
+        """Calculates the error between the two given values.
+
+        @param originalValue   Value of the original data.
+        @param calculatedValue Value of the calculated TimeSeries that
+                               corresponds to originalValue.
+
+        @return Returns the squared error:
+                (calculatedValue - originalValue)^2
+        """
+        return (calculatedValue - originalValue)**2
