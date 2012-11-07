@@ -182,30 +182,29 @@ class HoltMethod(BaseMethod):
             ## get the initial estimate
             if None == estimator:
                 estimator = t[1]
+                lastT     = t
                 continue
 
             ## add the first value to the resultList without any correction
             if 0 == len(resultList):
                 append([t[0], estimator])
-
-                lastT = t
-                trend = t[1] - lastT[1]
+                trend         = t[1] - lastT[1]
+                
+                ## store current values for next iteration
+                lastT         = t
+                lastEstimator = estimator
                 continue
 
-            ## calculate the error made during the last estimation
-            error = lastT[1] - estimator
-
-            ## calculate the new estimator, based on the last occured value, the error and the smoothingFactor
-            estimator = alpha * lastT[1] + (1 - alpha) * (error + trend)
-
-            ## save the current value for the next iteration
-            lastT         = t
-            lastEstimator = estimator
-            trend         = beta * (estimator - lastEstimator) + (1 - beta) * trend
-
+            ## calculate the new estimator and trend, based on the last occured value, the error and the smoothingFactor
+            estimator = alpha * t[1] + (1 - alpha) * (estimator + trend)
+            trend     = beta * (estimator - lastEstimator) + (1 - beta) * trend
 
             ## add an entry to the result
             append([t[0], estimator])
+
+            ## store current values for next iteration
+            lastT         = t
+            lastEstimator = estimator
 
         ## forecast additional values if requested
         if valuesToForecast > 0:
@@ -216,16 +215,10 @@ class HoltMethod(BaseMethod):
                 currentTime += normalizedTimeDiff
 
                 ## reuse everything
-                error     = lastT[1] - estimator
-                estimator = alpha * lastT[1] + (1 - alpha) * (error + trend)
+                forecast = estimator + idx * trend
 
                 ## add a forecasted value
-                append([currentTime, estimator])
-
-                ## set variables for next iteration
-                lastT         = t
-                lastEstimator = estimator
-                trend         = beta * (estimator - lastEstimator) + (1 - beta) * trend
+                append([currentTime, forecast])
 
         ## return a TimeSeries, containing the result
         return TimeSeries.from_twodim_list(resultList)

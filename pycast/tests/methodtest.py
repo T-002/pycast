@@ -175,7 +175,7 @@ class HoltMethodTest(unittest.TestCase):
 
         ## Initialize a correct result.
         ### The numbers look a little bit odd, based on the binary translation problem
-        data  = [[1.5, 0.0],[2.5, 0.10000000000000002],[3.5, 0.12000000000000001],[4.5, 0.204]]
+        data  = [[1.5, 0.0],[2.5, 0.12000000000000002],[3.5, 0.24080000000000004],[4.5, 0.36099200000000004]]
         tsDst = TimeSeries.from_twodim_list(data)
 
         ## Initialize the method
