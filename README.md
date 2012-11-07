@@ -82,6 +82,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 Contributors
 ============
 Christian Schwarz
+Felix Leupold
 
 References
 ==========
