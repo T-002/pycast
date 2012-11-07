@@ -22,7 +22,4 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## 2012-10-09 Christian
-## Used Python version for development: 2.7.2
-
 import optimizationmethod
