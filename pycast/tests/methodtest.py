@@ -27,7 +27,7 @@ import unittest, os, random
 
 ## required modules from pycast
 from pycast.common.timeseries import TimeSeries
-from pycast.methods.basemethod import BaseMethod
+from pycast.methods import BaseMethod
 from pycast.methods.simplemovingaverage import SimpleMovingAverage
 from pycast.methods.exponentialsmoothing import ExponentialSmoothing, HoltMethod, HoltWintersMethod
 
