@@ -25,9 +25,24 @@
 class BaseErrorMeasure(object):
     """Baseclass for all error measures."""
 
-    def __init__(self):
-        """Initializes the error measure."""
+    def __init__(self, minimalErrorCalculationPercentage=60):
+        """Initializes the error measure.
+
+        @param minimalErrorCalculationPercentage The number of entries in an
+                   original TimeSeries that have to have corresponding partners
+                   in the calculated TimeSeries. Corresponding partners have
+                   the same time stamp.
+                   Valid values are [0.0, 100.0].
+
+        @throw ValueError Throws a ValueError, if minimalErrorCalculationPercentage is not
+                          in [0.0, 100.0].
+        """
         super(BaseErrorMeasure, self).__init__()
+
+        if not 0.0 <= minimalErrorCalculationPercentage <= 100.0:
+            raise ValueError("minimalErrorCalculationPercentage has to be in [0.0, 100.0].")
+
+        self._minimalErrorCalculationPercentage = minimalErrorCalculationPercentage / 100.0
 
         self._error = None
         self._errorValues = []
@@ -37,7 +52,7 @@ class BaseErrorMeasure(object):
 
         @return Returns True, if the error is smaller, False otherwise.
 
-        @throw Throws a value error, of self and otherErrorMeasure are not an instance
+        @throw Throws a ValueError, of self and otherErrorMeasure are not an instance
                of the same error measure.
         """
         if not self.__class__ == otherErrorMeasure.__class__:
@@ -56,8 +71,24 @@ class BaseErrorMeasure(object):
     def calculate(self, originalTimeSeries, calculatedTimeSeries):
         """Calculates the error for the given calculated TimeSeries.
 
+        To calculate the error between the given TimeSeries instances, only entries with matching
+        timestamps are considered.
+
         @param originalTimeSeries   TimeSeries containing the original data.
         @param calculatedTimeSeries TimeSeries containing calculated data.
                                     Calculated data is smoothed or forecasted data.
+
+        @return Return True if the error could be calculated, False otherwise.
+        """
+        raise NotImplementedError
+
+    def local_error(self, originalValue, calculatedValue):
+        """Calculates the error between the two given values.
+
+        @param originalValue   Value of the original data.
+        @param calculatedValue Value of the calculated TimeSeries that
+                               corresponds to originalValue.
+
+        @return Returns the error measure of the two given values.
         """
         raise NotImplementedError
