@@ -26,7 +26,8 @@
 import unittest
 
 ## required modules from pycast
-from pycast.errors.baseerrormeasure import BaseErrorMeasure
+from pycast.errors import BaseErrorMeasure
+from pycast.errors import MeanSquaredError
 from pycast.common.timeseries import TimeSeries
 
 class BaseErrorMeasureTest(unittest.TestCase):
@@ -78,4 +79,5 @@ class BaseErrorMeasureTest(unittest.TestCase):
         else:
             assert False    # pragma: no cover
 
-        
+class MeanSquaredErrorTest(unittest.TestCase):
+    """Testing MeanSquaredError."""

@@ -36,4 +36,4 @@ from helpertest import HelperTest
 from methodtest import BaseMethodTest, SimpleMovingAverageTest, ExponentialSmoothingTest, HoltMethodTest, HoltWintersMethodTest
 
 ## error measure tests
-from errormeasuretest import BaseErrorMeasureTest
+from errormeasuretest import BaseErrorMeasureTest, MeanSquaredErrorTest

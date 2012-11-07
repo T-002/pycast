@@ -22,36 +22,14 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-class BaseErrorMeasure(object):
-    """Baseclass for all error measures."""
+from baseerrormeasure import BaseErrorMeasure
 
-    def __init__(self):
-        """Initializes the error measure."""
-        super(BaseErrorMeasure, self).__init__()
+class MeanSquaredError(BaseErrorMeasure):
+    """Implements the mean squared error measure.
 
-        self._error = None
-        self._errorValues = []
-
-    def __lt__(self, otherErrorMeasure):
-        """Returns if the error is smaller than the error of otherErrorMeasure.
-
-        @return Returns True, if the error is smaller, False otherwise.
-
-        @throw Throws a value error, of self and otherErrorMeasure are not an instance
-               of the same error measure.
-        """
-        if not self.__class__ == otherErrorMeasure.__class__:
-            raise ValueError("Only error measures of the same class can be compared.")
-
-        return self._error < otherErrorMeasure.get_error()
-    
-    def get_error(self):
-        """Returns the overall error.
-
-        @return Returns a float representing the error value of the error measure.
-                Returns None if the error was not calculate(d) yet.
-        """
-        return self._error
+    Explanation:
+        http://en.wikipedia.org/wiki/Mean_squared_error
+    """
 
     def calculate(self, originalTimeSeries, calculatedTimeSeries):
         """Calculates the error for the given calculated TimeSeries.
