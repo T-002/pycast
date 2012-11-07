@@ -130,11 +130,20 @@ class ExponentialSmoothingTest(unittest.TestCase):
 
         ## Initialize a correct result.
         ### The numbers look a little bit odd, based on the binary translation problem
-        data  = [[1.5, 10.0],[2.5, 12.4],[3.5, 17.380000000000003],[4.5, 16.666],[5.5, 20.6662],[6.5, 23.46634],[7.5, 20.026438],[8.5, 18.8185066]]
+        data  = [[1.5, 10.0],[2.5, 12.4],[3.5, 17.380000000000003],[4.5, 16.666],[5.5, 20.6662],[6.5, 23.46634],[7.5, 20.026438]]
         tsDst = TimeSeries.from_twodim_list(data)
 
         ## Initialize the method
-        es = ExponentialSmoothing(0.3, 1)
+        es = ExponentialSmoothing(0.3, 0)
+        res = tsSrc.apply(es)
+
+        if not res == tsDst: raise AssertionError
+
+        data.append([8.5, 18.8185066])
+        tsDst = TimeSeries.from_twodim_list(data)
+
+        ## Initialize the method
+        es = ExponentialSmoothing(0.3)
         res = tsSrc.apply(es)
 
         if not res == tsDst: raise AssertionError
@@ -158,7 +167,7 @@ class HoltMethodTest(unittest.TestCase):
         """Test the initialization of the HoltMethod method."""
         HoltMethod(0.2, 0.3)
         
-        for alpha in [-0.1, 1.1]:
+        for alpha in [-0.1, 0.45,  1.1]:
             for beta in [-1.4, 3.2]:
                 try:
                     HoltMethod(alpha, beta)
@@ -203,8 +212,8 @@ class HoltWintersMethodTest(unittest.TestCase):
         """Test the initialization of the HoltWintersMethod method."""
         HoltWintersMethod(0.2, 0.3, 0.4)
         
-        for alpha in [-0.1, 1.1]:
-            for beta in [-1.4, 3.2]:
+        for alpha in [-0.1, 0.81, 1.1]:
+            for beta in [-1.4, 0.12, 3.2]:
                 for gamma in [-0.05, 1.3]:
                     try:
                         HoltWintersMethod(alpha, beta, gamma)
