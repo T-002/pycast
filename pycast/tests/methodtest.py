@@ -148,6 +148,23 @@ class ExponentialSmoothingTest(unittest.TestCase):
 
         if not res == tsDst: raise AssertionError
 
+    def second_smoothing_test(self):
+        """Test smoothing part of ExponentialSmoothing a second time."""
+        data  = [[0.0, 1000], [1, 1050], [2, 1120], [3, 980], [4, 110]]
+        tsSrc = TimeSeries.from_twodim_list(data)
+        tsSrc.normalize("second")
+
+        ## Initialize a correct result.
+        ### The numbers look a little bit odd, based on the binary translation problem
+        data  = [[1.5, 1000],[2.5, 1030],[3.5, 1084],[4.5, 1021.6]]
+        tsDst = TimeSeries.from_twodim_list(data)
+
+        ## Initialize the method
+        es = ExponentialSmoothing(0.6, 0)
+        res = tsSrc.apply(es)
+
+        if not res == tsDst: raise AssertionError
+
     def forecasting_test(self):
         """Test forecast part of ExponentialSmoothing."""
         data  = [[0, 10.0], [1, 18.0], [2, 29.0], [3, 15.0], [4, 30.0], [5, 30.0], [6, 12.0], [7, 16.0]]
@@ -193,6 +210,27 @@ class HoltMethodTest(unittest.TestCase):
 
         if not res == tsDst: raise AssertionError
 
+    def second_smoothing_test(self):
+        """
+        Test smoothing part of HoltSmoothing.
+
+        Data: http://analysights.wordpress.com/2010/05/20/forecast-friday-topic-double-exponential-smoothing/
+        """
+        data  = [[0.0, 152], [1, 176], [2, 160], [3, 192], [4, 220]]
+        tsSrc = TimeSeries.from_twodim_list(data)
+        tsSrc.normalize("second")
+
+        ## Initialize a correct result.
+        ### The numbers look a little bit odd, based on the binary translation problem
+        data  = [[1.5, 152.0],[2.5, 172.8],[3.5, 195.07200000000003],[4.5, 218.30528000000004]]
+        tsDst = TimeSeries.from_twodim_list(data)
+
+        ## Initialize the method
+        hm = HoltMethod(0.2, 0.3, valuesToForecast=0)
+        res = tsSrc.apply(hm)
+
+        if not res == tsDst: raise AssertionError
+
     def forecasting_test(self):
         """Test forecast part of ExponentialSmoothing."""
         data  = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
@@ -204,6 +242,22 @@ class HoltMethodTest(unittest.TestCase):
 
         ## test if the correct number of values have been forecasted
         assert len(tsSrc) + 4 == len(res)
+
+    
+    def second_forecasting_test(self):
+       """Test forecast part of HoltSmoothing."""
+       data  = [[0.0, 152], [1, 176], [2, 160], [3, 192], [4, 220]]
+       tsSrc = TimeSeries.from_twodim_list(data)
+       tsSrc.normalize("second")
+       
+       hm  = HoltMethod(0.2, 0.3, 5)
+       res = tsSrc.apply(hm)
+
+       ## test if the correct number of values have been forecasted
+       assert len(tsSrc) + 4 == len(res)
+
+       # Validate the first forecasted value
+       assert res[4][1] == 241.24198400000006
 
 class HoltWintersMethodTest(unittest.TestCase):
     """Test class for the HoltWintersMethod method."""
