@@ -56,6 +56,10 @@ Requirements
 * nose     >= 1.2.1
 * coverage >= 3.5.3
 
+Example Requirements
+====================
+* itty >= 0.8.1
+
 License
 =======
 Copyright (c) 2012 Christian Schwarz
