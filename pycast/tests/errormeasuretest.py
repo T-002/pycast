@@ -51,16 +51,18 @@ class BaseErrorMeasureTest(unittest.TestCase):
             except ValueError:    # pragma: no cover
                 assert False      # pragma: no cover
 
-    def get_error_test(self):
-        """Test the get_error of BaseErrorMeasure."""
+    def get_error_initialization_test(self):
+        """Test the get_error of BaseErrorMeasure for the initialization exception."""
         bem = BaseErrorMeasure()
 
-        if not None == bem.get_error(): raise AssertionError
+        try:
+            bem.get_error()
+        except StandardError:
+            pass
+        else:
+            assert False    # pragma: no cover
 
-        bem._error = 3
-        if not bem._error == 3:         raise AssertionError
-
-    def calculate_test(self):
+    def initialize_test(self):
         """Test if calculate throws an error as expected."""
         data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
         tsOrg  = TimeSeries.from_twodim_list(data)
@@ -69,11 +71,51 @@ class BaseErrorMeasureTest(unittest.TestCase):
         bem = BaseErrorMeasure()
 
         try:
-            bem.calculate(tsOrg, tsCalc)
+            bem.initialize(tsOrg, tsCalc)
         except NotImplementedError:
             pass
         else:
             assert False    # pragma: no cover
+
+        assert not bem.initialize(tsOrg, TimeSeries())
+
+    def get_error_parameter_test(self):
+        """Test for the parameter validity of get_error()."""
+        data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
+        tsOrg  = TimeSeries.from_twodim_list(data)
+        tsCalc = TimeSeries.from_twodim_list(data)
+
+        bem = BaseErrorMeasure()
+
+        bem__calculate  = bem._calculate
+        bem_local_error = bem.local_error
+        
+        def return_zero(ignoreMe, ignoreMeToo):
+            return 0
+
+        ## remove the NotImplementedErrors for initialization
+        bem.local_error = return_zero
+        bem.calculate   = return_zero
+        bem.initialize(tsOrg, tsCalc)
+
+        bem.local_error = bem_local_error
+        bem._calculate  = bem__calculate
+
+        try:
+            bem.get_error(10.0, 90.0)
+        except NotImplementedError:
+            pass
+        else:
+            assert False    # pragma: no cover
+
+        for start in [-1.0, 80.0, 103.0]:
+            for end in [-5.0, 10.0, 105.0]:
+                try:
+                    bem.get_error(start, end)
+                except ValueError:
+                    pass
+                else:
+                    assert False    # pragma: no cover
 
     def local_error_test(self):
         """Test local_error of BaseErrorMeasure."""
@@ -90,24 +132,6 @@ class BaseErrorMeasureTest(unittest.TestCase):
                 pass
             else:
                 assert False    # pragma: no cover
-
-    def lower_than_test(self):
-        """Test __lt__ for BaseErrorMeasure."""
-        bemOne  = BaseErrorMeasure()
-        bemTwo  = BaseErrorMeasure()
-        bemNone = None
-
-        bemOne._error = 0
-        bemTwo._error = 1
-
-        if not bemOne < bemTwo: raise AssertionError
-
-        try:
-            result = bemOne < None
-        except ValueError:
-            pass
-        else:
-            assert False    # pragma: no cover
 
 class MeanSquaredErrorTest(unittest.TestCase):
     """Testing MeanSquaredError."""
@@ -133,10 +157,10 @@ class MeanSquaredErrorTest(unittest.TestCase):
         mse = MeanSquaredError(60.0)
 
         ## only 50% of the original TimeSeries have a corresponding partner
-        if mse.calculate(tsOrg, tsCalc):
+        if mse.initialize(tsOrg, tsCalc):
             assert False    # pragma: no cover
 
-        if not mse.calculate(tsOrg, tsOrg):
+        if not mse.initialize(tsOrg, tsOrg):
             assert False    # pragma: no cover
 
     def error_calculation_test(self):
@@ -153,8 +177,7 @@ class MeanSquaredErrorTest(unittest.TestCase):
         tsCalc = TimeSeries.from_twodim_list(dataCalc)
 
         mse = MeanSquaredError(80.0)
-        assert mse.get_error() == None
-
-        mse.calculate(tsOrg, tsCalc)
+        mse.initialize(tsOrg, tsCalc)
+        print mse.get_error()
 
         assert mse.get_error() == 5.125

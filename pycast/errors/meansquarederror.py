@@ -29,52 +29,31 @@ class MeanSquaredError(BaseErrorMeasure):
 
     Explanation:
         http://en.wikipedia.org/wiki/Mean_squared_error
+
+    @todo implement calculate
     """
 
-    def calculate(self, originalTimeSeries, calculatedTimeSeries):
-        """Calculates the error for the given calculated TimeSeries.
+    def _calculate(self, startingPercentage, endPercentage):
+        """This is the error calculation function that gets called by get_error().
 
-        To calculate the error between the given TimeSeries instances, only entries with
-        matching timestamps are considered. To optimize the calculation, both TimeSeries
-        instances will be sorted inplace.
+        Both parameters will be correct at this time.
 
-        @param originalTimeSeries   TimeSeries containing the original data.
-        @param calculatedTimeSeries TimeSeries containing calculated data.
-                                    Calculated data is smoothed or forecasted data.
+        @param startingPercentage Defines the start of the interval. This has to be a float value in [0.0, 100.0].
+                             It represents the value, where the error calculation should be started. 
+                             25.0 for example means that the first 25%% of all calculated errors will be ignored.
+        @param endPercentage      Defines the end of the interval. This has to be a float value in [0.0, 100.0].
+                             It represents the vlaue, after which all error values will be ignored.
+                             90.0 for example means that the last 10%% of all local errors will be ignored.
 
-        @return Returns True if an error could be calculated, False otherwise.
+        @return Returns a float representing the error.
         """
-        ## sort the TimeSeries to reduce the required comparison operations
-        originalTimeSeries.sort_timeseries()
-        calculatedTimeSeries.sort_timeseries()
+        startIdx = int(startingPercentage * len(self._errorValues))
+        endIdx   = int(endPercentage      * len(self._errorValues))
 
-        ## Performance optimization
-        append      = self._errorValues.append
-        minCalcIdx  = 0
-        local_error = self.local_error
+        errorValues = self._errorValues[startIdx:endIdx]
 
-        ## calculate all valid local errors
-        for orgPair in originalTimeSeries:
-            for calcIdx in xrange(minCalcIdx, len(calculatedTimeSeries)):
-                calcPair = calculatedTimeSeries[calcIdx]
+        return float(sum(errorValues)) / float(len(errorValues))
 
-                ## Skip values that can not be compared
-                if calcPair[0] < orgPair[0]:
-                    continue
-                if calcPair[0] > orgPair[0]:
-                    break
-
-                append(local_error(orgPair[1], calcPair[1]))
-
-        ## return False, if the error cannot be calculated
-        if len(self._errorValues) < self._minimalErrorCalculationPercentage * len(originalTimeSeries):
-            self._errorValues = []
-            return False
-
-        ## calculate the resulting error
-        self._error = float(sum(self._errorValues) / float(len(self._errorValues)))
-
-        return True
 
     def local_error(self, originalValue, calculatedValue):
         """Calculates the error between the two given values.
