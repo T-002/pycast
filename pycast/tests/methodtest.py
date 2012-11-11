@@ -258,7 +258,6 @@ class HoltMethodTest(unittest.TestCase):
         ## test if the correct number of values have been forecasted
         assert len(tsSrc) + 4 == len(res)
 
-    
     def second_forecasting_test(self):
        """Test forecast part of HoltSmoothing."""
        data  = [[0.0, 152], [1, 176], [2, 160], [3, 192], [4, 220]]
@@ -272,7 +271,7 @@ class HoltMethodTest(unittest.TestCase):
        assert len(tsSrc) + 4 == len(res)
 
        # Validate the first forecasted value
-       assert res[4][1] == 241.24198400000006
+       assert str(res[4][1])[:8] == "241.2419"
 
 class HoltWintersMethodTest(unittest.TestCase):
     """Test class for the HoltWintersMethod method."""

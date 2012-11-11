@@ -145,7 +145,7 @@ class MeanSquaredErrorTest(unittest.TestCase):
         mse = MeanSquaredError()
         for idx in xrange(len(orgValues)):
             res = (calValues[idx] - orgValues[idx])**2
-            assert  res == mse.local_error(orgValues[idx], calValues[idx])
+            assert  str(res)[:6] == str(mse.local_error(orgValues[idx], calValues[idx]))[:6]
 
     def number_of_comparisons_test(self):
         """Test MeanSquaredError for a valid response to the minimalErrorCalculationPercentage."""
@@ -181,7 +181,7 @@ class MeanSquaredErrorTest(unittest.TestCase):
         mse.initialize(tsOrg, tsCalc)
         print mse.get_error()
 
-        assert mse.get_error() == 5.125
+        assert str(mse.get_error()) == "5.125"
 
 class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
     """Testing symmetric mean absolute percentage error.
