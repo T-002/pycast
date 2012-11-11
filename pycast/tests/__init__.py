@@ -37,6 +37,7 @@ from methodtest import BaseMethodTest, SimpleMovingAverageTest, ExponentialSmoot
 
 ## error measure tests
 from errormeasuretest import BaseErrorMeasureTest, MeanSquaredErrorTest, SymmetricMeanAbsolutePercentageErrorTest
+from mapetest import MeanAbsolutePercentageErrorTest, GeometricMeanAbsolutePercentageErrorTest
 
 ## optimization method
 from optimizationtest import BaseOptimizationMethodTest
