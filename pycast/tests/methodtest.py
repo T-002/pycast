@@ -46,11 +46,26 @@ class BaseMethodTest(unittest.TestCase):
     def parameter_set_test(self):
         """Test if the parameters of a method are set correctly."""
         b = BaseMethod(["param1", "param2"])
-        b.add_parameter("param1", 1)
-        b.add_parameter("param2", 2)
-        b.add_parameter("param1", 1)
+        b.set_parameter("param1", 1)
+        b.set_parameter("param2", 2)
+        b.set_parameter("param1", 1)
 
         if not len(b._parameters) == 2: raise AssertionError
+
+    def parameter_get_test(self):
+        """Test the parameter set function."""
+        b = BaseMethod()
+        b.set_parameter("param1", 42.23)
+
+        param1 = b.get_parameter("param1")
+        assert param1 == 42.23
+        
+        try:
+            param2 = b.get_parameter("param2")
+        except KeyError:
+            pass
+        else:
+            assert False    # pragma: no cover
 
     def method_completition_Test(self):
         """Test if methods detect their executable state correctly."""
@@ -58,10 +73,10 @@ class BaseMethodTest(unittest.TestCase):
 
         if b.can_be_executed(): raise AssertionError
         
-        b.add_parameter("param1", 1)
+        b.set_parameter("param1", 1)
         if b.can_be_executed(): raise AssertionError
 
-        b.add_parameter("param2", 2)
+        b.set_parameter("param2", 2)
         if not b.can_be_executed(): raise AssertionError
 
     def execute_not_implemented_exception_test(self):

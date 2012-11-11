@@ -27,7 +27,7 @@ from pycast.common.timeseries import TimeSeries
 class BaseMethod(object):
     """Baseclass for all smoothing and forecasting methods."""
 
-    def __init__(self, requiredParameters, hasToBeSorted=True, hasToBeNormalized=True):
+    def __init__(self, requiredParameters=[], hasToBeSorted=True, hasToBeNormalized=True):
         """Initializes the BaseMethod.
 
         @param requiredParameters List of parameternames that have to be defined.
@@ -46,8 +46,8 @@ class BaseMethod(object):
         self._hasToBeSorted     = hasToBeSorted
         self._hasToBeNormalized = hasToBeNormalized
 
-    def add_parameter(self, name, value):
-        """Adds a parameter for the BaseMethod.
+    def set_parameter(self, name, value):
+        """Sets a parameter for the BaseMethod.
 
         @param name Name of the parameter.
                              This should be a string.
@@ -58,6 +58,17 @@ class BaseMethod(object):
             print "Parameter %s already existed. It's old value will be replaced with %s" % (name, value)
 
         self._parameters[name] = value
+    
+    def get_parameter(self, name):
+        """Returns a forecasting parameter.
+
+        @param name Name of the parameter.
+
+        @return Returns the value stored in parameter.
+
+        @throw Throws a KeyError if the parameter is not defined.
+        """
+        return self._parameters[name]
 
     def has_to_be_normalized(self):
         """Returns if the TimeSeries has to be normalized or not.

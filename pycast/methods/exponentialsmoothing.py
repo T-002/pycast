@@ -46,8 +46,8 @@ class ExponentialSmoothing(BaseMethod):
         if not 0.0 < smoothingFactor < 1.0:
             raise ValueError("smoothingFactor has to be in (0.0, 1.0).")
 
-        self.add_parameter("smoothingFactor",  smoothingFactor)
-        self.add_parameter("valuesToForecast", valuesToForecast)
+        self.set_parameter("smoothingFactor",  smoothingFactor)
+        self.set_parameter("valuesToForecast", valuesToForecast)
 
 
     def execute(self, timeSeries):
@@ -148,9 +148,9 @@ class HoltMethod(BaseMethod):
         if not 0.0 < trendSmoothingFactor < 1.0:
             raise ValueError("trendSmoothingFactor has to be in (0.0, 1.0).")
 
-        self.add_parameter("smoothingFactor",      smoothingFactor)
-        self.add_parameter("trendSmoothingFactor", trendSmoothingFactor)
-        self.add_parameter("valuesToForecast",     valuesToForecast)
+        self.set_parameter("smoothingFactor",      smoothingFactor)
+        self.set_parameter("trendSmoothingFactor", trendSmoothingFactor)
+        self.set_parameter("valuesToForecast",     valuesToForecast)
 
     def execute(self, timeSeries):
         """Creates a new TimeSeries containing the smoothed values.
@@ -259,11 +259,11 @@ class HoltWintersMethod(BaseMethod):
         if not 0.0 < seasonSmoothingFactor < 1.0:
             raise ValueError("seasonSmoothingFactor has to be in (0.0, 1.0).")
 
-        self.add_parameter("smoothingFactor",      smoothingFactor)
-        self.add_parameter("trendSmoothingFactor", trendSmoothingFactor)
-        self.add_parameter("seasonSmoothingFactor", seasonSmoothingFactor)
-        self.add_parameter("seasonLength",         seasonLength)
-        self.add_parameter("valuesToForecast",     valuesToForecast)
+        self.set_parameter("smoothingFactor",      smoothingFactor)
+        self.set_parameter("trendSmoothingFactor", trendSmoothingFactor)
+        self.set_parameter("seasonSmoothingFactor", seasonSmoothingFactor)
+        self.set_parameter("seasonLength",         seasonLength)
+        self.set_parameter("valuesToForecast",     valuesToForecast)
 
     def execute(self, timeSeries):
         """Creates a new TimeSeries containing the smoothed values.

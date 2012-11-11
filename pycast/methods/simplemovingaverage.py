@@ -41,7 +41,7 @@ class SimpleMovingAverage(BaseMethod):
                           This number has to be uneven and positive.
         """
         super(SimpleMovingAverage, self).__init__(["windowsize"], True, True)
-        self.add_parameter("windowsize", windowsize)
+        self.set_parameter("windowsize", windowsize)
 
     def execute(self, timeSeries):
         """Creates a new TimeSeries containing the SMA values for the predefined windowsize.
