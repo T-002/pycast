@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name             = "pycast",
-    version          = "v0.0.6-prealpha",
+    version          = "v0.0.7-prealpha",
     author           = "Christian Schwarz",
     author_email     = "pixeldreck@gmail.com",
     packages         = ["pycast"],
@@ -12,5 +12,4 @@ setup(
     description      = "A Python Forecasting and Smoothing Library",
     long_description = open("README.txt").read(),
     install_requires = ["nose >= 1.2.1", "coverage >= 3.5.3"]
-#        "caldav == 0.1.4",
 )
