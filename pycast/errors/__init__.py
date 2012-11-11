@@ -24,3 +24,4 @@
 
 from baseerrormeasure import BaseErrorMeasure
 from meansquarederror import MeanSquaredError
+from symmetricmeanabsolutepercentageerror import SymmetricMeanAbsolutePercentageError

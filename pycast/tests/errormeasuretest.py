@@ -28,6 +28,7 @@ import unittest
 ## required modules from pycast
 from pycast.errors import BaseErrorMeasure
 from pycast.errors import MeanSquaredError
+from pycast.errors import SymmetricMeanAbsolutePercentageError
 from pycast.common.timeseries import TimeSeries
 
 class BaseErrorMeasureTest(unittest.TestCase):
@@ -87,7 +88,7 @@ class BaseErrorMeasureTest(unittest.TestCase):
 
         bem = BaseErrorMeasure()
 
-        bem__calculate  = bem._calculate
+        bem_calculate  = bem.calculate
         bem_local_error = bem.local_error
         
         def return_zero(ignoreMe, ignoreMeToo):
@@ -99,7 +100,7 @@ class BaseErrorMeasureTest(unittest.TestCase):
         bem.initialize(tsOrg, tsCalc)
 
         bem.local_error = bem_local_error
-        bem._calculate  = bem__calculate
+        bem.calculate  = bem_calculate
 
         try:
             bem.get_error(10.0, 90.0)
@@ -181,3 +182,41 @@ class MeanSquaredErrorTest(unittest.TestCase):
         print mse.get_error()
 
         assert mse.get_error() == 5.125
+
+class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
+    """Testing symmetric mean absolute percentage error.
+
+    Data extracted from http://monashforecasting.com/index.php?title=SMAPE#Example"""
+
+    def local_error_test(self):
+        """Test SymmetricMeanAbsolutePercentageError local error."""
+        dataPtsOrg  = [2.30,     .373,           .583,          1.88,  1.44,         -0.0852, -.341,  .619,  .131,  1.27]
+        dataPtsCalc = [-1.21,   -.445,           .466,          .226, -.694,           -.575,  2.73, -1.49, -1.45, -.193]
+        localErrors = [  2.0,     2.0, 0.223069590086, 1.57075023742,   2.0,   1.48379279006,   2.0,   2.0,   2.0,   2.0]
+
+        smape = SymmetricMeanAbsolutePercentageError()
+
+        for idx in xrange(len(dataPtsOrg)):
+            le = smape.local_error(dataPtsOrg[idx], dataPtsCalc[idx])
+            ple = localErrors[idx]
+
+            ## compare the strings due to accuracy
+            assert str(le) == str(ple)
+
+    def error_calculation_test(self):
+        """Test the calculation of the SymmetricMeanAbsolutePercentageError."""
+        dataPtsOrg  = [2.30,     .373,           .583,          1.88,  1.44,         -0.0852, -.341,  .619,  .131,  1.27]
+        dataPtsCalc = [-1.21,   -.445,           .466,          .226, -.694,           -.575,  2.73, -1.49, -1.45, -.193]
+
+        tsOrg  = TimeSeries()
+        tsCalc = TimeSeries()
+        
+        for idx in xrange(len(dataPtsOrg)):
+            tsOrg.add_entry(float(idx),  dataPtsOrg[idx])
+            tsCalc.add_entry(float(idx), dataPtsCalc[idx])
+
+        smape = SymmetricMeanAbsolutePercentageError()
+        smape.initialize(tsOrg, tsCalc)
+
+        ## compare the strings due to accuracy
+        assert "1.7277" == str(smape.get_error())[:6]
