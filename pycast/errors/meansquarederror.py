@@ -33,7 +33,7 @@ class MeanSquaredError(BaseErrorMeasure):
     @todo implement calculate
     """
 
-    def _calculate(self, startingPercentage, endPercentage):
+    def calculate(self, startingPercentage, endPercentage):
         """This is the error calculation function that gets called by get_error().
 
         Both parameters will be correct at this time.
@@ -47,11 +47,7 @@ class MeanSquaredError(BaseErrorMeasure):
 
         @return Returns a float representing the error.
         """
-        startIdx = int(startingPercentage * len(self._errorValues))
-        endIdx   = int(endPercentage      * len(self._errorValues))
-
-        errorValues = self._errorValues[startIdx:endIdx]
-
+        errorValues = self._get_error_values(startingPercentage, endPercentage)
         return float(sum(errorValues)) / float(len(errorValues))
 
 

@@ -88,6 +88,24 @@ class BaseErrorMeasure(object):
 
         return True
 
+    def _get_error_values(self, startingPercentage, endPercentage):
+        """Gets the defined subset of self._errorValues.
+
+        Both parameters will be correct at this time.
+
+        @param startingPercentage Defines the start of the interval. This has to be a float value in [0.0, 100.0].
+                             It represents the value, where the error calculation should be started. 
+                             25.0 for example means that the first 25%% of all calculated errors will be ignored.
+        @param endPercentage      Defines the end of the interval. This has to be a float value in [0.0, 100.0].
+                             It represents the vlaue, after which all error values will be ignored.
+                             90.0 for example means that the last 10%% of all local errors will be ignored.
+
+        @return Returns a list with the defined error values.
+        """
+        startIdx = int(startingPercentage * len(self._errorValues))
+        endIdx   = int(endPercentage      * len(self._errorValues))
+        return self._errorValues[startIdx:endIdx]
+
     def get_error(self, startingPercentage=0.0, endPercentage=100.0):
         """Calculates the error for the given interval (startingPercentage, endPercentage) between the TimeSeries 
         given during initialize().
@@ -120,9 +138,9 @@ class BaseErrorMeasure(object):
         if endPercentage < startingPercentage:
             raise ValueError("endPercentage has to be greater or equal than startingPercentage.")
 
-        return self._calculate(startingPercentage, endPercentage)
+        return self.calculate(startingPercentage, endPercentage)
     
-    def _calculate(self, startingPercentage, endPercentage):
+    def calculate(self, startingPercentage, endPercentage):
         """This is the error calculation function that gets called by get_error().
 
         Both parameters will be correct at this time.
