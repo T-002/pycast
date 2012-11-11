@@ -230,8 +230,6 @@ class HoltWintersMethod(BaseMethod):
 
     Explanation:
         http://en.wikipedia.org/wiki/Exponential_smoothing#Triple_exponential_smoothing
-
-    @todo NotImplementedYet
     """
 
     def __init__(self, smoothingFactor=0.1, trendSmoothingFactor=0.5, seasonSmoothingFactor=0.5, seasonLength=42, valuesToForecast=1):
@@ -275,5 +273,7 @@ class HoltWintersMethod(BaseMethod):
         
         @todo Double check if it is correct not to add the first original value to the result.
         @todo Currently the first normalized value is simply chosen as the starting point.
+
+        @throw Throws a NotImplementedError if the child class does not overwrite this function.
         """
         raise NotImplementedError    # pragma: no cover
