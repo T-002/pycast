@@ -23,8 +23,7 @@
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## required external modules
-from nose import with_setup
-import unittest, os
+import unittest
 
 ## required modules from pycast
 from pycast.common.helper import *
@@ -33,13 +32,13 @@ class HelperTest(unittest.TestCase):
     """Test class containing all tests for pycasts helper module."""
 
     def linear_interpolation_test(self):
-    	"""Testing linear interpolation."""
-    	val1 = 1.0
+        """Testing linear interpolation."""
+        val1 = 1.0
  
-    	val2 = 3.0
-    	result = linear_interpolation(val1, val2, 1)
-    	if not result == [2.0]:      raise AssertionError
+        val2 = 3.0
+        result = linear_interpolation(val1, val2, 1)
+        if not result == [2.0]:      raise AssertionError
 
         val2 = 4.0
-    	result = linear_interpolation(val1, val2, 2)
-    	if not result == [2.0, 3.0]: raise AssertionError
+        result = linear_interpolation(val1, val2, 2)
+        if not result == [2.0, 3.0]: raise AssertionError
