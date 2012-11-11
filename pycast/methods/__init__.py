@@ -24,5 +24,5 @@
 
 from basemethod import BaseMethod
 
-import simplemovingaverage
-import exponentialsmoothing
+from simplemovingaverage import SimpleMovingAverage
+from exponentialsmoothing import ExponentialSmoothing, HoltMethod, HoltWintersMethod

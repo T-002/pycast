@@ -23,5 +23,6 @@
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from baseerrormeasure import BaseErrorMeasure
+
 from meansquarederror import MeanSquaredError
 from symmetricmeanabsolutepercentageerror import SymmetricMeanAbsolutePercentageError

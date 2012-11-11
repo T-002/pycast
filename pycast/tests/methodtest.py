@@ -28,8 +28,8 @@ import unittest, os, random
 ## required modules from pycast
 from pycast.common.timeseries import TimeSeries
 from pycast.methods import BaseMethod
-from pycast.methods.simplemovingaverage import SimpleMovingAverage
-from pycast.methods.exponentialsmoothing import ExponentialSmoothing, HoltMethod, HoltWintersMethod
+from pycast.methods import SimpleMovingAverage
+from pycast.methods import ExponentialSmoothing, HoltMethod, HoltWintersMethod
 
 class BaseMethodTest(unittest.TestCase):
     """Test class containing all tests for pycast.method.basemethod."""
