@@ -30,6 +30,7 @@ from pycast.common.timeseries import TimeSeries
 from pycast.methods import BaseMethod
 from pycast.methods import SimpleMovingAverage
 from pycast.methods import ExponentialSmoothing, HoltMethod, HoltWintersMethod
+from pycast.errors import MeanSquaredError
 
 class BaseMethodTest(unittest.TestCase):
     """Test class containing all tests for pycast.method.basemethod."""
@@ -289,3 +290,49 @@ class HoltWintersMethodTest(unittest.TestCase):
                         pass
                     else:
                         assert False    # pragma: no cover
+
+    def sanity_test(self):
+        """HoltWinters should throw an Exception if applied to a Time Series shorter than the season length"""
+        hwm = HoltWintersMethod(seasonLength = 2)
+        data  = [[0.0, 152]]
+        tsSrc = TimeSeries.from_twodim_list(data)
+        try:
+            hwm.execute(tsSrc)
+        except ValueError, e:
+            pass
+        else:
+            assert False, "HoltWinters should throw an Exception if applied to a Time Series shorter than the season length"
+
+    def smoothing_test(self):
+        """ Test if the smoothing works correctly"""
+
+        data = [362.0, 385.0, 432.0, 341.0, 382.0, 409.0, 498.0, 387.0, 473.0, 513.0, 582.0, 474.0, 544.0, 582.0, 681.0, 557.0, 628.0, 707.0, 773.0, 592.0, 627.0, 725.0, 854.0, 661.0]
+        tsSrc = TimeSeries.from_twodim_list(zip(range(len(data)),data))
+
+        hwm = HoltWintersMethod(.7556, 0.0000001, .9837, 4)
+        
+        initialA_2 = hwm.computeA(2, tsSrc)
+        assert  initialA_2 == 510.5, "Third initial A_2 should be 510.5, but it %d" % initialA_2
+
+        initialTrend = hwm.initialTrendSmoothingFactor(tsSrc)
+        assert initialTrend == 9.75, "Initial Trend should be 9.75 but is %d" % initialTrend
+        
+
+        res = hwm.execute(tsSrc)
+        
+        mse = MeanSquaredError(100)
+        mse.initialize(tsSrc, res)
+        error = mse.get_error()
+        
+        print res
+        print error
+        assert error < 520
+
+    def season_factor_initialization_test(self):
+        """ Test if seasonal correction factors are initialized correctly."""
+
+        hwm = HoltWintersMethod(seasonLength=4)
+        data = [[0, 362.0], [1,385.0], [2, 432.0], [3, 341.0], [4, 382.0], [5, 409.0], [6, 498.0], [7, 387.0], [8, 473.0], [9, 513.0], [10, 582.0], [11, 474.0]]
+        tsSrc = TimeSeries.from_twodim_list(data)
+        seasonValues = hwm.initSeasonFactors(tsSrc)
+        assert False, 'TODO find correct values for initialization' 
