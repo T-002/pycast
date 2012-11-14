@@ -52,6 +52,55 @@ class BaseMethodTest(unittest.TestCase):
 
         if not len(b._parameters) == 2: raise AssertionError
 
+    def interval_validity_test(self):
+        """Test if BaseMethod handles parameter validity correctly."""
+        parameters = ["param1", "param2", "param3", "param4"]
+
+        b = BaseMethod(parameters)
+        
+        ## overwrite parameter validity dictionary for testing
+        b._parameterIntervals = {
+            "param1": [0.0, 1.0, False, False],
+            "param2": [0.0, 1.0, False, True],
+            "param3": [0.0, 1.0, True, False],
+            "param4": [0.0, 1.0, True, True]
+        }
+
+        ## definetely invalid parameters
+        for value in [-1.5, 3.2]:
+            for parameter in parameters:
+                if b._in_valid_interval(parameter, value):
+                    assert False    # pragma: no cover
+
+        ## definetly valid parameters
+        for value in [0.3, 0.42]:
+            for parameter in parameters:
+                if not b._in_valid_interval(parameter, value):
+                    assert False    # pragma: no cover
+
+    def value_error_message_test(self):
+        """Test the value error message."""
+        parameters = ["param1", "param2", "param3", "param4"]
+
+        b = BaseMethod(parameters)
+
+        ## overwrite parameter validity dictionary for testing
+        b._parameterIntervals = {
+            "param1": [0.0, 1.0, False, False],
+            "param2": [0.0, 1.0, False, True],
+            "param3": [0.0, 1.0, True, False],
+            "param4": [0.0, 1.0, True, True]
+        }
+
+        ## Unknown parameters should return no message
+        if None != b._get_value_error_message_for_invalid_prarameter("unknown"):
+            assert False    # pragma: no cover
+
+        ## Known parameters should return a message
+        for parameter in parameters:
+            if not isinstance(b._get_value_error_message_for_invalid_prarameter(parameter), basestring):
+                assert False    # pragma: no cover
+
     def parameter_get_test(self):
         """Test the parameter set function."""
         b = BaseMethod()
@@ -129,7 +178,7 @@ class ExponentialSmoothingTest(unittest.TestCase):
         """Test the initialization of the ExponentialSmoothing method."""
         sm = ExponentialSmoothing(0.2, 0)
         
-        for alpha in [-0.1, 1.1, 3.1, -4.2]:
+        for alpha in [-42.23, -0.1, 0.0, 1.0, 1.1, 3.1, 4.2]:
             try:
                 ExponentialSmoothing(alpha)
             except ValueError:

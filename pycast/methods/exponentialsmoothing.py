@@ -43,11 +43,30 @@ class ExponentialSmoothing(BaseMethod):
         """
         super(ExponentialSmoothing, self).__init__(["smoothingFactor", "valuesToForecast"], True, True)
 
-        if not 0.0 < smoothingFactor < 1.0:
-            raise ValueError("smoothingFactor has to be in (0.0, 1.0).")
-
         self.set_parameter("smoothingFactor",  smoothingFactor)
         self.set_parameter("valuesToForecast", valuesToForecast)
+
+    def _get_parameter_intervals(self):
+        """Returns the intervals for the methods parameter.
+
+        Only parameters with defined intervals can be used for optimization!
+
+        @return Returns a dictionary containing the parameter intervals, using the parameter
+                name as key, while the value hast the following format:
+                [minValue, maxValue, minIntervalClosed, maxIntervalClosed]
+
+                minValue:          Minimal value for the parameter
+                maxValue:          Maximal value for the parameter
+                minIntervalClosed: True, if minValue represents a valid value for the parameter.
+                                   False otherwise.
+                maxIntervalClosed: True, if maxValue represents a valid value for the parameter.
+                                   False otherwise.
+        """
+        parameterIntervals = {}
+
+        parameterIntervals["smoothingFactor"] = [0.0, 1.0, False, False]
+
+        return parameterIntervals
 
 
     def execute(self, timeSeries):
@@ -143,14 +162,32 @@ class HoltMethod(BaseMethod):
                                           "valuesToForecast"],
                                           True, True)
 
-        if not 0.0 < smoothingFactor < 1.0:
-            raise ValueError("smoothingFactor has to be in (0.0, 1.0).")
-        if not 0.0 < trendSmoothingFactor < 1.0:
-            raise ValueError("trendSmoothingFactor has to be in (0.0, 1.0).")
-
         self.set_parameter("smoothingFactor",      smoothingFactor)
         self.set_parameter("trendSmoothingFactor", trendSmoothingFactor)
         self.set_parameter("valuesToForecast",     valuesToForecast)
+
+    def _get_parameter_intervals(self):
+        """Returns the intervals for the methods parameter.
+
+        Only parameters with defined intervals can be used for optimization!
+
+        @return Returns a dictionary containing the parameter intervals, using the parameter
+                name as key, while the value hast the following format:
+                [minValue, maxValue, minIntervalClosed, maxIntervalClosed]
+
+                minValue:          Minimal value for the parameter
+                maxValue:          Maximal value for the parameter
+                minIntervalClosed: True, if minValue represents a valid value for the parameter.
+                                   False otherwise.
+                maxIntervalClosed: True, if maxValue represents a valid value for the parameter.
+                                   False otherwise.
+        """
+        parameterIntervals = {}
+
+        parameterIntervals["smoothingFactor"]      = [0.0, 1.0, False, False]
+        parameterIntervals["trendSmoothingFactor"] = [0.0, 1.0, False, False]
+
+        return parameterIntervals
 
     def execute(self, timeSeries):
         """Creates a new TimeSeries containing the smoothed values.

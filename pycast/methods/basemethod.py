@@ -27,6 +27,8 @@ from pycast.common.timeseries import TimeSeries
 class BaseMethod(object):
     """Baseclass for all smoothing and forecasting methods."""
 
+    _interval_definitions = { True: ["[", "]"], False: ["(", ")"]}
+
     def __init__(self, requiredParameters=[], hasToBeSorted=True, hasToBeNormalized=True):
         """Initializes the BaseMethod.
 
@@ -38,6 +40,7 @@ class BaseMethod(object):
         """
         super(BaseMethod, self).__init__()
         self._parameters = {}
+        self._parameterIntervals = self._get_parameter_intervals()
 
         self._requiredParameters = {}
         for entry in requiredParameters:
@@ -45,6 +48,69 @@ class BaseMethod(object):
 
         self._hasToBeSorted     = hasToBeSorted
         self._hasToBeNormalized = hasToBeNormalized
+
+    def _get_parameter_intervals(self):
+        """Returns the intervals for the methods parameter.
+
+        Only parameters with defined intervals can be used for optimization!
+
+        @return Returns a dictionary containing the parameter intervals, using the parameter
+                name as key, while the value hast the following format:
+                [minValue, maxValue, minIntervalClosed, maxIntervalClosed]
+
+                minValue:          Minimal value for the parameter
+                maxValue:          Maximal value for the parameter
+                minIntervalClosed: True, if minValue represents a valid value for the parameter.
+                                   False otherwise.
+                maxIntervalClosed: True, if maxValue represents a valid value for the parameter.
+                                   False otherwise.
+        """
+        parameterIntervals = {}
+
+        ## YOUR METHOD SPECIFIC CODE HERE!
+
+        return parameterIntervals
+
+    def _in_valid_interval(self, parameter, value):
+        """Returns if the parameter is within its valid interval.
+
+        @param parameter Name of the parameter that has to be checked.
+        @param value, value of the parameter.
+
+        @return Returns True it the value for the given parameter is valid,
+                        False otherwise.
+        """
+        ## return True, if not interval is defined for the parameter
+        if not parameter in self._parameterIntervals:
+            return True
+
+        interval = self._parameterIntervals[parameter]
+
+        if True == interval[2] and True == interval[3]:
+            return interval[0] <= value <= interval[1]
+
+        if False == interval[2] and True == interval[3]:
+            return interval[0] <  value <= interval[1]
+
+        if True == interval[2] and False == interval[3]:
+            return interval[0] <= value <  interval[1]
+
+        #if False == interval[2] and False == interval[3]:
+        return interval[0] < value < interval[1]
+
+    def _get_value_error_message_for_invalid_prarameter(self, parameter):
+        """Returns the ValueError message for the given parameter.
+
+        @param parameter Name of the parameter the message has to be created for.
+
+        @return Returns a string containing hte message.
+        """
+        ## return if not interval is defined for the parameter
+        if not parameter in self._parameterIntervals:
+            return 
+
+        interval = self._parameterIntervals[parameter]
+        return "%s has to be in %s%s, %s%s." % (parameter, BaseMethod._interval_definitions[interval[2]][0], interval[0], interval[1], BaseMethod._interval_definitions[interval[3]][1])
 
     def set_parameter(self, name, value):
         """Sets a parameter for the BaseMethod.
@@ -54,6 +120,9 @@ class BaseMethod(object):
 
         @param value Value of the parameter.
         """
+        if not self._in_valid_interval(name, value):
+            raise ValueError(self._get_value_error_message_for_invalid_prarameter(name))
+
         if name in self._parameters:
             print "Parameter %s already existed. It's old value will be replaced with %s" % (name, value)
 
