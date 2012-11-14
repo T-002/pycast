@@ -71,6 +71,33 @@ class BaseMethod(object):
 
         return parameterIntervals
 
+    def get_interval(self, parameter):
+        """Returns the interval for a given parameter.
+
+        @param parameter Name of the parameter.
+
+        @return Returns a list containing with [minValue, maxValue, minIntervalClosed, maxIntervalClosed].
+                If no interval definitions for the given parameter exist, None is returned
+
+                minValue:          Minimal value for the parameter
+                maxValue:          Maximal value for the parameter
+                minIntervalClosed: True, if minValue represents a valid value for the parameter.
+                                   False otherwise.
+                maxIntervalClosed: True, if maxValue represents a valid value for the parameter.
+                                   False otherwise.
+        """
+        if not parameter in self._parameterIntervals:
+            return None
+
+        return self._parameterIntervals[parameter]
+
+    def get_required_parameters(self):
+        """Returns a list with the names of all required parameters.
+
+        @return Returns a list with the names of all required parameters.
+        """
+        return self._requiredParameters.keys()
+
     def _in_valid_interval(self, parameter, value):
         """Returns if the parameter is within its valid interval.
 

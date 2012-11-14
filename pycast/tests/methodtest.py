@@ -52,6 +52,20 @@ class BaseMethodTest(unittest.TestCase):
 
         if not len(b._parameters) == 2: raise AssertionError
 
+    def required_parameter_test(self):
+        """Test for required parameters."""
+        parameters = ["param1", "param2"]
+        
+        b = BaseMethod(parameters)
+
+        requiredParameters = b.get_required_parameters()
+
+        for parameter in parameters:
+            if not parameter in requiredParameters:
+                raise AssertionError    # pragma: no cover
+
+        assert len(parameters) == len(requiredParameters)
+
     def interval_validity_test(self):
         """Test if BaseMethod handles parameter validity correctly."""
         parameters = ["param1", "param2", "param3", "param4"]
@@ -77,6 +91,28 @@ class BaseMethodTest(unittest.TestCase):
             for parameter in parameters:
                 if not b._in_valid_interval(parameter, value):
                     assert False    # pragma: no cover
+
+    def get_interval_test(self):
+        """Test if correct intervals are returned."""
+        parameters = ["param1", "param2", "param3", "param4"]
+
+        b = BaseMethod(parameters)
+        
+        ## overwrite parameter validity dictionary for testing
+        parameterIntervals = {
+            "param1": [0.0, 1.0, False, False],
+            "param2": [0.0, 1.0, False, True],
+            "param3": [0.0, 1.0, True, False],
+            "param4": [0.0, 1.0, True, True]
+        }
+        b._parameterIntervals = parameterIntervals
+
+        for parameter in parameters:
+            i = b.get_interval(parameter)
+            if not i == parameterIntervals[parameter]:
+                raise AssertionError    # pragma: no cover
+
+        assert None == b.get_interval("unknown")
 
     def value_error_message_test(self):
         """Test the value error message."""
@@ -116,7 +152,7 @@ class BaseMethodTest(unittest.TestCase):
         else:
             assert False    # pragma: no cover
 
-    def method_completition_Test(self):
+    def method_completition_test(self):
         """Test if methods detect their executable state correctly."""
         b = BaseMethod(["param1", "param2"])
 
