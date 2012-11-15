@@ -152,7 +152,7 @@ class TimeSeries(object):
 
         @return Returns a TimeSeries instance containing the data.
 
-        @todo This is an unsafe version! Only use it with the original version.
+        @warning This is an unsafe version! Only use it with the original version.
               All assumtions regarding normalization and sort order will be ignored
               and set to default.
         """
@@ -368,7 +368,6 @@ class TimeSeries(object):
                          This has either to be a float representing the UNIX epochs
                          or a string containing a timestamp in the given format.
         @param data      Data points information.
-                         This has to be a float for now.
                          This has to be a numeric value for now.
         @param format    Format of the given timestamp. This is used to convert the
                          timestamp into UNIX epochs, if necessary. For valid examples
