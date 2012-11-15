@@ -369,6 +369,7 @@ class TimeSeries(object):
                          or a string containing a timestamp in the given format.
         @param data      Data points information.
                          This has to be a float for now.
+                         This has to be a numeric value for now.
         @param format    Format of the given timestamp. This is used to convert the
                          timestamp into UNIX epochs, if necessary. For valid examples
                          take a look into the time.strptime() documentation.
@@ -379,7 +380,7 @@ class TimeSeries(object):
         if None != format:
             timestamp = self._convert_timestamp_to_epoch(timestamp, format)
 
-        self._timeseriesData.append([timestamp, data])
+        self._timeseriesData.append([timestamp, float(data)])
 
     def sort_timeseries(self, ascending=True):
         """Sorts the data points within the TimeSeries according to their occurence
