@@ -22,7 +22,7 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from basemethod import BaseMethod
+from basemethod import BaseMethod, BaseForecastingMethod
 
-from simplemovingaverage import SimpleMovingAverage
+from simplemovingaverage  import SimpleMovingAverage
 from exponentialsmoothing import ExponentialSmoothing, HoltMethod, HoltWintersMethod

@@ -27,7 +27,7 @@ import unittest, os, random
 
 ## required modules from pycast
 from pycast.common.timeseries import TimeSeries
-from pycast.methods import BaseMethod
+from pycast.methods import BaseMethod, BaseForecastingMethod
 from pycast.methods import SimpleMovingAverage
 from pycast.methods import ExponentialSmoothing, HoltMethod, HoltWintersMethod
 
@@ -178,6 +178,40 @@ class BaseMethodTest(unittest.TestCase):
             pass
         else:
             assert False    # pragma: no cover
+
+class BaseForecastingMethodTest(unittest.TestCase):
+    """Test class for the BaseForecastingMethod."""
+
+    def initialization_test(self):
+        """Testing BaseForecastingMethod initialization."""
+
+        class FM1(BaseForecastingMethod):
+            def __init__(self):
+                super(FM1, self).__init__(["valuesToForecast"])
+
+        class FM2(BaseForecastingMethod):
+            def __init__(self):
+                super(FM2, self).__init__([])
+
+        FM1()
+        FM2()
+        BaseForecastingMethod(valuesToForecast=4, hasToBeNormalized=False, hasToBeSorted=True, requiredParameters=[])
+        BaseForecastingMethod(valuesToForecast=4, hasToBeNormalized=False, hasToBeSorted=True)
+        BaseForecastingMethod(["valuesToForecast"])
+        BaseForecastingMethod(["valuesToForecast"], valuesToForecast=1)
+        BaseForecastingMethod([], hasToBeNormalized=True)
+
+    def forecast_until_test(self):
+        """Testing the forecast_until function."""
+        for validts in (xrange(1,100)):
+            BaseForecastingMethod(["valuesToForecast"]).forecast_until(validts, format=None)
+
+        BaseForecastingMethod(["valuesToForecast"]).forecast_until("2012", format="%Y")
+
+    def number_of_values_to_forecast_test(self):
+        """Test the valid calculation of values to forecast."""
+        raise NotImplementedError
+
 
 class SimpleMovingAverageTest(unittest.TestCase):
     """Test class for the SimpleMovingAverage method."""

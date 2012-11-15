@@ -196,3 +196,63 @@ class BaseMethod(object):
         @throw Throws a NotImplementedError if the child class does not overwrite this function.
         """
         raise NotImplementedError
+
+class BaseForecastingMethod(BaseMethod):
+    """Basemethod for all forecasting methods."""
+
+    def __init__(self, requiredParameters=[], valuesToForecast=1, hasToBeSorted=True, hasToBeNormalized=True):
+        """Initializes the BaseForecastingMethod.
+
+        @param requiredParameters List of parameternames that have to be defined.
+        @param valuesToForecast Number of entries that will be forecasted.
+                                This can be changed by using forecast_until().
+        @param hasToBeSorted Defines if the TimeSeries has to be sorted or not.
+        @param hasToBeNormalized Defines if the TimeSeries has to be normalized or not.
+        """
+        if not "valuesToForecast" in requiredParameters:
+            requiredParameters.append("valuesToForecast")
+
+        super(BaseForecastingMethod, self).__init__(requiredParameters, hasToBeSorted=hasToBeSorted, hasToBeNormalized=hasToBeNormalized)
+
+        self.set_parameter("valuesToForecast", valuesToForecast)
+
+        self._forecastUntil = None
+
+    def set_parameter(self, name, value):
+        """Sets a parameter for the BaseForecastingMethod.
+
+        @param name Name of the parameter.
+                             This should be a string.
+
+        @param value Value of the parameter.
+        """
+        ## set the furecast until variable to None if necessary
+        if name == "valuesToForecast":
+            self._forecastUntil = None
+
+        ## continue with the parents implementation
+        return super(BaseForecastingMethod, self).set_parameter(name, value)
+
+    def forecast_until(self, timestamp, format=None):
+        """Sets the forecasting goal (timestamp wise).
+
+        This function enables the automatic determination of valuesToForecast.
+
+        @param timestamp timestamp containing the end date of the forecast.
+        @param format    Format of the given timestamp. This is used to convert the
+                         timestamp into UNIX epochs, if necessary. For valid examples
+                         take a look into the time.strptime() documentation.
+        """
+        if None != format:
+            timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, format)
+
+        self._forecastUntil = timestamp
+
+    def _calculate_values_to_forecast(self):
+        """Calculates the number of values, that need to be forecasted to match the goal set in forecast_until.
+
+        This sets the parameter "valuesToForecast" and should be called at the beginning of the execute() implementation.
+        """
+        raise NotImplementedError
+
+

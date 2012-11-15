@@ -22,10 +22,10 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from pycast.methods import BaseMethod
+from pycast.methods import BaseForecastingMethod
 from pycast.common.timeseries import TimeSeries
 
-class ExponentialSmoothing(BaseMethod):
+class ExponentialSmoothing(BaseForecastingMethod):
     """Implements an exponential smoothing algorithm.
 
     Explanation:
@@ -41,10 +41,9 @@ class ExponentialSmoothing(BaseMethod):
 
         @throw ValueError, when smoothingFactor has an invalid value.
         """
-        super(ExponentialSmoothing, self).__init__(["smoothingFactor", "valuesToForecast"], True, True)
+        super(ExponentialSmoothing, self).__init__(["smoothingFactor"], valuesToForecast, True, True)
 
         self.set_parameter("smoothingFactor",  smoothingFactor)
-        self.set_parameter("valuesToForecast", valuesToForecast)
 
     def _get_parameter_intervals(self):
         """Returns the intervals for the methods parameter.
@@ -68,7 +67,6 @@ class ExponentialSmoothing(BaseMethod):
 
         return parameterIntervals
 
-
     def execute(self, timeSeries):
         """Creates a new TimeSeries containing the smoothed values and one forecasted one.
 
@@ -77,6 +75,10 @@ class ExponentialSmoothing(BaseMethod):
         
         @todo Currently the first normalized value is simply chosen as the starting point.
         """
+        ## determine the number of values to forecast, if necessary
+        if None != self._forecastUntil:
+            self._calculate_values_to_forecast()
+
         ## extract the required parameters, performance improvement
         alpha            = self._parameters["smoothingFactor"]
         valuesToForecast = self._parameters["valuesToForecast"]
@@ -138,7 +140,7 @@ class ExponentialSmoothing(BaseMethod):
         ## return a TimeSeries, containing the result
         return TimeSeries.from_twodim_list(resultList)
 
-class HoltMethod(BaseMethod):
+class HoltMethod(BaseForecastingMethod):
     """Implements the Holt algorithm.
 
     Explanation:
@@ -158,13 +160,11 @@ class HoltMethod(BaseMethod):
         @raises ValueError, when smoothingFactor or trendSmoothingFactor has an invalid value.
         """
         super(HoltMethod, self).__init__(["smoothingFactor",
-                                          "trendSmoothingFactor", 
-                                          "valuesToForecast"],
-                                          True, True)
+                                          "trendSmoothingFactor"],
+                                          valuesToForecast, True, True)
 
         self.set_parameter("smoothingFactor",      smoothingFactor)
         self.set_parameter("trendSmoothingFactor", trendSmoothingFactor)
-        self.set_parameter("valuesToForecast",     valuesToForecast)
 
     def _get_parameter_intervals(self):
         """Returns the intervals for the methods parameter.
@@ -197,6 +197,10 @@ class HoltMethod(BaseMethod):
         
         @todo Currently the first normalized value is simply chosen as the starting point.
         """
+        ## determine the number of values to forecast, if necessary
+        if None != self._forecastUntil:
+            self._calculate_values_to_forecast()
+
         ## extract the required parameters, performance improvement
         alpha            = self._parameters["smoothingFactor"]
         beta             = self._parameters["trendSmoothingFactor"]
@@ -262,7 +266,7 @@ class HoltMethod(BaseMethod):
     
 ## TODO:A second method, referred to as either Brown's linear exponential smoothing (LES) or Brown's double exponential smoothing works as follows.[9]
 
-class HoltWintersMethod(BaseMethod):
+class HoltWintersMethod(BaseForecastingMethod):
     """Implements the Holt-Winters algorithm.
 
     Explanation:
@@ -284,8 +288,7 @@ class HoltWintersMethod(BaseMethod):
         """
         super(HoltWintersMethod, self).__init__(["smoothingFactor",
                                           "trendSmoothingFactor",
-                                          "seasonSmoothingFactor"
-                                          "valuesToForecast",
+                                          "seasonSmoothingFactor",
                                           "seasonLength"],
                                           True, True)
 
@@ -300,7 +303,6 @@ class HoltWintersMethod(BaseMethod):
         self.set_parameter("trendSmoothingFactor", trendSmoothingFactor)
         self.set_parameter("seasonSmoothingFactor", seasonSmoothingFactor)
         self.set_parameter("seasonLength",         seasonLength)
-        self.set_parameter("valuesToForecast",     valuesToForecast)
 
     def execute(self, timeSeries):
         """Creates a new TimeSeries containing the smoothed values.
@@ -313,4 +315,7 @@ class HoltWintersMethod(BaseMethod):
 
         @throw Throws a NotImplementedError if the child class does not overwrite this function.
         """
+        ## determine the number of values to forecast, if necessary
+        if None != self._forecastUntil:
+            self._calculate_values_to_forecast()
         raise NotImplementedError    # pragma: no cover
