@@ -33,9 +33,7 @@ class BaseMethod(object):
         """Initializes the BaseMethod.
 
         @param requiredParameters List of parameternames that have to be defined.
-
         @param sorted Defines if the TimeSeries has to be sorted or not.
-
         @param normalized Defines if the TimeSeries has to be normalized or not.
         """
         super(BaseMethod, self).__init__()
