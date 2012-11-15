@@ -104,7 +104,7 @@ class TimeSeries(object):
 
         datafile.write("## time_as_<%s> value" % formatval)
 
-        convert = self._convert_epoch_to_timestamp
+        convert = TimeSeries._convert_epoch_to_timestamp
         for datapoint in self._timeseriesData:
             timestamp, value = datapoint
             if None != format:
@@ -132,7 +132,7 @@ class TimeSeries(object):
         ## initialize the result
         valuepairs = []
         append     = valuepairs.append
-        convert    = self._convert_epoch_to_timestamp
+        convert    = TimeSeries._convert_epoch_to_timestamp
         
         for entry in self._timeseriesData:
             append("""["%s",%s]""" % (convert(entry[0], format), entry[1]))
@@ -180,7 +180,7 @@ class TimeSeries(object):
 
         datalist = []
         append   = datalist.append
-        convert  = self._convert_epoch_to_timestamp
+        convert  = TimeSeries._convert_epoch_to_timestamp
         for entry in self._timeseriesData:
             append([convert(entry[0], format), entry[1]])
 
@@ -338,7 +338,8 @@ class TimeSeries(object):
         """
         self._timeseriesData[index] = value
 
-    def _convert_timestamp_to_epoch(self, timestamp, format):
+    @classmethod
+    def _convert_timestamp_to_epoch(cls, timestamp, format):
         """Converts the given timestamp into a float representing UNIX-epochs.
 
         @param timestamp Timestamp in the defined format.
@@ -349,7 +350,8 @@ class TimeSeries(object):
         """
         return time.mktime(time.strptime(timestamp, format))
 
-    def _convert_epoch_to_timestamp(self, timestamp, format):
+    @classmethod
+    def _convert_epoch_to_timestamp(cls, timestamp, format):
         """Converts the given float representing UNIX-epochs into an actual timestamp.
 
         @param timestamp Timestamp as UNIX-epochs.
@@ -377,7 +379,7 @@ class TimeSeries(object):
         self._sorted     = self._predefinedSorted
 
         if None != format:
-            timestamp = self._convert_timestamp_to_epoch(timestamp, format)
+            timestamp = TimeSeries._convert_timestamp_to_epoch(timestamp, format)
 
         self._timeseriesData.append([timestamp, float(data)])
 
