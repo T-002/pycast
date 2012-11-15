@@ -33,7 +33,7 @@ from profilemetest import ProfileMeDecoratorTest
 from helpertest import HelperTest
 
 ## method tests
-from methodtest import BaseMethodTest, SimpleMovingAverageTest, ExponentialSmoothingTest, HoltMethodTest, HoltWintersMethodTest
+from methodtest import BaseMethodTest, BaseForecastingMethodTest, SimpleMovingAverageTest, ExponentialSmoothingTest, HoltMethodTest, HoltWintersMethodTest
 
 ## error measure tests
 from errormeasuretest import BaseErrorMeasureTest, MeanSquaredErrorTest, SymmetricMeanAbsolutePercentageErrorTest
