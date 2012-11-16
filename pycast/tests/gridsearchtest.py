@@ -22,23 +22,23 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## TimeSeries related tests
-from timeseriesdatabasetest import DatabaseConnectorTest
-from timeseriesmiscellaneoustest import TimeSeriesMiscellaneousTest
+## required external modules
+import unittest
 
-## profileMe decorator related tests
-from profilemetest import ProfileMeDecoratorTest
+## required modules from pycast
+from pycast.errors            import SymmetricMeanAbsolutePercentageError as SMAPE
+from pycast.common.timeseries import TimeSeries
 
-## helper tests
-from helpertest import HelperTest
+from pycast.optimization import GridSearch
 
-## method tests
-from methodtest import BaseMethodTest, BaseForecastingMethodTest, SimpleMovingAverageTest, ExponentialSmoothingTest, HoltMethodTest, HoltWintersMethodTest
+class GridSearchTest(unittest.TestCase):
+	"""Test class for the GridSearch."""
 
-## error measure tests
-from errormeasuretest import BaseErrorMeasureTest, MeanSquaredErrorTest, SymmetricMeanAbsolutePercentageErrorTest
-from mapetest import MeanAbsolutePercentageErrorTest, GeometricMeanAbsolutePercentageErrorTest
+	def create_generator_test(self):
+		"""Test the parameter generation function."""
+		gs = GridSearch(SMAPE, precision=-2)
+        
+        parameters = [i / 100.0 for i in xrange(1, 100)]
+        print parameters
 
-## optimization method
-from baseoptimizationtest import BaseOptimizationMethodTest
-from gridsearchtest       import GridSearchTest
+        raise NotImplementedError
