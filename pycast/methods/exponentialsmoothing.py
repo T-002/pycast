@@ -77,7 +77,7 @@ class ExponentialSmoothing(BaseForecastingMethod):
         """
         ## determine the number of values to forecast, if necessary
         if None != self._forecastUntil:
-            self._calculate_values_to_forecast()
+            self._calculate_values_to_forecast(timeSeries)
 
         ## extract the required parameters, performance improvement
         alpha            = self._parameters["smoothingFactor"]
@@ -199,7 +199,7 @@ class HoltMethod(BaseForecastingMethod):
         """
         ## determine the number of values to forecast, if necessary
         if None != self._forecastUntil:
-            self._calculate_values_to_forecast()
+            self._calculate_values_to_forecast(timeSeries)
 
         ## extract the required parameters, performance improvement
         alpha            = self._parameters["smoothingFactor"]
@@ -317,5 +317,5 @@ class HoltWintersMethod(BaseForecastingMethod):
         """
         ## determine the number of values to forecast, if necessary
         if None != self._forecastUntil:
-            self._calculate_values_to_forecast()
+            self._calculate_values_to_forecast(timeSeries)
         raise NotImplementedError    # pragma: no cover
