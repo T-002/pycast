@@ -76,8 +76,7 @@ class ExponentialSmoothing(BaseForecastingMethod):
         @todo Currently the first normalized value is simply chosen as the starting point.
         """
         ## determine the number of values to forecast, if necessary
-        if None != self._forecastUntil:
-            self._calculate_values_to_forecast(timeSeries)
+        self._calculate_values_to_forecast(timeSeries)
 
         ## extract the required parameters, performance improvement
         alpha            = self._parameters["smoothingFactor"]
@@ -198,8 +197,7 @@ class HoltMethod(BaseForecastingMethod):
         @todo Currently the first normalized value is simply chosen as the starting point.
         """
         ## determine the number of values to forecast, if necessary
-        if None != self._forecastUntil:
-            self._calculate_values_to_forecast(timeSeries)
+        self._calculate_values_to_forecast(timeSeries)
 
         ## extract the required parameters, performance improvement
         alpha            = self._parameters["smoothingFactor"]
@@ -316,6 +314,6 @@ class HoltWintersMethod(BaseForecastingMethod):
         @throw Throws a NotImplementedError if the child class does not overwrite this function.
         """
         ## determine the number of values to forecast, if necessary
-        if None != self._forecastUntil:
-            self._calculate_values_to_forecast(timeSeries)
+        self._calculate_values_to_forecast(timeSeries)
+        
         raise NotImplementedError    # pragma: no cover

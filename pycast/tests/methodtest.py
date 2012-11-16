@@ -214,13 +214,20 @@ class BaseForecastingMethodTest(unittest.TestCase):
         @todo remove NotImplementedError Catch."""
         data = [[1.5, 152.0],[2.5, 172.8],[3.5, 195.07200000000003],[4.5, 218.30528000000004]]
         ts   = TimeSeries.from_twodim_list(data)
+        ts.add_entry(3, 1343)
         bfm  = BaseForecastingMethod()
+
+        ## nothing has to be done, because forecast_until was never called
+        bfm._calculate_values_to_forecast(ts)
+
+        bfm.forecast_until(134)
 
         try:
             bfm._calculate_values_to_forecast(ts)
         except ValueError:
             pass
         else:
+            print ts.is_sorted(), ts.is_normalized()
             assert False    # pragma: no cover
 
         ts.sort_timeseries()
@@ -229,19 +236,26 @@ class BaseForecastingMethodTest(unittest.TestCase):
         except ValueError:
             pass
         else:
+            print ts.is_sorted(), ts.is_normalized()
             assert False    # pragma: no cover
 
         ts.normalize("second")
-        try:
-            bfm._calculate_values_to_forecast(ts)
-        except NotImplementedError:
-            pass
-        else:
-            assert False    # pragma: no cover
+        bfm._calculate_values_to_forecast(ts)
 
     def number_of_values_to_forecast_test(self):
         """Test the valid calculation of values to forecast."""
-        raise NotImplementedError
+        data = [[1.5, 152.0],[2.5, 172.8],[3.5, 195.07200000000003],[4.5, 218.30528000000004]]
+        ts   = TimeSeries.from_twodim_list(data)
+        ts.normalize("second")
+
+        bfm  = BaseForecastingMethod()
+
+        bfm.forecast_until(100)
+        bfm._calculate_values_to_forecast(ts)
+
+        print  bfm.get_parameter("valuesToForecast")
+        assert bfm.get_parameter("valuesToForecast") == 96
+
 
 
 class SimpleMovingAverageTest(unittest.TestCase):

@@ -257,11 +257,17 @@ class BaseForecastingMethod(BaseMethod):
 
         @throw Throws a ValueError if the TimeSeries is either not normalized or sorted.
         """
+        ## do not set anything, if it is not required
+        if None == self._forecastUntil:
+            return
+
+        ## check the TimeSeries for correctness
         if not timeSeries.is_sorted():
             raise ValueError("timeSeries has to be sorted.")
         if not timeSeries.is_normalized():
             raise ValueError("timeSeries has to be normalized.")
 
-        raise NotImplementedError
+        timediff = timeSeries[-1][0] - timeSeries[-2][0]
+        forecastSpan = self._forecastUntil - timeSeries[-1][0]
 
-
+        self.set_parameter("valuesToForecast", int(forecastSpan / timediff) + 1)
