@@ -28,17 +28,66 @@ import unittest
 ## required modules from pycast
 from pycast.errors            import SymmetricMeanAbsolutePercentageError as SMAPE
 from pycast.common.timeseries import TimeSeries
+from pycast.methods           import BaseForecastingMethod
 
 from pycast.optimization import GridSearch
 
 class GridSearchTest(unittest.TestCase):
-	"""Test class for the GridSearch."""
+    """Test class for the GridSearch."""
 
-	def create_generator_test(self):
-		"""Test the parameter generation function."""
-		gs = GridSearch(SMAPE, precision=-2)
-        
-        parameters = [i / 100.0 for i in xrange(1, 100)]
-        print parameters
+    def setUp(self):
+        """Initializes self.forecastingMethod."""
+        bfm = BaseForecastingMethod(["parameter_one", "parameter_two"])
+        bfm._parameterIntervals = {}
+        bfm._parameterIntervals["parameter_one"] = [0.0, 1.0, False, False]
+        bfm._parameterIntervals["parameter_two"] = [0.0, 2.0, True, True]
 
-        raise NotImplementedError
+        self.bfm = bfm
+        data = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
+        self.timeSeries = TimeSeries.from_twodim_list(data)
+
+    def tearDown(self):
+        """Deletes the BaseForecastingMethod of the test."""
+        del self.bfm
+        del self.timeSeries
+
+    def create_generator_test(self):
+        """Test the parameter generation function."""
+        ## initialize a correct result
+        precision = 10**-2
+        values_one = [i * precision for i in xrange(1,100)]
+        values_two = [i * precision for i in xrange(201)]
+
+        generator_one = GridSearch(SMAPE, -2)._generate_next_parameter_value("parameter_one", self.bfm)
+        generator_two = GridSearch(SMAPE, -2)._generate_next_parameter_value("parameter_two", self.bfm)
+
+        generated_one = [val for val in generator_one]
+        generated_two = [val for val in generator_two]
+
+        print len(values_one), len(generated_one)
+        assert len(values_one) == len(generated_one)
+
+        print len(values_two), len(generated_two)
+        assert len(values_two) == len(generated_two)
+
+        for idx in xrange(len(values_one)):
+            value = str(values_one[idx])[:12]
+            assert str(value) == str(generated_one[idx])[:len(value)]
+
+        for idx in xrange(len(values_two)):
+            value = str(values_two[idx])[:12]
+            assert str(value) == str(generated_two[idx])[:len(value)]
+
+    def optimize_exception_test(self):
+        """Test for exception while calling GridSearch.optimize."""
+        try:
+            GridSearch(SMAPE, -2).optimize(self.timeSeries)
+        except ValueError:
+            pass
+        else:
+            assert False    # pragma: no cover
+
+        GridSearch(SMAPE, -2).optimize(self.timeSeries, [BaseForecastingMethod])
+
+
+

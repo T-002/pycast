@@ -53,8 +53,8 @@ class GridSearch(BaseOptimizationMethod):
 
         @return Creates a generator used to iterate over possible parameters.
         """
-        interval = forecastingMethod.get_interval(parameter)
-        precision = self._precison
+        interval  = forecastingMethod.get_interval(parameter)
+        precision = 10**self._precison
 
         startValue = interval[0]
         endValue   = interval[1]
@@ -65,8 +65,9 @@ class GridSearch(BaseOptimizationMethod):
         if interval[3]:
             endValue += precision
 
-        for value in xrange(startValue, endValue, precision):
-            yield value
+        while startValue < endValue:
+            yield startValue
+            startValue += precision
 
     def optimize_forecasting_method(self, timeSeries, forecastingMethod):
         """Optimizes the parameters for the given timeSeries and forecastingMethod.
