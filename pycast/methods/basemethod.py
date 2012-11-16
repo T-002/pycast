@@ -248,11 +248,20 @@ class BaseForecastingMethod(BaseMethod):
 
         self._forecastUntil = timestamp
 
-    def _calculate_values_to_forecast(self):
+    def _calculate_values_to_forecast(self, timeSeries):
         """Calculates the number of values, that need to be forecasted to match the goal set in forecast_until.
 
         This sets the parameter "valuesToForecast" and should be called at the beginning of the execute() implementation.
+
+        @param timeSeries Should be a sorted and normalized TimeSeries instance.
+
+        @throw Throws a ValueError if the TimeSeries is either not normalized or sorted.
         """
+        if not timeSeries.is_sorted():
+            raise ValueError("timeSeries has to be sorted.")
+        if not timeSeries.is_normalized():
+            raise ValueError("timeSeries has to be normalized.")
+
         raise NotImplementedError
 
 
