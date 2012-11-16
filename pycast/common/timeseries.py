@@ -381,7 +381,7 @@ class TimeSeries(object):
         if None != format:
             timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, format)
 
-        self._timeseriesData.append([timestamp, float(data)])
+        self._timeseriesData.append([float(timestamp), float(data)])
 
     def sort_timeseries(self, ascending=True):
         """Sorts the data points within the TimeSeries according to their occurence
