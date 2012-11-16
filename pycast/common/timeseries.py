@@ -559,6 +559,13 @@ class TimeSeries(object):
         """
         return self._normalized
 
+    def is_sorted(self):
+        """Returns if the TimeSeries is sorted.
+
+        @return Returns True if the TimeSeries is sorted ascending, False otherwise.
+        """
+        return self._sorted
+
     def apply(self, method):
         """Applies the given ForecastingAlgorithm or SmoothingMethod from the
         pycast.methods module to the TimeSeries.
