@@ -227,7 +227,6 @@ class BaseForecastingMethodTest(unittest.TestCase):
         except ValueError:
             pass
         else:
-            print ts.is_sorted(), ts.is_normalized()
             assert False    # pragma: no cover
 
         ts.sort_timeseries()
@@ -236,7 +235,6 @@ class BaseForecastingMethodTest(unittest.TestCase):
         except ValueError:
             pass
         else:
-            print ts.is_sorted(), ts.is_normalized()
             assert False    # pragma: no cover
 
         ts.normalize("second")
