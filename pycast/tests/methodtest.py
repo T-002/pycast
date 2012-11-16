@@ -208,6 +208,37 @@ class BaseForecastingMethodTest(unittest.TestCase):
 
         BaseForecastingMethod(["valuesToForecast"]).forecast_until("2012", format="%Y")
 
+    def calculate_values_to_forecast_exception_test(self):
+        """Test for correct handling of illegal TimeSeries instances.
+
+        @todo remove NotImplementedError Catch."""
+        data = [[1.5, 152.0],[2.5, 172.8],[3.5, 195.07200000000003],[4.5, 218.30528000000004]]
+        ts   = TimeSeries.from_twodim_list(data)
+        bfm  = BaseForecastingMethod()
+
+        try:
+            bfm._calculate_values_to_forecast(ts)
+        except ValueError:
+            pass
+        else:
+            assert False    # pragma: no cover
+
+        ts.sort_timeseries()
+        try:
+            bfm._calculate_values_to_forecast(ts)
+        except ValueError:
+            pass
+        else:
+            assert False    # pragma: no cover
+
+        ts.normalize("second")
+        try:
+            bfm._calculate_values_to_forecast(ts)
+        except NotImplementedError:
+            pass
+        else:
+            assert False    # pragma: no cover
+
     def number_of_values_to_forecast_test(self):
         """Test the valid calculation of values to forecast."""
         raise NotImplementedError
