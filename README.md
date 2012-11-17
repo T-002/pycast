@@ -56,6 +56,10 @@ Requirements
 * nose     >= 1.2.1
 * coverage >= 3.5.3
 
+Documentation requirements
+==========================
+* sphinx >= 1.1.3
+
 Example Requirements
 ====================
 * itty >= 0.8.1
