@@ -142,7 +142,6 @@ class BaseMethod(object):
 
         @param name Name of the parameter.
                              This should be a string.
-
         @param value Value of the parameter.
         """
         if not self._in_valid_interval(name, value):
@@ -218,6 +217,7 @@ class BaseForecastingMethod(BaseMethod):
 
         self._forecastUntil = None
 
+    def get_optimizable_parameters(self):
     def set_parameter(self, name, value):
         """Sets a parameter for the BaseForecastingMethod.
 

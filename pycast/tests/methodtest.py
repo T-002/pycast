@@ -201,6 +201,26 @@ class BaseForecastingMethodTest(unittest.TestCase):
         BaseForecastingMethod(["valuesToForecast"], valuesToForecast=1)
         BaseForecastingMethod([], hasToBeNormalized=True)
 
+    def get_optimizable_parameters_test(self):
+        """Test get optimizable parameters."""
+        ## Initialize parameter lists
+        parameters = ["param1", "param2", "param3", "param4", "param5"]
+        intervals = {
+            "param3": [0.0, 1.0, True, True],
+            "param4": [0.0, 1.0, True, True],
+            "param5": [0.0, 1.0, True, True],
+            "param6": [0.0, 1.0, True, True]
+        }
+
+        ## initialize BaseForecastingMethod and set some parameter intervals
+        bfm = BaseForecastingMethod(parameters, valuesToForecast=4, hasToBeNormalized=False, hasToBeSorted=True)
+        bfm._parameterIntervals = intervals
+
+        ## check, if the BaseForecastingMethod returns the correct parameters
+        correctResult = ["param3", "param4", "param5"]
+        result = sorted(bfm.get_optimizable_parameters())
+        assert correctResult == result
+
     def forecast_until_test(self):
         """Testing the forecast_until function."""
         for validts in (xrange(1,100)):
@@ -251,7 +271,6 @@ class BaseForecastingMethodTest(unittest.TestCase):
         bfm.forecast_until(100)
         bfm._calculate_values_to_forecast(ts)
 
-        print  bfm.get_parameter("valuesToForecast")
         assert bfm.get_parameter("valuesToForecast") == 96
 
 

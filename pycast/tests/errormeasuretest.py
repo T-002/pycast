@@ -179,7 +179,6 @@ class MeanSquaredErrorTest(unittest.TestCase):
 
         mse = MeanSquaredError(80.0)
         mse.initialize(tsOrg, tsCalc)
-        print mse.get_error()
 
         assert str(mse.get_error()) == "5.125"
 
@@ -217,8 +216,6 @@ class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
 
         smape = SymmetricMeanAbsolutePercentageError()
         smape.initialize(tsOrg, tsCalc)
-
-        print "Calculated Error: %s" % smape.get_error()
 
         ## compare the strings due to accuracy
         assert "1.5706" == str(smape.get_error())[:6]
