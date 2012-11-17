@@ -31,14 +31,15 @@ class SimpleMovingAverage(BaseMethod):
     The SMA algorithm will calculate the average value at time t based on the
     datapoints between [t - floor(windowsize / 2), t + floor(windowsize / 2)].
 
-    Explanation: http://en.wikipedia.org/wiki/Moving_average
+    Explanation:
+        http://en.wikipedia.org/wiki/Moving_average
     """
 
     def __init__(self, windowsize=5):
         """Initializes the SimpleMovingAverage.
 
-        @param windowsize Size of the SimpleMovingAverages window.
-                          This number has to be uneven and positive.
+        :param Integer windowsize:    Size of the SimpleMovingAverages window.
+            This number has to be uneven and positive.
         """
         super(SimpleMovingAverage, self).__init__(["windowsize"], True, True)
         self.set_parameter("windowsize", windowsize)
@@ -46,9 +47,10 @@ class SimpleMovingAverage(BaseMethod):
     def execute(self, timeSeries):
         """Creates a new TimeSeries containing the SMA values for the predefined windowsize.
 
-        @return TimeSeries object containing the smooth moving average.
+        :return:    TimeSeries object containing the smooth moving average.
+        :rtype:     TimeSeries
         
-        @todo This implementation aims to support independent for loop execution.
+        :todo:    This implementation aims to support independent for loop execution.
         """
         res = TimeSeries()
 
