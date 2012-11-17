@@ -449,23 +449,20 @@ class TimeSeries(object):
                              specific time is missing. The available interpolation
                              methods are defined in timeseries.InterpolationMethods.
 
-        @return True if the normalization was successfull, False otherwise.
+        @throw Throws a ValueError if a parameter has an unknown method.
         """
         ## do not normalize the TimeSeries if it is already normalized, either by
         ## definition or a prior call of normalize(*)
         if self._normalized:
-            return True
+            return
 
         ## check if all parameters are defined correctly
         if not normalizationLevel in NormalizationLevels:
-            print "Normalization level %s is unknown." % normalizationLevel
-            return False
+            raise ValueError("Normalization level %s is unknown." % normalizationLevel)
         if not fusionMethod in FusionMethods:
-            print "Fusion method %s is unknown." % fusionMethod
-            return False
+            raise ValueError("Fusion method %s is unknown." % fusionMethod)
         if not interpolationMethod in InterpolationMethods:
-            print "Interpolation method %s is unknown." % interpolationMethod
-            return False
+            raise ValueError("Interpolation method %s is unknown." % interpolationMethod)
 
         ## get the defined methods and parameter
         normalizationLevel  = NormalizationLevels[normalizationLevel]
@@ -480,12 +477,6 @@ class TimeSeries(object):
         end             = self._timeseriesData[-1][0]
         span            = end - start
         bucketcnt       = int(span / normalizationLevel)+ 1
-
-        ### add a bucket, if the last value is at the end of a bucket
-        #if bucketcnt != int(bucketcnt):
-        #    bucketcnt += 1
-        #
-        #bucketcnt = int(bucketcnt) + 1
 
         buckethalfwidth = normalizationLevel / 2.0
         bucketstart     = start + buckethalfwidth
@@ -549,8 +540,6 @@ class TimeSeries(object):
 
         ## at the end set self._normalized to True
         self._normalized = True
-
-        return True
 
     def is_normalized(self):
         """Returns if the TimeSeries is normalized.
