@@ -84,7 +84,22 @@ class GridSearchTest(unittest.TestCase):
         else:
             assert False    # pragma: no cover
 
-        GridSearch(SMAPE, -2).optimize(self.timeSeries, [BaseForecastingMethod()])
+        GridSearch(SMAPE, -2).optimize(self.timeSeries, [self.bfm])
+
+    def optimize_value_creation_test(self):
+        """Testing the first part of optimize_forecasting_method."""
+        self.bfm._requiredParameters = ["param1", "param2", "param3", "param4", "param5"]
+
+        GridSearch(SMAPE, -2).optimize_forecasting_method(self.timeSeries, self.bfm)
+
+        self.bfm._parameterIntervals = {
+            "param3": [0.0, 1.0, True, True],
+            "param4": [0.0, 1.0, True, True],
+            "param5": [0.0, 1.0, True, True]
+        }
+        GridSearch(SMAPE, -2).optimize_forecasting_method(self.timeSeries, self.bfm)
+
+
 
 
 

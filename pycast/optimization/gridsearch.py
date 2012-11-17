@@ -91,7 +91,7 @@ class GridSearch(BaseOptimizationMethod):
 
         generators = {}
         for tuneableParameter in tuneableParameters:
-            generators[tuneableParameter] = self._generate_next_parameter_value(parameter, forecastingMethod)
+            generators[tuneableParameter] = self._generate_next_parameter_value(tuneableParameter, forecastingMethod)
 
         parameters = {}
         for parameter in tuneableParameters:
