@@ -89,6 +89,8 @@ pygments_style = 'sphinx'
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
 
+## automatic documentation of __*__ members
+# autoclass_content = "both"
 
 # -- Options for HTML output ---------------------------------------------------
 
