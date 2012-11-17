@@ -55,23 +55,23 @@ InterpolationMethods = {
 class TimeSeries(object):
     """Represents the base class for all time series data.
 
-    @warning TimeSeries instances are NOT threadsafe.
+    :warning: TimeSeries instances are NOT threadsafe.
     """
 
     def __init__(self, isNormalized=False, isSorted=False):
         """Initializes the TimeSeries.
 
-        @param isNormalized Within a normalized TimeSeries, all data points
-                            have the same temporal distance to each other.
-                            When this is True, the memory consumption of the
-                            TimeSeries might be reduced. Also some algorithms
-                            will probably run faster on normalized TimeSeries.
-                            This should only be set to True, if the TimeSeries
-                            is realy normalized!
-                            TimeSeries normalization can be forced, by executing
-                            normalize().
-        @param isSorted     If all data points added to the time series are added
-                            in their ascending temporal order, this should set to True.
+        :param isNormalized: Within a normalized TimeSeries, all data points
+                             have the same temporal distance to each other.
+                             When this is True, the memory consumption of the
+                             TimeSeries might be reduced. Also some algorithms
+                             will probably run faster on normalized TimeSeries.
+                             This should only be set to True, if the TimeSeries
+                             is realy normalized!
+                             TimeSeries normalization can be forced, by executing
+                             normalize().
+        :param isSorted:     If all data points added to the time series are added
+                             in their ascending temporal order, this should set to True.
         """
         super(TimeSeries, self).__init__()
         self._normalized           = isNormalized
@@ -85,13 +85,13 @@ class TimeSeries(object):
     def to_gnuplot_datafile(self, datafilepath, format=None):
         """Dumps the TimeSeries into a gnuplot compatible data file.
 
-        @param datafilepath Path used to create the file. If that file already exists,
-                            it will be overwritten!
-        @param format    Format of the timestamp. This is used to convert the
-                         timestamp from UNIX epochs, if necessary. For valid examples
-                         take a look into the time.strptime() documentation.
+        :param datafilepath: Path used to create the file. If that file already exists,
+                             it will be overwritten!
+        :param format:       Format of the timestamp. This is used to convert the
+                             timestamp from UNIX epochs, if necessary. For valid examples
+                             take a look into the time.strptime() documentation.
 
-        @return Returns True if the data could be written, False otherwise.
+        :return: Returns True if the data could be written, False otherwise.
         """
         try:
             datafile = file(datafilepath, "wb")
@@ -366,14 +366,14 @@ class TimeSeries(object):
     def add_entry(self, timestamp, data, format=None):
         """Adds a new data entry to the TimeSeries.
 
-        @param timestamp Time stamp of the datas occurence.
-                         This has either to be a float representing the UNIX epochs
-                         or a string containing a timestamp in the given format.
-        @param data      Data points information.
-                         This has to be a numeric value for now.
-        @param format    Format of the given timestamp. This is used to convert the
-                         timestamp into UNIX epochs, if necessary. For valid examples
-                         take a look into the time.strptime() documentation.
+        :param timestamp: Time stamp of the datas occurence.
+                          This has either to be a float representing the UNIX epochs
+                          or a string containing a timestamp in the given format.
+        :param data:      Data points information.
+                          This has to be a numeric value for now.
+        :param format:    Format of the given timestamp. This is used to convert the
+                          timestamp into UNIX epochs, if necessary. For valid examples
+                          take a look into the time.strptime() documentation.
         """
         self._normalized = self._predefinedNormalized
         self._sorted     = self._predefinedSorted
@@ -387,11 +387,11 @@ class TimeSeries(object):
         """Sorts the data points within the TimeSeries according to their occurence
         inline.
 
-        @param ascending Determines if the TimeSeries will be ordered ascending or
-                         decending. If this is set to decending once, the ordered
-                         parameter defined in __init__() will be set to False FOREVER.
+        :param ascending: Determines if the TimeSeries will be ordered ascending or
+                          decending. If this is set to decending once, the ordered
+                          parameter defined in __init__() will be set to False FOREVER.
 
-        @return Returns self for convenience.
+        :return: Returns self for convenience.
         """
         # the time series is sorted by default
         if ascending and self._sorted:
