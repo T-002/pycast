@@ -147,8 +147,8 @@ class BaseMethod(object):
         if not self._in_valid_interval(name, value):
             raise ValueError(self._get_value_error_message_for_invalid_prarameter(name))
 
-        if name in self._parameters:
-            print "Parameter %s already existed. It's old value will be replaced with %s" % (name, value)
+        #if name in self._parameters:
+        #    print "Parameter %s already existed. It's old value will be replaced with %s" % (name, value)
 
         self._parameters[name] = value
     
