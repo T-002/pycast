@@ -45,6 +45,14 @@ class GridSearch(BaseOptimizationMethod):
         if 0 == len(forecastingMethods):
             raise ValueError("forecastingMethods cannot be empty.")
 
+        bestForecastingMethod = None
+        bestParameters        = None
+
+        for forecastingMethod in forecastingMethods:
+            parameters = self.optimize_forecasting_method(timeSeries, forecastingMethod)
+
+        return bestForecastingMethod, parameters
+
     def _generate_next_parameter_value(self, parameter, forecastingMethod):
         """Generator for a specific parameter of the given forecasting method.
 
@@ -79,10 +87,23 @@ class GridSearch(BaseOptimizationMethod):
                        - percentage for start_error_measure, end_error_measure
                        - Definition of the result that will be returned.
         """
-        raise NotImplementedError
-        
-        tuneableParameters = forecastingMethod.get_required_parameters()
+        tuneableParameters = forecastingMethod.get_optimizable_parameters()
 
         generators = {}
         for tuneableParameter in tuneableParameters:
             generators[tuneableParameter] = self._generate_next_parameter_value(parameter, forecastingMethod)
+
+        parameters = {}
+        for parameter in tuneableParameters:
+            parameters[parameter] = None
+
+        smallestError = None
+
+        ## do the loop magic here....
+        ### one for loop for each parameter
+        #### in the most inner loop, the currently chosen parameters should be stored if the calculated error is smaller
+        #### than the last smallestError.
+        ####
+        #### parameters should contain the parameter values that resulted in the smalles error.
+
+        return parameters

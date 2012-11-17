@@ -218,6 +218,16 @@ class BaseForecastingMethod(BaseMethod):
         self._forecastUntil = None
 
     def get_optimizable_parameters(self):
+        """Returns a list with optimizable parameters.
+
+        All required parameters of a forecasting method with defined intervals can be used for optimization.
+
+        @return Returns a list with optimizable parameter names.
+
+        @todo should we return all parameter names from the self._parameterIntervals instead?
+        """
+        return filter(lambda parameter: parameter in self._parameterIntervals, self._requiredParameters)
+
     def set_parameter(self, name, value):
         """Sets a parameter for the BaseForecastingMethod.
 

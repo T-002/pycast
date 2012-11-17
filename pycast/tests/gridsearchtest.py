@@ -64,10 +64,7 @@ class GridSearchTest(unittest.TestCase):
         generated_one = [val for val in generator_one]
         generated_two = [val for val in generator_two]
 
-        print len(values_one), len(generated_one)
         assert len(values_one) == len(generated_one)
-
-        print len(values_two), len(generated_two)
         assert len(values_two) == len(generated_two)
 
         for idx in xrange(len(values_one)):
@@ -87,7 +84,7 @@ class GridSearchTest(unittest.TestCase):
         else:
             assert False    # pragma: no cover
 
-        GridSearch(SMAPE, -2).optimize(self.timeSeries, [BaseForecastingMethod])
+        GridSearch(SMAPE, -2).optimize(self.timeSeries, [BaseForecastingMethod()])
 
 
 
