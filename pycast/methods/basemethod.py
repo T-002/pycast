@@ -32,9 +32,9 @@ class BaseMethod(object):
     def __init__(self, requiredParameters=[], hasToBeSorted=True, hasToBeNormalized=True):
         """Initializes the BaseMethod.
 
-        @param requiredParameters List of parameternames that have to be defined.
-        @param hasToBeSorted Defines if the TimeSeries has to be sorted or not.
-        @param hasToBeNormalized Defines if the TimeSeries has to be normalized or not.
+        :param List requiredParameters:    List of parameternames that have to be defined.
+        :param Boolean hasToBeSorted:    Defines if the TimeSeries has to be sorted or not.
+        :param Boolean hasToBeNormalized:    Defines if the TimeSeries has to be normalized or not.
         """
         super(BaseMethod, self).__init__()
         self._parameters = {}
@@ -52,9 +52,9 @@ class BaseMethod(object):
 
         Only parameters with defined intervals can be used for optimization!
 
-        @return Returns a dictionary containing the parameter intervals, using the parameter
-                name as key, while the value hast the following format:
-                [minValue, maxValue, minIntervalClosed, maxIntervalClosed]
+        :return:    Returns a dictionary containing the parameter intervals, using the parameter
+            name as key, while the value hast the following format:
+            [minValue, maxValue, minIntervalClosed, maxIntervalClosed]
 
                 minValue:          Minimal value for the parameter
                 maxValue:          Maximal value for the parameter
@@ -62,6 +62,7 @@ class BaseMethod(object):
                                    False otherwise.
                 maxIntervalClosed: True, if maxValue represents a valid value for the parameter.
                                    False otherwise.
+        :rtype:     Dictionary
         """
         parameterIntervals = {}
 
@@ -72,17 +73,18 @@ class BaseMethod(object):
     def get_interval(self, parameter):
         """Returns the interval for a given parameter.
 
-        @param parameter Name of the parameter.
+        :param String parameter:     Name of the parameter.
 
-        @return Returns a list containing with [minValue, maxValue, minIntervalClosed, maxIntervalClosed].
-                If no interval definitions for the given parameter exist, None is returned
+        :return:     Returns a list containing with [minValue, maxValue, minIntervalClosed, maxIntervalClosed].
+            If no interval definitions for the given parameter exist, :py:const:`None` is returned.
 
                 minValue:          Minimal value for the parameter
                 maxValue:          Maximal value for the parameter
-                minIntervalClosed: True, if minValue represents a valid value for the parameter.
-                                   False otherwise.
-                maxIntervalClosed: True, if maxValue represents a valid value for the parameter.
-                                   False otherwise.
+                minIntervalClosed: :py:const:`True`, if minValue represents a valid value for the parameter.
+                                   :py:const:`False` otherwise.
+                maxIntervalClosed: :py:const:`True`, if maxValue represents a valid value for the parameter.
+                                   :py:const:`False` otherwise.
+        :rtype:    List
         """
         if not parameter in self._parameterIntervals:
             return None
@@ -92,18 +94,20 @@ class BaseMethod(object):
     def get_required_parameters(self):
         """Returns a list with the names of all required parameters.
 
-        @return Returns a list with the names of all required parameters.
+        :return:    Returns a list with the names of all required parameters.
+        :rtype:     List
         """
         return self._requiredParameters.keys()
 
     def _in_valid_interval(self, parameter, value):
         """Returns if the parameter is within its valid interval.
 
-        @param parameter Name of the parameter that has to be checked.
-        @param value, value of the parameter.
+        :param String parameter:     Name of the parameter that has to be checked.
+        :param Numeric value:     Value of the parameter.
 
-        @return Returns True it the value for the given parameter is valid,
-                        False otherwise.
+        :return:    Returns :py:const:`True` it the value for the given parameter is valid,
+            :py:const:`False` otherwise.
+        :rtype:     Boolean
         """
         ## return True, if not interval is defined for the parameter
         if not parameter in self._parameterIntervals:
@@ -126,9 +130,10 @@ class BaseMethod(object):
     def _get_value_error_message_for_invalid_prarameter(self, parameter):
         """Returns the ValueError message for the given parameter.
 
-        @param parameter Name of the parameter the message has to be created for.
+        :param String parameter:    Name of the parameter the message has to be created for.
 
-        @return Returns a string containing hte message.
+        :return:    Returns a string containing hte message.
+        :rtype:     String
         """
         ## return if not interval is defined for the parameter
         if not parameter in self._parameterIntervals:
@@ -140,8 +145,8 @@ class BaseMethod(object):
     def set_parameter(self, name, value):
         """Sets a parameter for the BaseMethod.
 
-        @param name Name of the parameter. This should be a string.
-        @param value Value of the parameter.
+        :param String name:     Name of the parameter that has to be checked.
+        :param Numeric value:     Value of the parameter.
         """
         if not self._in_valid_interval(name, value):
             raise ValueError(self._get_value_error_message_for_invalid_prarameter(name))
@@ -154,32 +159,36 @@ class BaseMethod(object):
     def get_parameter(self, name):
         """Returns a forecasting parameter.
 
-        @param name Name of the parameter.
+        :param String name:    Name of the parameter.
 
-        @return Returns the value stored in parameter.
+        :return:    Returns the value stored in parameter.
+        :rtype:     Numeric
 
-        @throw Throws a KeyError if the parameter is not defined.
+        :raise:    Raises a :py:exc:`KeyError` if the parameter is not defined.
         """
         return self._parameters[name]
 
     def has_to_be_normalized(self):
         """Returns if the TimeSeries has to be normalized or not.
 
-        @return Returns True if the TimeSeries has to be normalized, False otherwise.
+        :return:    Returns :py:const:`True` if the TimeSeries has to be normalized, :py:const:`False` otherwise.
+        :rtype:     Boolean
         """
         return self._hasToBeNormalized
 
     def has_to_be_sorted(self):
         """Returns if the TimeSeries has to be sorted or not.
 
-        @return Returns True if the TimeSeries has to be sorted, False otherwise.
+        :return:    Returns :py:const:`True` if the TimeSeries has to be sorted, :py:const:`False` otherwise.
+        :rtype:     Boolean
         """
         return self._hasToBeSorted
 
     def can_be_executed(self):
         """Returns if the method can already be executed.
 
-        @return Returns True if all required parameters where already set, False otherwise.
+        :return:    Returns :py:const:`True` if all required parameters where already set, False otherwise.
+        :rtype:     Boolean 
         """
         missingParams = filter(lambda rp: rp not in self._parameters, self._requiredParameters)
         return len(missingParams) == 0
@@ -187,11 +196,12 @@ class BaseMethod(object):
     def execute(self, timeSeries):
         """Executes the BaseMethod on a given TimeSeries object.
 
-        @param timeSeries TimeSeries object that fullfills all requirements (normalization, sortOrder).
+        :param TimeSeries timeSeries: TimeSeries object that fullfills all requirements (normalization, sortOrder).
 
-        @return Returns a TimeSeries object containing the smoothed/forecasted values.
+        :return:    Returns a TimeSeries object containing the smoothed/forecasted values.
+        :rtype:     TimeSeries
 
-        @throw Throws a NotImplementedError if the child class does not overwrite this function.
+        :raise:    Raises a :py:exc:`NotImplementedError` if the child class does not overwrite this function.
         """
         raise NotImplementedError
 
@@ -201,11 +211,11 @@ class BaseForecastingMethod(BaseMethod):
     def __init__(self, requiredParameters=[], valuesToForecast=1, hasToBeSorted=True, hasToBeNormalized=True):
         """Initializes the BaseForecastingMethod.
 
-        @param requiredParameters List of parameternames that have to be defined.
-        @param valuesToForecast Number of entries that will be forecasted.
-                                This can be changed by using forecast_until().
-        @param hasToBeSorted Defines if the TimeSeries has to be sorted or not.
-        @param hasToBeNormalized Defines if the TimeSeries has to be normalized or not.
+        :param List requiredParameters:    List of parameternames that have to be defined.
+        :param Integer valuesToForecast:    Number of entries that will be forecasted.
+            This can be changed by using forecast_until().
+        :param Boolean hasToBeSorted:    Defines if the TimeSeries has to be sorted or not.
+        :param Boolean hasToBeNormalized:    Defines if the TimeSeries has to be normalized or not.
         """
         if not "valuesToForecast" in requiredParameters:
             requiredParameters.append("valuesToForecast")
@@ -221,19 +231,19 @@ class BaseForecastingMethod(BaseMethod):
 
         All required parameters of a forecasting method with defined intervals can be used for optimization.
 
-        @return Returns a list with optimizable parameter names.
+        :return:    Returns a list with optimizable parameter names.
+        :rtype:     List
 
-        @todo should we return all parameter names from the self._parameterIntervals instead?
+        :todo:    Should we return all parameter names from the self._parameterIntervals instead?
         """
         return filter(lambda parameter: parameter in self._parameterIntervals, self._requiredParameters)
 
     def set_parameter(self, name, value):
         """Sets a parameter for the BaseForecastingMethod.
 
-        @param name Name of the parameter.
-                             This should be a string.
+        :param String name:    Name of the parameter.
 
-        @param value Value of the parameter.
+        :param Numeric value:    Value of the parameter.
         """
         ## set the furecast until variable to None if necessary
         if name == "valuesToForecast":
@@ -247,10 +257,10 @@ class BaseForecastingMethod(BaseMethod):
 
         This function enables the automatic determination of valuesToForecast.
 
-        @param timestamp timestamp containing the end date of the forecast.
-        @param format    Format of the given timestamp. This is used to convert the
-                         timestamp into UNIX epochs, if necessary. For valid examples
-                         take a look into the time.strptime() documentation.
+        :param timestamp:    timestamp containing the end date of the forecast.
+        :param String format:    Format of the timestamp. This is used to convert the
+            timestamp from UNIX epochs, if necessary. For valid examples
+            take a look into the :py:func:`time.strptime` documentation.
         """
         if None != format:
             timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, format)
@@ -260,11 +270,11 @@ class BaseForecastingMethod(BaseMethod):
     def _calculate_values_to_forecast(self, timeSeries):
         """Calculates the number of values, that need to be forecasted to match the goal set in forecast_until.
 
-        This sets the parameter "valuesToForecast" and should be called at the beginning of the execute() implementation.
+        This sets the parameter "valuesToForecast" and should be called at the beginning of the :py:meth:`BaseMethod.execute` implementation.
 
-        @param timeSeries Should be a sorted and normalized TimeSeries instance.
+        :param TimeSeries timeSeries:    Should be a sorted and normalized TimeSeries instance.
 
-        @throw Throws a ValueError if the TimeSeries is either not normalized or sorted.
+        :raise:    Raises a :py:exc:`ValueError` if the TimeSeries is either not normalized or sorted.
         """
         ## do not set anything, if it is not required
         if None == self._forecastUntil:

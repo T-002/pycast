@@ -4,8 +4,7 @@ pycast
 .. toctree::
    :maxdepth: 2
 
-   common
-
+   errors
    optimization
 
 
