@@ -11,6 +11,4 @@ pycast.common
    :members:
    :special-members:
 
-.. automodule:: pycast.common.timeseries.TimeSeries
-   :members:
-   :special-members:
+.. automodule:: pycast.common.timeseries
