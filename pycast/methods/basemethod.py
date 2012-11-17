@@ -140,8 +140,7 @@ class BaseMethod(object):
     def set_parameter(self, name, value):
         """Sets a parameter for the BaseMethod.
 
-        @param name Name of the parameter.
-                             This should be a string.
+        @param name Name of the parameter. This should be a string.
         @param value Value of the parameter.
         """
         if not self._in_valid_interval(name, value):
