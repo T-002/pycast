@@ -1,0 +1,7 @@
+# Ignore everything in this directory
+/doctrees/
+/html/
+/latex/*
+# Except this file
+!.gitignore
+!latex/pycast.pdf
