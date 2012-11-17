@@ -31,13 +31,13 @@ except ImportError:   # pragma: no cover
 class _ProfileDecorator(object):
     """Decorator class that build a wrapper around any function.
 
-    @warning The decorator does not take recursive calls into account!
+    :warning: The decorator does not take recursive calls into account!
     """
     def __init__(self, filelocation):
         """Initializes the ProfileMe decorator.
 
-        @param func Function that will be profiles.
-        @param filelocation Location for the profiling results.
+        :param Function func:    Function that will be profiles.
+        :param String filelocation:    Location for the profiling results.
         """
         super(_ProfileDecorator, self).__init__()
         self._filelocation = filelocation
@@ -45,10 +45,10 @@ class _ProfileDecorator(object):
     def __call__(self, func):
         """Returns a wrapped version of the called function.
 
-        @param func Function that should be wrapped.
+        :param Function func:    Function that should be wrapped.
 
-
-        @return Returns a wrapped version of the called function.
+        :return:    Returns a wrapped version of the called function.
+        :rtype:     Function
         """
         def wrapped_func(*args, **kwargs):
             """This function gets executed, if the wrapped function gets called.
