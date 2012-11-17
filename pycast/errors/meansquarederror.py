@@ -29,8 +29,6 @@ class MeanSquaredError(BaseErrorMeasure):
 
     Explanation:
         http://en.wikipedia.org/wiki/Mean_squared_error
-
-    @todo implement calculate
     """
 
     def calculate(self, startingPercentage, endPercentage):
@@ -38,14 +36,17 @@ class MeanSquaredError(BaseErrorMeasure):
 
         Both parameters will be correct at this time.
 
-        @param startingPercentage Defines the start of the interval. This has to be a float value in [0.0, 100.0].
-                             It represents the value, where the error calculation should be started. 
-                             25.0 for example means that the first 25%% of all calculated errors will be ignored.
-        @param endPercentage      Defines the end of the interval. This has to be a float value in [0.0, 100.0].
-                             It represents the vlaue, after which all error values will be ignored.
-                             90.0 for example means that the last 10%% of all local errors will be ignored.
+        :param Float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
+            It represents the value, where the error calculation should be started. 
+            25.0 for example means that the first 25%% of all calculated errors will be ignored.
+        :param Float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
+            It represents the vlaue, after which all error values will be ignored. 90.0 for example means that
+            the last 10%% of all local errors will be ignored.
 
-        @return Returns a float representing the error.
+        :return:    Returns a float representing the error.
+        :rtype:     Float
+
+        :raise:    Raises a :py:exc:`NotImplementedError` if the child class does not overwrite this method.
         """
         errorValues = self._get_error_values(startingPercentage, endPercentage)
         return float(sum(errorValues)) / float(len(errorValues))
@@ -54,11 +55,13 @@ class MeanSquaredError(BaseErrorMeasure):
     def local_error(self, originalValue, calculatedValue):
         """Calculates the error between the two given values.
 
-        @param originalValue   Value of the original data.
-        @param calculatedValue Value of the calculated TimeSeries that
-                               corresponds to originalValue.
+        :param Numeric originalValue:    Value of the original data.
+        :param Numeric calculatedValue:    Value of the calculated TimeSeries that
+            corresponds to originalValue.
 
-        @return Returns the squared error:
-                (calculatedValue - originalValue)^2
+        :return:    Returns the error measure of the two given values.
+        :rtype:     Numeric
+
+        :raise:    Raises a :py:exc:`NotImplementedError` if the child class does not overwrite this method.
         """
         return (calculatedValue - originalValue)**2
