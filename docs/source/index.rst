@@ -5,9 +5,8 @@ pycast
    :maxdepth: 2
 
    common
-   timeseries
-   smoothingmethods
-   forecastingmethods
+
+   optimization
 
 
 Indices and tables

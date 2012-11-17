@@ -33,13 +33,14 @@ class GridSearch(BaseOptimizationMethod):
     def optimize(self, timeSeries, forecastingMethods=[]):
         """Runs the optimization of the given TimeSeries.
 
-        @param timeSeries TimeSeries instance that requires an optimized forecast. It has to have
-        @params forecastingMethods List of forecastingMethods that will be used for optimization.
-                This list cannot be empty!
+        :param TimeSeries timeSeries:    TimeSeries instance that requires an optimized forecast. It has to have
+        :param List forecastingMethods:    List of forecastingMethods that will be used for optimization.
+            This list cannot be empty!
 
-        @return Returns the optimzed forecasting method with the smallest error.
+        :return:    Returns the optimzed forecasting method with the smallest error.
+        :rtype:     BaseForecastingMethod, Dictionary
 
-        @throw ValueError Throws a ValueError if no forecastingMethods are defined.
+        :raise:    Raises a :py:exc:`ValueError` ValueError if no forecastingMethods are defined.
         """
         ## no forecasting methods provided
         if 0 == len(forecastingMethods):
@@ -56,10 +57,11 @@ class GridSearch(BaseOptimizationMethod):
     def _generate_next_parameter_value(self, parameter, forecastingMethod):
         """Generator for a specific parameter of the given forecasting method.
 
-        @param parameter Name of the parameter the generator is used for.
-        @param forecastingMethod Instance of a ForecastingMethod.
+        :param String parameter:    Name of the parameter the generator is used for.
+        :param BaseForecastingMethod forecastingMethod:    Instance of a ForecastingMethod.
 
-        @return Creates a generator used to iterate over possible parameters.
+        :return:    Creates a generator used to iterate over possible parameters.
+        :rtype:     Generator Function
         """
         interval  = forecastingMethod.get_interval(parameter)
         precision = 10**self._precison
@@ -80,12 +82,12 @@ class GridSearch(BaseOptimizationMethod):
     def optimize_forecasting_method(self, timeSeries, forecastingMethod):
         """Optimizes the parameters for the given timeSeries and forecastingMethod.
 
-        @param timeSeries TimeSeries instance, containing hte original data.
-        @param forecastingMethod ForecastingMethod that is used to optimize the parameters.
+        :param TimeSeries timeSeries:    TimeSeries instance, containing hte original data.
+        :param BaseForecastingMethod forecastingMethod:    ForecastingMethod that is used to optimize the parameters.
 
-        @todo Missing: - Errorclass for calculation
-                       - percentage for start_error_measure, end_error_measure
-                       - Definition of the result that will be returned.
+        :todo:    Errorclass for calculation
+        :todo:    percentage for start_error_measure, end_error_measure
+        :todo:    Definition of the result that will be returned.
         """
         tuneableParameters = forecastingMethod.get_optimizable_parameters()
 
