@@ -232,7 +232,7 @@ class HoltWintersMethod(BaseMethod):
         http://en.wikipedia.org/wiki/Exponential_smoothing#Triple_exponential_smoothing
     """
 
-    def __init__(self, smoothingFactor=0.1, trendSmoothingFactor=0.5, seasonSmoothingFactor=0.5, seasonLength=42, valuesToForecast=1):
+    def __init__(self, smoothingFactor=0.1, trendSmoothingFactor=0.5, seasonSmoothingFactor=0.5, seasonLength=42, valuesToForecast=0):
         """Initializes the HoltWintersMethod.
 
         @param smoothingFactor Defines the alpha for the Holt-Winters algorithm.
@@ -253,7 +253,7 @@ class HoltWintersMethod(BaseMethod):
                                           True, True)
 
         if not 0.0 < smoothingFactor < 1.0:
-            raise ValueError("smoothingFactor has to be in (0.0, 1.0).")
+            raise ValueError("smoothingFactor has to be in (0.0, 1.0), but is %f" % smoothingFactor)
         if not 0.0 < trendSmoothingFactor < 1.0:
             raise ValueError("trendSmoothingFactor has to be in (0.0, 1.0).")
         if not 0.0 < seasonSmoothingFactor < 1.0:
