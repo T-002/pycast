@@ -54,12 +54,16 @@ class ExponentialSmoothing(BaseForecastingMethod):
             name as key, while the value hast the following format:
             [minValue, maxValue, minIntervalClosed, maxIntervalClosed]
 
-                minValue:          Minimal value for the parameter
-                maxValue:          Maximal value for the parameter
-                minIntervalClosed: True, if minValue represents a valid value for the parameter.
-                                   False otherwise.
-                maxIntervalClosed: True, if maxValue represents a valid value for the parameter.
-                                   False otherwise.
+                - minValue
+                    Minimal value for the parameter
+                - maxValue
+                    Maximal value for the parameter
+                - minIntervalClosed
+                    :py:const:`True`, if minValue represents a valid value for the parameter.
+                    :py:const:`False` otherwise.
+                - maxIntervalClosed:
+                    :py:const:`True`, if maxValue represents a valid value for the parameter.
+                    :py:const:`False` otherwise.
         :rtype:     Dictionary
         """
         parameterIntervals = {}
@@ -176,12 +180,16 @@ class HoltMethod(BaseForecastingMethod):
             name as key, while the value hast the following format:
             [minValue, maxValue, minIntervalClosed, maxIntervalClosed]
 
-                minValue:          Minimal value for the parameter
-                maxValue:          Maximal value for the parameter
-                minIntervalClosed: True, if minValue represents a valid value for the parameter.
-                                   False otherwise.
-                maxIntervalClosed: True, if maxValue represents a valid value for the parameter.
-                                   False otherwise.
+                - minValue
+                    Minimal value for the parameter
+                - maxValue
+                    Maximal value for the parameter
+                - minIntervalClosed
+                    :py:const:`True`, if minValue represents a valid value for the parameter.
+                    :py:const:`False` otherwise.
+                - maxIntervalClosed:
+                    :py:const:`True`, if maxValue represents a valid value for the parameter.
+                    :py:const:`False` otherwise.
         :rtype:     Dictionary
         """
         parameterIntervals = {}
