@@ -164,5 +164,5 @@ class GridSearchTest(unittest.TestCase):
         #print "GridSearch: SMAPE / Alpha: %s / %s" % (str(errorGridSearchResult)[:8], bestGridSearchAlpha)
         #print ""
 
-        assert str(errorManualResult)[:8] == str(errorGridSearchResult)[:8]
+        assert str(errorManualResult)[:8] >= str(errorGridSearchResult)[:8]
         assert str(bestManualAlpha)[:5]   == str(bestGridSearchAlpha)[:5]
