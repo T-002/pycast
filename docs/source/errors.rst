@@ -3,8 +3,8 @@
 Error Measures
 ==============
 
-.. autoclass:: pycast.errors.BaseErrorMeasure
+.. autoclass:: pycast.errors.baseerrormeasure.BaseErrorMeasure
 
-.. autoclass:: pycast.errors.MeanSquaredError
+.. autoclass:: pycast.errors.meansquarederror.MeanSquaredError
 
-.. autoclass:: pycast.errors.SymmetricMeanAbsolutePercentageError
+.. autoclass:: pycast.errors.symmetricmeansquarederror.SymmetricMeanAbsolutePercentageError

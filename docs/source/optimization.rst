@@ -3,6 +3,6 @@
 Optimization Methods
 ====================
 
-.. autoclass:: pycast.optimization.BaseOptimizationMethod
+.. autoclass:: pycast.optimization.baseoptimizationmethod.BaseOptimizationMethod
 
-.. autoclass:: pycast.optimization.GridSearch
+.. autoclass:: pycast.optimization.gridsearch.GridSearch

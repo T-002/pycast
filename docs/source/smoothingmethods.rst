@@ -3,4 +3,4 @@
 Smoothing Methods
 ===================
 
-.. autoclass:: pycast.methods.SimpleMovingAverage
+.. autoclass:: pycast.methods.simplemovingaverage.SimpleMovingAverage

@@ -28,3 +28,12 @@ from meansquarederror import MeanSquaredError
 from symmetricmeanabsolutepercentageerror import SymmetricMeanAbsolutePercentageError
 
 from meanabsolutepercentageerror import MeanAbsolutePercentageError, GeometricMeanAbsolutePercentageError
+
+## inserted for sphinx viewcode extension
+__all__ = [
+    "BaseErrorMeasure",
+    "MeanSquaredError",
+    "SymmetricMeanAbsolutePercentageError",
+    "MeanAbsolutePercentageError",
+    "GeometricMeanAbsolutePercentageError"
+]
