@@ -221,6 +221,16 @@ class BaseForecastingMethodTest(unittest.TestCase):
         result = sorted(bfm.get_optimizable_parameters())
         assert correctResult == result
 
+    def initialization_exception_test(self):
+        """Test BaseForecastingMethod initialization for ValueError."""
+        for valuesToForecast in xrange(-10,0):
+            try:
+                bfm = BaseForecastingMethod(valuesToForecast=valuesToForecast)
+            except ValueError:
+                pass
+            else:
+                assert False    # pragma: no cover
+
     def forecast_until_test(self):
         """Testing the forecast_until function."""
         for validts in (xrange(1,100)):
