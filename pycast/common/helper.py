@@ -30,7 +30,7 @@ import time
 def linear_interpolation(first, last, steps):
     """Interpolates all missing values using linear interpolation.
 
-    :param Numeric first:    Starting value for the interpolation.
+    :param Numeric first:    Start value for the interpolation.
     :param Numeric last:    End Value for the interpolation
     :param Integer steps:    Number of missing values that have to be calculated.
 
