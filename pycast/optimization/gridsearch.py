@@ -101,21 +101,78 @@ class GridSearch(BaseOptimizationMethod):
         """
         tuneableParameters = forecastingMethod.get_optimizable_parameters()
 
-        generators = {}
+        remainingParameters = []
         for tuneableParameter in tuneableParameters:
-            generators[tuneableParameter] = self._generate_next_parameter_value(tuneableParameter, forecastingMethod)
+            remainingParameters.append([tuneableParameter, [item for item in self._generate_next_parameter_value(tuneableParameter, forecastingMethod)]])
 
-        parameters = {}
-        for parameter in tuneableParameters:
-            parameters[parameter] = None
+        ## Collect the forecasting results
+        forecastingResults = self.optimization_loop(timeSeries, forecastingMethod, remainingParameters)
 
-        smallestError = None
+        ### Debugging GridSearchTest.inner_optimization_result_test
+        #print ""
+        #print "GridSearch"
+        #print "   SMAPE / Alpha"
+        #for item in forecastingResults:
+        #    print "%s / %s" % (str(item[0].get_error(self._startingPercentage, self._endPercentage))[:8], item[1]["smoothingFactor"])
+        #print ""
 
-        ## do the loop magic here....
-        ### one for loop for each parameter
-        #### in the most inner loop, the currently chosen parameters should be stored if the calculated error is smaller
-        #### than the last smallestError.
-        ####
-        #### parameters should contain the parameter values that resulted in the smalles error.
+        ## Collect the parameters that resulted in the smallest error
+        bestForecastingResult = min(forecastingResults, key=lambda item: item[0].get_error(self._startingPercentage, self._endPercentage))
 
-        return parameters
+        ## return the determined parameters
+        return bestForecastingResult
+
+    def optimization_loop(self, timeSeries, forecastingMethod, remainingParameters, currentParameterValues={}):
+        """The optimization loop.
+
+        This function is called recursively, until all parameter values were evaluated.
+
+        :param TimeSeries timeSeries:    TimeSeries instance that requires an optimized forecast.
+        :param BaseForecastingMethod forecastingMethod:    ForecastingMethod that is used to optimize the parameters.
+        :param list remainingParameters:    List containing all parameters with their corresponding values that still
+            need to be evaluated.
+            When this list is empty, the most inner optimization loop is reached.
+        :param Dictionary currentParameterValues:    The currently evaluated forecast parameter combination.
+
+        :return: Returns a list containing a BaseErrorMeasure instance as defined in
+            :py:meth:`BaseOptimizationMethod.__init__` and the forecastingMethods parameter.
+        :rtype: List
+        """
+        ## The most inner loop is reached
+        if 0 == len(remainingParameters):
+            ## set the forecasting parameters
+            for parameter in currentParameterValues:
+                forecastingMethod.set_parameter("parameter", currentParameterValues[parameter])
+
+            ## calculate the forecast
+            forecast = timeSeries.apply(forecastingMethod)
+
+            ## create and initialize the ErrorMeasure
+            error = self._errorClass()
+
+            ## when the error could not be calculated, return an empty result
+            if not error.initialize(timeSeries, forecast):
+                return []
+
+            ### Debugging GridSearchTest.inner_optimization_result_test
+            #print "SMAPE / Alpha: %s / %s" % (str(error.get_error(self._startingPercentage, self._endPercentage))[:8], currentParameterValues["smoothingFactor"])
+
+            ## return the result
+            return [[error, dict(currentParameterValues)]]
+        
+        ## If this is not the most inner loop than extract an additional parameter
+        localParameter       = remainingParameters[-1]
+        localParameterName   = localParameter[0]
+        localParameterValues = localParameter[1]
+
+
+        ## initialize the result
+        results = []
+        
+        ## check the next level for each existing parameter
+        for value in localParameterValues:
+            currentParameterValues[localParameterName] = value
+            remainingParameters = remainingParameters[:-1]
+            results += self.optimization_loop(timeSeries, forecastingMethod, remainingParameters, currentParameterValues)
+
+        return results
