@@ -95,6 +95,11 @@ pygments_style = 'sphinx'
 autodoc_member_order  = "groupwise" # "bysource" # "alphabetical"
 autodoc_default_flags =  ["members", "private-members", "special-members", "show-inheritance"] #  "undoc-members" "inherited-members"
 
+def skip_member(app, what, name, obj, skip, options):
+    return name in ["__weakref__", "__dict__", "__doc__", "__module__"]
+
+def setup(app):
+    app.connect('autodoc-skip-member', skip_member)
 
 # -- Options for HTML output ---------------------------------------------------
 

@@ -6,6 +6,7 @@ pycast
 
    common
    timeseries
+   basemethods
    smoothingmethods
    forecastingmethods
    errors
