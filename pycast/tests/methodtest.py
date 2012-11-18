@@ -273,8 +273,6 @@ class BaseForecastingMethodTest(unittest.TestCase):
 
         assert bfm.get_parameter("valuesToForecast") == 96
 
-
-
 class SimpleMovingAverageTest(unittest.TestCase):
     """Test class for the SimpleMovingAverage method."""
 
@@ -283,6 +281,16 @@ class SimpleMovingAverageTest(unittest.TestCase):
         sm = SimpleMovingAverage(3)
         
         if not sm._parameters["windowsize"] == 3:   raise AssertionError
+
+    def initialization_exception_Test(self):
+        """Test the exeptions of SimpleMovingAverage's __init__."""
+        for invalidWindowSize in xrange(-5, 1):
+        try:
+            SimpleMovingAverage(invalidWindowSize)
+        except ValueError:
+            pass
+        else:
+            assert False    # pragma: no cover
 
     def execute_test(self):
         """Test the execution of SimpleMovingAverage."""

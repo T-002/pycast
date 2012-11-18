@@ -39,8 +39,14 @@ class SimpleMovingAverage(BaseMethod):
         """Initializes the SimpleMovingAverage.
 
         :param Integer windowsize:    Size of the SimpleMovingAverages window.
-            This number has to be uneven and positive.
+        
+        :raise:    Raises a :py:exc:`ValueError` if windowsize is an even or not larger than zero.
         """
+        if windowsize <= 0:
+            raise ValueError("windowsize has to be larger than 0.")
+        if windowsize/2 == windowsize/2.0:
+            raise ValueError("windowsize has to be uneven.")
+
         super(SimpleMovingAverage, self).__init__(["windowsize"], True, True)
         self.set_parameter("windowsize", windowsize)
 
@@ -50,7 +56,7 @@ class SimpleMovingAverage(BaseMethod):
         :return:    TimeSeries object containing the smooth moving average.
         :rtype:     TimeSeries
         
-        :todo:    This implementation aims to support independent for loop execution.
+        :note:    This implementation aims to support independent for loop execution.
         """
         res = TimeSeries()
 
