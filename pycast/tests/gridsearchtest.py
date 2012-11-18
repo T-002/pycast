@@ -28,7 +28,7 @@ import unittest
 ## required modules from pycast
 from pycast.errors            import SymmetricMeanAbsolutePercentageError as SMAPE
 from pycast.common.timeseries import TimeSeries
-from pycast.methods           import BaseForecastingMethod
+from pycast.methods           import BaseForecastingMethod, ExponentialSmoothing
 
 from pycast.optimization import GridSearch
 
@@ -43,7 +43,7 @@ class GridSearchTest(unittest.TestCase):
         bfm._parameterIntervals["parameter_two"] = [0.0, 2.0, True, True]
 
         self.bfm = bfm
-        data = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
+        data = [[0.0, 0.0], [1.1, 0.2], [2.2, 0.6], [3.3, 0.2], [4.4, 0.3], [5.5, 0.5]]
         self.timeSeries = TimeSeries.from_twodim_list(data)
 
     def tearDown(self):
@@ -84,22 +84,37 @@ class GridSearchTest(unittest.TestCase):
         else:
             assert False    # pragma: no cover
 
-        GridSearch(SMAPE, -2).optimize(self.timeSeries, [self.bfm])
+        try:
+            GridSearch(SMAPE, -1).optimize(self.timeSeries, [self.bfm])
+        ## we looped down to the NotImplemetedError of BaseMethod.execute
+        except NotImplementedError:
+            pass
+        else:
+            assert False    # pragma: no cover
 
     def optimize_value_creation_test(self):
         """Testing the first part of optimize_forecasting_method."""
         self.bfm._requiredParameters = ["param1", "param2", "param3", "param4", "param5"]
 
-        GridSearch(SMAPE, -2).optimize_forecasting_method(self.timeSeries, self.bfm)
+        try:
+            GridSearch(SMAPE, -1).optimize_forecasting_method(self.timeSeries, self.bfm)
+        ## we looped down to the NotImplemetedError of BaseMethod.execute
+        except NotImplementedError:
+            pass
+        else:
+            assert False    # pragma: no cover
 
         self.bfm._parameterIntervals = {
             "param3": [0.0, 1.0, True, True],
             "param4": [0.0, 1.0, True, True],
             "param5": [0.0, 1.0, True, True]
         }
-        GridSearch(SMAPE, -2).optimize_forecasting_method(self.timeSeries, self.bfm)
 
-
-
-
-
+        try:
+            GridSearch(SMAPE, -5).optimize_forecasting_method(self.timeSeries, self.bfm)
+        ## we looped down to the NotImplemetedError of BaseMethod.execute
+        except NotImplementedError:
+            pass
+        else:
+            assert False    # pragma: no cover
+    

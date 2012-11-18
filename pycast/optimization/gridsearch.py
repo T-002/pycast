@@ -30,11 +30,17 @@ class GridSearch(BaseOptimizationMethod):
     GridSearch is the brute force method.
     """
 
-    def optimize(self, timeSeries, forecastingMethods=[]):
+    def optimize(self, timeSeries, forecastingMethods=[], startingPercentage=0.0, endPercentage=100.0):
         """Runs the optimization of the given TimeSeries.
 
         :param TimeSeries timeSeries:    TimeSeries instance that requires an optimized forecast.
         :param List forecastingMethods:    List of forecastingMethods that will be used for optimization.
+        :param Float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
+            It represents the value, where the error calculation should be started. 
+            25.0 for example means that the first 25% of all calculated errors will be ignored.
+        :param Float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
+            It represents the vlaue, after which all error values will be ignored. 90.0 for example means that
+            the last 10% of all local errors will be ignored.
 
         :return:    Returns the optimzed forecasting method with the smallest error.
         :rtype:     BaseForecastingMethod, Dictionary
@@ -45,8 +51,8 @@ class GridSearch(BaseOptimizationMethod):
         if 0 == len(forecastingMethods):
             raise ValueError("forecastingMethods cannot be empty.")
 
-        bestForecastingMethod = None
-        bestParameters        = None
+        self._startingPercentage = startingPercentage
+        self._endPercentage      = endPercentage
 
         for forecastingMethod in forecastingMethods:
             parameters = self.optimize_forecasting_method(timeSeries, forecastingMethod)
@@ -74,8 +80,13 @@ class GridSearch(BaseOptimizationMethod):
         if interval[3]:
             endValue += precision
 
+        nbrOfDecimals = 2 + (-self._precison)
+
         while startValue < endValue:
-            yield startValue
+            ## fix the parameter precision
+            parameterValue = float(str(startValue)[:nbrOfDecimals])
+            
+            yield parameterValue
             startValue += precision
 
     def optimize_forecasting_method(self, timeSeries, forecastingMethod):
@@ -84,9 +95,9 @@ class GridSearch(BaseOptimizationMethod):
         :param TimeSeries timeSeries:    TimeSeries instance, containing hte original data.
         :param BaseForecastingMethod forecastingMethod:    ForecastingMethod that is used to optimize the parameters.
 
-        :todo:    Errorclass for calculation
-        :todo:    percentage for start_error_measure, end_error_measure
-        :todo:    Definition of the result that will be returned.
+        :return: Returns a tuple containing only the smallest BaseErrorMeasure instance as defined in
+            :py:meth:`BaseOptimizationMethod.__init__` and the forecastingMethods parameter.
+        :rtype: Tuple
         """
         tuneableParameters = forecastingMethod.get_optimizable_parameters()
 
