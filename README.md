@@ -4,52 +4,9 @@ pycast
 
 pycast aims to provide a python module supporting the basics as 
 well as advanced smoothing and forecasting methods that can be used
-on timeseries data.
+on time series data.
 
-Typical usage often looks like this:
-
-    #!/usr/bin/env python
-    
-    from pycast.common.timeseries           import TimeSeries
-    from pycast.methods.simplemovingaverage import SimpleMovingAverage
-    
-    ts = TimeSeries()
-    ts.add_entry(0.0, 0.0)
-    ts.add_entry(1.0, 0.8)
-    ts.add_entry(2.1, 0.9)
-    ts.add_entry(3.2, 1.3)
-    ts.add_entry(4.0, 2.0)
-    
-    ts.normalize("second")
-    smoothedTS = ts.apply(SimpleMovingAverage(3))
-    
-
-Some usage examples of pycast in combination with other tools like gnuplot
-can be found in ``bin/examples``
-
-Basic pycast objects
-====================
-
-pycast.common.timeseries.TimeSeries
-------------------------------------
-An instance of TimeSeries is used to store and use your timeseries data
-
-TimeSeries instances:
-
-* Store data
-* Can be used to sort and normalize your timeseries data to predefined levels.
-
-Currently, there are some restrictions:
-
-1. TimeSeries can only contain single dimensional, floating point timeseries
-2. For internal representation, the UNIX epochs are used
-
-pycast.methods.simplemovingaverage
-----------------------------------
-Implements the simple moving average algorithm for a given TimeSeries.
-
-pycast.methods.exponentialsmoothing
------------------------------------
+Examples of pycast can be found in ``bin/examples``
 
 Requirements
 ============
