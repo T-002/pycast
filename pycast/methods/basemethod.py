@@ -56,12 +56,16 @@ class BaseMethod(object):
             name as key, while the value hast the following format:
             [minValue, maxValue, minIntervalClosed, maxIntervalClosed]
 
-                minValue:          Minimal value for the parameter
-                maxValue:          Maximal value for the parameter
-                minIntervalClosed: True, if minValue represents a valid value for the parameter.
-                                   False otherwise.
-                maxIntervalClosed: True, if maxValue represents a valid value for the parameter.
-                                   False otherwise.
+                - minValue
+                    Minimal value for the parameter
+                - maxValue
+                    Maximal value for the parameter
+                - minIntervalClosed
+                    :py:const:`True`, if minValue represents a valid value for the parameter.
+                    :py:const:`False` otherwise.
+                - maxIntervalClosed:
+                    :py:const:`True`, if maxValue represents a valid value for the parameter.
+                    :py:const:`False` otherwise.
         :rtype:     Dictionary
         """
         parameterIntervals = {}
@@ -78,12 +82,16 @@ class BaseMethod(object):
         :return:     Returns a list containing with [minValue, maxValue, minIntervalClosed, maxIntervalClosed].
             If no interval definitions for the given parameter exist, :py:const:`None` is returned.
 
-                minValue:          Minimal value for the parameter
-                maxValue:          Maximal value for the parameter
-                minIntervalClosed: :py:const:`True`, if minValue represents a valid value for the parameter.
-                                   :py:const:`False` otherwise.
-                maxIntervalClosed: :py:const:`True`, if maxValue represents a valid value for the parameter.
-                                   :py:const:`False` otherwise.
+                - minValue
+                    Minimal value for the parameter
+                - maxValue
+                    Maximal value for the parameter
+                - minIntervalClosed
+                    :py:const:`True`, if minValue represents a valid value for the parameter.
+                    :py:const:`False` otherwise.
+                - maxIntervalClosed:
+                    :py:const:`True`, if maxValue represents a valid value for the parameter.
+                    :py:const:`False` otherwise.
         :rtype:    List
         """
         if not parameter in self._parameterIntervals:
@@ -247,7 +255,6 @@ class BaseForecastingMethod(BaseMethod):
         """Sets a parameter for the BaseForecastingMethod.
 
         :param String name:    Name of the parameter.
-
         :param Numeric value:    Value of the parameter.
         """
         ## set the furecast until variable to None if necessary

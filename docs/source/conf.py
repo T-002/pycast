@@ -28,7 +28,7 @@ print "\n\n\n%s\n\n\n" % sys.path[:3]
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.mathjax', 'sphinx.ext.ifconfig', 'sphinx.ext.viewcode']
+extensions = ['sphinx.ext.viewcode', 'sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.mathjax', 'sphinx.ext.ifconfig']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -90,8 +90,6 @@ pygments_style = 'sphinx'
 #modindex_common_prefix = []
 
 ## auto-doc adjustments
-#autoclass_skip_member = ["__weakref__"]
-#autoclass_content = "both"
 autodoc_member_order  = "groupwise" # "bysource" # "alphabetical"
 autodoc_default_flags =  ["members", "private-members", "special-members", "show-inheritance"] #  "undoc-members" "inherited-members"
 
