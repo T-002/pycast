@@ -33,14 +33,13 @@ class GridSearch(BaseOptimizationMethod):
     def optimize(self, timeSeries, forecastingMethods=[]):
         """Runs the optimization of the given TimeSeries.
 
-        :param TimeSeries timeSeries:    TimeSeries instance that requires an optimized forecast. It has to have
+        :param TimeSeries timeSeries:    TimeSeries instance that requires an optimized forecast.
         :param List forecastingMethods:    List of forecastingMethods that will be used for optimization.
-            This list cannot be empty!
 
         :return:    Returns the optimzed forecasting method with the smallest error.
         :rtype:     BaseForecastingMethod, Dictionary
 
-        :raise:    Raises a :py:exc:`ValueError` ValueError if no forecastingMethods are defined.
+        :raise:    Raises a :py:exc:`ValueError` ValueError if no forecastingMethods is empty.
         """
         ## no forecasting methods provided
         if 0 == len(forecastingMethods):

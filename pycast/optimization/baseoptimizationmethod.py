@@ -32,13 +32,13 @@ class BaseOptimizationMethod(object):
     def __init__(self, errorMeasureClass, precision=-1):
         """Initializes the optimization method.
 
-        :param BaseErrorMeasure errorMeasureClass:    Error measure class from pycast.errors
+        :param BaseErrorMeasure errorMeasureClass:    Error measure class from :py:mod:`pycast.errors`
         :param Integer precision:    Defines the accuracy for parameter tuning in 10^precision.
             This parameter has to be an integer in [-10, 0].
 
         :raise:    Raises a :py:exc:`TypeError` if errorMeasureClass is not a valid class.
             Valid classes are derived from :py:class:`pycast.errors.BaseErrorMeasure`.
-        :raise:    Raises a :py:exc:`ValueError if precision is not in [-10, 0].
+        :raise:    Raises a :py:exc:`ValueError` if precision is not in [-10, 0].
         """
         if not isinstance(errorMeasureClass, (type, types.ClassType)):
             raise TypeError("errorMeasureClass has to be of type pycast.errors.BaseErrorMeasure or of an inherited class.")
@@ -53,16 +53,15 @@ class BaseOptimizationMethod(object):
         self._errorClass = errorMeasureClass
 
     def optimize(self, timeSeries, forecastingMethods=[]):
-        """Runs the optimization of the given TimeSeries.
+        """Runs the optimization on the given TimeSeries.
 
-        :param TimeSeries timeSeries:    TimeSeries instance that requires an optimized forecast. It has to have
+        :param TimeSeries timeSeries:    TimeSeries instance that requires an optimized forecast.
         :param List forecastingMethods:    List of forecastingMethods that will be used for optimization.
-            This list cannot be empty!
 
         :return:    Returns the optimzed forecasting method with the smallest error.
-        :rtype:     BaseForecastingMethod, Dictionary
+        :rtype:     (BaseForecastingMethod, Dictionary)
 
-        :raise:    Raises a :py:exc:`ValueError` ValueError if no forecastingMethods are defined.
+        :raise:    Raises a :py:exc:`ValueError` ValueError if no forecastingMethods is empty.
         """
         ## no forecasting methods provided
         if 0 == len(forecastingMethods):
