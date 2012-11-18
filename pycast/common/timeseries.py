@@ -234,15 +234,7 @@ class TimeSeries(object):
                 self.add_entry(*entry[:2], format=format)
 
             data = sqlcursor.fetchmany()
-
-
-
-        ## sort the TimeSeries, if necessary
-        if False == isSorted:
-            self.sort_timeseries()
         
-        self._sorted = True
-
         ## return the number of tuples added to the timeseries.
         return tuples
 

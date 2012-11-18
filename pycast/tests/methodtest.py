@@ -292,6 +292,14 @@ class SimpleMovingAverageTest(unittest.TestCase):
             else:
                 assert False    # pragma: no cover
 
+        for invalidWindowSize in xrange(2, 10, 2):
+            try:
+                SimpleMovingAverage(invalidWindowSize)
+            except ValueError:
+                pass
+            else:
+                assert False    # pragma: no cover
+
     def execute_test(self):
         """Test the execution of SimpleMovingAverage."""
         ## Initialize the source
