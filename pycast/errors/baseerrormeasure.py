@@ -59,10 +59,10 @@ class BaseErrorMeasure(object):
             otherwise based on the minimalErrorCalculationPercentage.
         :rtype:     Boolean
         """
-                ## sort the TimeSeries to reduce the required comparison operations
+        ## sort the TimeSeries to reduce the required comparison operations
         originalTimeSeries.sort_timeseries()
         calculatedTimeSeries.sort_timeseries()
-
+        
         ## Performance optimization
         append      = self._errorValues.append
         local_error = self.local_error
