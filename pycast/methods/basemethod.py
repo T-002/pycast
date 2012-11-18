@@ -216,9 +216,14 @@ class BaseForecastingMethod(BaseMethod):
             This can be changed by using forecast_until().
         :param Boolean hasToBeSorted:    Defines if the TimeSeries has to be sorted or not.
         :param Boolean hasToBeNormalized:    Defines if the TimeSeries has to be normalized or not.
+
+        :raise: Raises a :py:exc:`ValueError` when valuesToForecast is smaller than zero.
         """
         if not "valuesToForecast" in requiredParameters:
             requiredParameters.append("valuesToForecast")
+
+        if valuesToForecast < 0:
+            raise ValueError("valuesToForecast has to be larger than zero.")
 
         super(BaseForecastingMethod, self).__init__(requiredParameters, hasToBeSorted=hasToBeSorted, hasToBeNormalized=hasToBeNormalized)
 

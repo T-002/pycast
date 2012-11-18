@@ -36,7 +36,7 @@ class ExponentialSmoothing(BaseForecastingMethod):
         """Initializes the ExponentialSmoothing.
 
         :param Float smoothingFactor:    Defines the alpha for the ExponentialSmoothing.
-            Valid values are (0.0, 1.0).
+            Valid values are in (0.0, 1.0).
         :param Integer valuesToForecast:    Number of values that should be forecasted.
 
         :raise: Raises a :py:exc:`ValueError` when smoothingFactor has an invalid value.
@@ -69,13 +69,13 @@ class ExponentialSmoothing(BaseForecastingMethod):
         return parameterIntervals
 
     def execute(self, timeSeries):
-        """Creates a new TimeSeries containing the smoothed values and one forecasted one.
+        """Creates a new TimeSeries containing the smoothed and forcasted values.
 
-        :return:    TimeSeries object containing the exponentially smoothed TimeSeries,
-           including the forecasted value.
+        :return:    TimeSeries object containing the smoothed TimeSeries,
+           including the forecasted values.
         :rtype:     TimeSeries
         
-        :todo:    Currently the first normalized value is simply chosen as the starting point.
+        :note:    The first normalized value is chosen as the starting point.
         """
         ## determine the number of values to forecast, if necessary
         self._calculate_values_to_forecast(timeSeries)
@@ -152,9 +152,9 @@ class HoltMethod(BaseForecastingMethod):
         """Initializes the HoltMethod.
 
         :param Float smoothingFactor:    Defines the alpha for the ExponentialSmoothing.
-            Valid values are (0.0, 1.0).
+            Valid values are in (0.0, 1.0).
         :param Float trendSmoothingFactor:    Defines the beta for the HoltMethod.
-            Valid values are (0.0, 1.0).
+            Valid values are in (0.0, 1.0).
         :param Integer valuesToForecast:    Defines the number of forecasted values that will
             be part of the result.
 
@@ -194,11 +194,11 @@ class HoltMethod(BaseForecastingMethod):
     def execute(self, timeSeries):
         """Creates a new TimeSeries containing the smoothed values.
 
-        :return:    TimeSeries object containing the exponentially smoothed TimeSeries,
+        :return:    TimeSeries object containing the smoothed TimeSeries,
             including the forecasted values.
         :rtype:     TimeSeries
         
-        :todo: Currently the first normalized value is simply chosen as the starting point.
+        :note: The first normalized value is chosen as the starting point.
         """
         ## determine the number of values to forecast, if necessary
         self._calculate_values_to_forecast(timeSeries)
