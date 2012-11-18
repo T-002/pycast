@@ -285,12 +285,12 @@ class SimpleMovingAverageTest(unittest.TestCase):
     def initialization_exception_Test(self):
         """Test the exeptions of SimpleMovingAverage's __init__."""
         for invalidWindowSize in xrange(-5, 1):
-        try:
-            SimpleMovingAverage(invalidWindowSize)
-        except ValueError:
-            pass
-        else:
-            assert False    # pragma: no cover
+            try:
+                SimpleMovingAverage(invalidWindowSize)
+            except ValueError:
+                pass
+            else:
+                assert False    # pragma: no cover
 
     def execute_test(self):
         """Test the execution of SimpleMovingAverage."""

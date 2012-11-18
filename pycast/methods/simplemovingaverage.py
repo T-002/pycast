@@ -53,6 +53,8 @@ class SimpleMovingAverage(BaseMethod):
     def execute(self, timeSeries):
         """Creates a new TimeSeries containing the SMA values for the predefined windowsize.
 
+        :param TimeSeries timeSeries:    The TimeSeries used to calculate the simple moving average values.
+
         :return:    TimeSeries object containing the smooth moving average.
         :rtype:     TimeSeries
         
