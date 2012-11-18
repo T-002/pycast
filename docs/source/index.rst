@@ -12,7 +12,6 @@ pycast
    errors
    optimization
 
-
 Indices and tables
 ==================
 
