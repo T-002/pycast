@@ -31,7 +31,7 @@ class BaseErrorMeasure(object):
         :param Integer minimalErrorCalculationPercentage:    The number of entries in an
             original TimeSeries that have to have corresponding partners in the calculated
             TimeSeries. Corresponding partners have the same time stamp.
-            Valid values are [0.0, 100.0].
+            Valid values are in [0.0, 100.0].
 
         :raise: Raises a :py:exc:`ValueError` if minimalErrorCalculationPercentage is not
             in [0.0, 100.0].
@@ -49,7 +49,7 @@ class BaseErrorMeasure(object):
     def initialize(self, originalTimeSeries, calculatedTimeSeries):
         """Initializes the ErrorMeasure.
 
-        During initialization, all local_errors are calculated.
+        During initialization, all :py:meth:`BaseErrorMeasure.local_errors` are calculated.
 
         :param TimeSeries originalTimeSeries:    TimeSeries containing the original data.
         :param TimeSeries calculatedTimeSeries:    TimeSeries containing calculated data.
@@ -96,10 +96,10 @@ class BaseErrorMeasure(object):
 
         :param Float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
             It represents the value, where the error calculation should be started. 
-            25.0 for example means that the first 25%% of all calculated errors will be ignored.
+            25.0 for example means that the first 25% of all calculated errors will be ignored.
         :param Float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
             It represents the vlaue, after which all error values will be ignored. 90.0 for example means that
-            the last 10%% of all local errors will be ignored.
+            the last 10% of all local errors will be ignored.
 
         :return:    Returns a list with the defined error values.
         :rtype:     List
@@ -110,22 +110,23 @@ class BaseErrorMeasure(object):
 
     def get_error(self, startingPercentage=0.0, endPercentage=100.0):
         """Calculates the error for the given interval (startingPercentage, endPercentage) between the TimeSeries 
-        given during initialize().
+        given during :py:meth:`BaseErrorMeasure.initialize`.
 
         :param Float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
             It represents the value, where the error calculation should be started. 
-            25.0 for example means that the first 25%% of all calculated errors will be ignored.
+            25.0 for example means that the first 25% of all calculated errors will be ignored.
         :param Float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
             It represents the vlaue, after which all error values will be ignored. 90.0 for example means that
-            the last 10%% of all local errors will be ignored.
+            the last 10% of all local errors will be ignored.
 
         :return:    Returns a float representing the error.
         :rtype:     Float
 
         :raise:    Raises a :py:exc:`ValueError` in one of the following cases:
-                   startingPercentage not in [0.0, 100.0]
-                   endPercentage      not in [0.0, 100.0]
-                   endPercentage < startingPercentage
+            
+            - startingPercentage not in [0.0, 100.0]
+            - endPercentage      not in [0.0, 100.0]
+            - endPercentage < startingPercentage
 
         :raise:    Raises a :py:exc:`StandardError` if :py:meth:`BaseErrorMeasure.initialize` was not successfull before.
         """
@@ -141,19 +142,19 @@ class BaseErrorMeasure(object):
         if endPercentage < startingPercentage:
             raise ValueError("endPercentage has to be greater or equal than startingPercentage.")
 
-        return self.calculate(startingPercentage, endPercentage)
+        return self._calculate(startingPercentage, endPercentage)
     
-    def calculate(self, startingPercentage, endPercentage):
-        """This is the error calculation function that gets called by get_error().
+    def _calculate(self, startingPercentage, endPercentage):
+        """This is the error calculation function that gets called by :py:meth:`BaseErrorMeasure.get_error`.
 
         Both parameters will be correct at this time.
 
         :param Float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
             It represents the value, where the error calculation should be started. 
-            25.0 for example means that the first 25%% of all calculated errors will be ignored.
+            25.0 for example means that the first 25% of all calculated errors will be ignored.
         :param Float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
             It represents the vlaue, after which all error values will be ignored. 90.0 for example means that
-            the last 10%% of all local errors will be ignored.
+            the last 10% of all local errors will be ignored.
 
         :return:    Returns a float representing the error.
         :rtype:     Float

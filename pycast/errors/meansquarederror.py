@@ -31,17 +31,17 @@ class MeanSquaredError(BaseErrorMeasure):
         http://en.wikipedia.org/wiki/Mean_squared_error
     """
 
-    def calculate(self, startingPercentage, endPercentage):
-        """This is the error calculation function that gets called by get_error().
+    def _calculate(self, startingPercentage, endPercentage):
+        """This is the error calculation function that gets called by :py:meth:`BaseErrorMeasure.get_error`.
 
         Both parameters will be correct at this time.
 
         :param Float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
             It represents the value, where the error calculation should be started. 
-            25.0 for example means that the first 25%% of all calculated errors will be ignored.
+            25.0 for example means that the first 25% of all calculated errors will be ignored.
         :param Float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
             It represents the vlaue, after which all error values will be ignored. 90.0 for example means that
-            the last 10%% of all local errors will be ignored.
+            the last 10% of all local errors will be ignored.
 
         :return:    Returns a float representing the error.
         :rtype:     Float
@@ -61,7 +61,5 @@ class MeanSquaredError(BaseErrorMeasure):
 
         :return:    Returns the error measure of the two given values.
         :rtype:     Numeric
-
-        :raise:    Raises a :py:exc:`NotImplementedError` if the child class does not overwrite this method.
         """
-        return (calculatedValue - originalValue)**2
+        return (calculatedValue - originalValue)**2.0

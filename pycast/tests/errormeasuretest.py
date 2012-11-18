@@ -88,7 +88,7 @@ class BaseErrorMeasureTest(unittest.TestCase):
 
         bem = BaseErrorMeasure()
 
-        bem_calculate  = bem.calculate
+        bem_calculate  = bem._calculate
         bem_local_error = bem.local_error
         
         def return_zero(ignoreMe, ignoreMeToo):
@@ -96,11 +96,11 @@ class BaseErrorMeasureTest(unittest.TestCase):
 
         ## remove the NotImplementedErrors for initialization
         bem.local_error = return_zero
-        bem.calculate   = return_zero
+        bem._calculate   = return_zero
         bem.initialize(tsOrg, tsCalc)
 
         bem.local_error = bem_local_error
-        bem.calculate  = bem_calculate
+        bem._calculate  = bem_calculate
 
         try:
             bem.get_error(10.0, 90.0)
@@ -144,7 +144,7 @@ class MeanSquaredErrorTest(unittest.TestCase):
 
         mse = MeanSquaredError()
         for idx in xrange(len(orgValues)):
-            res = (calValues[idx] - orgValues[idx])**2
+            res = (calValues[idx] - orgValues[idx])**2.0
             assert  str(res)[:6] == str(mse.local_error(orgValues[idx], calValues[idx]))[:6]
 
     def number_of_comparisons_test(self):
