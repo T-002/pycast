@@ -7,4 +7,4 @@ Error Measures
 
 .. autoclass:: pycast.errors.meansquarederror.MeanSquaredError
 
-.. autoclass:: pycast.errors.symmetricmeansquarederror.SymmetricMeanAbsolutePercentageError
+.. autoclass:: pycast.errors.symmetricmeanabsolutepercentageerror.SymmetricMeanAbsolutePercentageError

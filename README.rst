@@ -1,4 +1,3 @@
-======
 pycast
 ======
 
@@ -10,16 +9,16 @@ Examples of pycast can be found in ``bin/examples``
 
 Requirements
 ============
-* nose     >= 1.2.1
-* coverage >= 3.5.3
+- nose     >= 1.2.1
+- coverage >= 3.5.3
 
 Documentation requirements
 ==========================
-* sphinx >= 1.1.3
+- sphinx >= 1.1.3
 
 Example Requirements
 ====================
-* itty >= 0.8.1
+- itty >= 0.8.1
 
 License
 =======
@@ -51,4 +50,4 @@ Felix Leupold
 
 References
 ==========
-* `Project site: https://github.com/T-002/pycast`.
+- Project site: https://github.com/T-002/pycast
