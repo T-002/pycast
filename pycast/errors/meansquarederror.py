@@ -60,6 +60,6 @@ class MeanSquaredError(BaseErrorMeasure):
             corresponds to originalValue.
 
         :return:    Returns the error measure of the two given values.
-        :rtype:     Numeric
+        :rtype:     Float
         """
         return (calculatedValue - originalValue)**2.0
