@@ -8,20 +8,20 @@ on time series data.
 Examples of pycast can be found in ``bin/examples``
 
 Requirements
-============
-- nose     >= 1.2.1
-- coverage >= 3.5.3
+------------
 
-Documentation requirements
-==========================
-- sphinx >= 1.1.3
+pycast
+    - nose     >= 1.2.1
+    - coverage >= 3.5.3
 
-Example Requirements
-====================
-- itty >= 0.8.1
+Documentation
+    - sphinx >= 1.1.3
+
+Examples
+    - itty >= 0.8.1
 
 License
-=======
+-------
 Copyright (c) 2012 Christian Schwarz
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -44,10 +44,6 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Contributors
-============
+------------
 Christian Schwarz,
 Felix Leupold
-
-References
-==========
-- Project site: https://github.com/T-002/pycast
