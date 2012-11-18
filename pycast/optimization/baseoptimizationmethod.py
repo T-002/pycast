@@ -34,18 +34,18 @@ class BaseOptimizationMethod(object):
 
         :param BaseErrorMeasure errorMeasureClass:    Error measure class from :py:mod:`pycast.errors`
         :param Integer precision:    Defines the accuracy for parameter tuning in 10^precision.
-            This parameter has to be an integer in [-10, 0].
+            This parameter has to be an integer in [-7, 0].
 
         :raise:    Raises a :py:exc:`TypeError` if errorMeasureClass is not a valid class.
             Valid classes are derived from :py:class:`pycast.errors.BaseErrorMeasure`.
-        :raise:    Raises a :py:exc:`ValueError` if precision is not in [-10, 0].
+        :raise:    Raises a :py:exc:`ValueError` if precision is not in [-7, 0].
         """
         if not isinstance(errorMeasureClass, (type, types.ClassType)):
             raise TypeError("errorMeasureClass has to be of type pycast.errors.BaseErrorMeasure or of an inherited class.")
         if not issubclass(errorMeasureClass, BaseErrorMeasure):
             raise TypeError("errorMeasureClass has to be of type pycast.errors.BaseErrorMeasure or of an inherited class.")
-        if not -10 <= precision <= 0:
-            raise ValueError("precision has to be in [-10,0].")
+        if not -7 <= precision <= 0:
+            raise ValueError("precision has to be in [-7,0].")
 
         super(BaseOptimizationMethod, self).__init__()
 
