@@ -9,3 +9,5 @@ Error Measures
    baseerrormeasure
    meansquarederror
    symmetricmeanabsolutepercentageerror
+
+   customerrormeasure
