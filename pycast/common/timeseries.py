@@ -41,10 +41,9 @@ NormalizationLevels = {
 ## Fusion methods that can be used to fusionate multiple data points within
 ## the same time bucket. This might sort the list it is used on.
 FusionMethods = {
-    "mean":       lambda l: sum(l) / float(len(l)),                         # pragma: no cover
-    "median":     lambda l: sorted(l)[len(l)//2],                           # pragma: no cover
-    "sum":        lambda l: sum(l),                                         # pragma: no cover
-    "winsorized": lambda l: l.sort() or sum(l[1], l[1:-2], l[-2]) / len(l)  # pragma: no cover
+    "mean":       lambda l: sum(l) / float(len(l)),    # pragma: no cover
+    "median":     lambda l: sorted(l)[len(l)//2],      # pragma: no cover
+    "sum":        lambda l: sum(l)                     # pragma: no cover
 }
 
 ## Interpolation methods that can be used for interpolation missing data points.

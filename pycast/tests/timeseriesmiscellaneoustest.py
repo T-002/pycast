@@ -85,7 +85,6 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         else:
             assert False    # pragma: no cover
 
-
     def validity_of___str___test(self):
         """Test the validity of __str__ for a given TimeSeries."""
         ts = TimeSeries()
