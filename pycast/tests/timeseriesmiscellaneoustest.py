@@ -121,7 +121,8 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         tsOrg.add_entry(2.0, 0.2)
         tsOrg.add_entry(3.0, 0.3)
         tsOrg.add_entry(4.0, 0.4)
-        json = tsOrg.to_json(format="%Y-%m-%d_%H:%M:%S")
+        tsOrg.set_timeformat("%Y-%m-%d_%H:%M:%S")
+        json = tsOrg.to_json()
 
         tsNew = TimeSeries.from_json(json, format="%Y-%m-%d_%H:%M:%S")
 
@@ -156,7 +157,8 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         data = [[0.0, 0.0], [1.0, 0.1], [2.0, 0.2], [3.0, 0.3], [4.0, 0.4], [5.0, 0.5]]
         tsOne = TimeSeries.from_twodim_list(data)
 
-        data = tsOne.to_twodim_list(format="%Y-%m-%d_%H:%M:%S")
+        tsOne.set_timeformat("%Y-%m-%d_%H:%M:%S")
+        data = tsOne.to_twodim_list()
         tsTwo = TimeSeries.from_twodim_list(data, format="%Y-%m-%d_%H:%M:%S")
 
         assert tsOne == tsTwo
@@ -195,7 +197,8 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         """Test serialization of timeSeries into gnuplot file."""
         data  = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
         tsOne = TimeSeries.from_twodim_list(data)
-        tsOne.to_gnuplot_datafile("temp_plot.dat", format="%Y-%m-%d_%H:%M:%S")
+        tsOne.set_timeformat("%Y-%m-%d_%H:%M:%S")
+        tsOne.to_gnuplot_datafile("temp_plot.dat")
         
         assert os.path.isfile("temp_plot.dat")
 

@@ -79,14 +79,23 @@ class TimeSeries(object):
 
         self._timeseriesData = []
 
-    def to_gnuplot_datafile(self, datafilepath, format=None):
+        self._timestampFormat = None
+
+    def set_timeformat(self, format=None):
+        """Sets the TimeSeries global time format.
+
+        :param String format:    Format of the timestamp. This is used to convert the
+            timestamp from UNIX epochs when the TimeSeries gets serialized by :py:meth:`TimeSeries.to_json` and 
+            :py:meth:`TimeSeries.to_gnuplot_datafile`. For valid examples take a look into the :py:func:`time.strptime`
+            documentation.
+        """
+        self._timestampFormat = format
+
+    def to_gnuplot_datafile(self, datafilepath):
         """Dumps the TimeSeries into a gnuplot compatible data file.
 
         :param String datafilepath:    Path used to create the file. If that file already exists,
             it will be overwritten!
-        :param String format:    Format of the timestamp. This is used to convert the
-            timestamp from UNIX epochs, if set. For valid examples take a look into the
-            :py:func:`time.strptime` documentation.
 
         :return:   Returns :py:const:`True` if the data could be written, :py:const:`False` otherwise.
         :rtype:    Boolean
@@ -95,6 +104,8 @@ class TimeSeries(object):
             datafile = file(datafilepath, "wb")
         except:
             return False
+
+        format = self._timestampFormat
         
         formatval = format
         if None == format:
@@ -113,20 +124,16 @@ class TimeSeries(object):
         datafile.close()
         return True
 
-    def to_json(self, format=None):
+    def to_json(self):
         """Returns a JSON representation of the TimeSeries data.
-
-        :param String format:    Format of the given timestamp. This is used to convert the
-            timestamp into UNIX epochs, if set. For valid examples take a look into
-            the :py:func:`time.strptime` documentation.
-
 
         :return:    Returns a basestring, containing the JSON representation of the current
             data stored within the TimeSeries.
         :rtype:     String
         """
         ## return the simple way if no timestamp format was requested
-        if None == format:
+        format = self._timestampFormat
+        if None == self._timestampFormat:
             return """[%s]""" % ",".join([str(entry) for entry in self._timeseriesData])
 
         ## initialize the result
@@ -160,21 +167,21 @@ class TimeSeries(object):
         """
         ## create and fill the given TimeSeries
         ts = TimeSeries()
+        ts.set_timeformat(format)
+
         for entry in eval(json):
-            ts.add_entry(*entry, format=format)
+            ts.add_entry(*entry)
 
         return ts
 
-    def to_twodim_list(self, format=None):
+    def to_twodim_list(self):
         """Serializes the TimeSeries data into a two dimensional list of [timestamp, value] pairs.
-
-        :param String format:    Format of the timestamp. This is used to convert the
-            timestamp from UNIX epochs, if set. For valid examples
-            take a look into the :py:func:`time.strptime` documentation.
 
         :return:    Returns a two dimensional list containing [timestamp, value] pairs.
         :rtype:     List
         """
+        format = self._timestampFormat
+
         if None == format:
             return self._timeseriesData
 
@@ -202,21 +209,21 @@ class TimeSeries(object):
         """
         ## create and fill the given TimeSeries
         ts = TimeSeries()
+        ts.set_timeformat(format)
 
         for entry in datalist:
-            ts.add_entry(*entry[:2], format=format)        
+            ts.add_entry(*entry[:2])        
 
         return ts
 
-    def initialize_from_sql_cursor(self, sqlcursor, format=None):
+    def initialize_from_sql_cursor(self, sqlcursor):
         """Initializes the TimeSeries's data from the given SQL cursor.
+
+        You need to set the time stamp format using :py:meth:`TimeSeries.set_timeformat`.
 
         :param SQLCursor sqlcursor:    Cursor that was holds the SQL result for any given
             "SELECT timestamp, value, ... FROM ..." SQL query.
             Only the first two attributes of the SQL result will be used.
-        :param String format:    Format of the given timestamp. This is used to convert the
-            timestamp into UNIX epochs, if set. For valid examples take a look into
-            the :py:func:`time.strptime` documentation.
 
         :return:    Returns the number of entries added to the TimeSeries.
         :rtype:     Integer
@@ -228,7 +235,7 @@ class TimeSeries(object):
         data = sqlcursor.fetchmany()
         while 0 < len(data):
             for entry in data:
-                self.add_entry(*entry[:2], format=format)
+                self.add_entry(*entry[:2])
 
             data = sqlcursor.fetchmany()
         
@@ -357,20 +364,18 @@ class TimeSeries(object):
         """
         return time.strftime(format, time.localtime(timestamp))
 
-    def add_entry(self, timestamp, data, format=None):
+    def add_entry(self, timestamp, data):
         """Adds a new data entry to the TimeSeries.
 
         :param timestamp:    Time stamp of the data.
             This has either to be a float representing the UNIX epochs
             or a string containing a timestamp in the given format.
         :param Numeric data:    Actual data value.
-        :param String format:    Format of the given timestamp. This is used to convert the
-            timestamp into UNIX epochs, if set. For valid examples take a look into
-            the :py:func:`time.strptime` documentation.
         """
         self._normalized = self._predefinedNormalized
         self._sorted     = self._predefinedSorted
 
+        format = self._timestampFormat
         if None != format:
             timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, format)
 
