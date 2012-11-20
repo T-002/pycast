@@ -104,7 +104,7 @@ class TimeSeries(object):
 
         datafile.write("## time_as_<%s> value" % formatval)
 
-        convert = self._convert_epoch_to_timestamp
+        convert = TimeSeries.convert_epoch_to_timestamp
         for datapoint in self._timeseriesData:
             timestamp, value = datapoint
             if None != format:
@@ -132,7 +132,7 @@ class TimeSeries(object):
         ## initialize the result
         valuepairs = []
         append     = valuepairs.append
-        convert    = self._convert_epoch_to_timestamp
+        convert    = TimeSeries.convert_epoch_to_timestamp
         
         for entry in self._timeseriesData:
             append("""["%s",%s]""" % (convert(entry[0], format), entry[1]))
@@ -152,7 +152,7 @@ class TimeSeries(object):
 
         @return Returns a TimeSeries instance containing the data.
 
-        @todo This is an unsafe version! Only use it with the original version.
+        @warning This is an unsafe version! Only use it with the original version.
               All assumtions regarding normalization and sort order will be ignored
               and set to default.
         """
@@ -180,7 +180,7 @@ class TimeSeries(object):
 
         datalist = []
         append   = datalist.append
-        convert  = self._convert_epoch_to_timestamp
+        convert  = TimeSeries.convert_epoch_to_timestamp
         for entry in self._timeseriesData:
             append([convert(entry[0], format), entry[1]])
 
@@ -338,7 +338,8 @@ class TimeSeries(object):
         """
         self._timeseriesData[index] = value
 
-    def _convert_timestamp_to_epoch(self, timestamp, format):
+    @classmethod
+    def convert_timestamp_to_epoch(cls, timestamp, format):
         """Converts the given timestamp into a float representing UNIX-epochs.
 
         @param timestamp Timestamp in the defined format.
@@ -349,7 +350,8 @@ class TimeSeries(object):
         """
         return time.mktime(time.strptime(timestamp, format))
 
-    def _convert_epoch_to_timestamp(self, timestamp, format):
+    @classmethod
+    def convert_epoch_to_timestamp(cls, timestamp, format):
         """Converts the given float representing UNIX-epochs into an actual timestamp.
 
         @param timestamp Timestamp as UNIX-epochs.
@@ -368,7 +370,7 @@ class TimeSeries(object):
                          This has either to be a float representing the UNIX epochs
                          or a string containing a timestamp in the given format.
         @param data      Data points information.
-                         This has to be a float for now.
+                         This has to be a numeric value for now.
         @param format    Format of the given timestamp. This is used to convert the
                          timestamp into UNIX epochs, if necessary. For valid examples
                          take a look into the time.strptime() documentation.
@@ -377,9 +379,9 @@ class TimeSeries(object):
         self._sorted     = self._predefinedSorted
 
         if None != format:
-            timestamp = self._convert_timestamp_to_epoch(timestamp, format)
+            timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, format)
 
-        self._timeseriesData.append([timestamp, data])
+        self._timeseriesData.append([float(timestamp), float(data)])
 
     def sort_timeseries(self, ascending=True):
         """Sorts the data points within the TimeSeries according to their occurence
@@ -447,23 +449,20 @@ class TimeSeries(object):
                              specific time is missing. The available interpolation
                              methods are defined in timeseries.InterpolationMethods.
 
-        @return True if the normalization was successfull, False otherwise.
+        @throw Throws a ValueError if a parameter has an unknown method.
         """
         ## do not normalize the TimeSeries if it is already normalized, either by
         ## definition or a prior call of normalize(*)
         if self._normalized:
-            return True
+            return
 
         ## check if all parameters are defined correctly
         if not normalizationLevel in NormalizationLevels:
-            print "Normalization level %s is unknown." % normalizationLevel
-            return False
+            raise ValueError("Normalization level %s is unknown." % normalizationLevel)
         if not fusionMethod in FusionMethods:
-            print "Fusion method %s is unknown." % fusionMethod
-            return False
+            raise ValueError("Fusion method %s is unknown." % fusionMethod)
         if not interpolationMethod in InterpolationMethods:
-            print "Interpolation method %s is unknown." % interpolationMethod
-            return False
+            raise ValueError("Interpolation method %s is unknown." % interpolationMethod)
 
         ## get the defined methods and parameter
         normalizationLevel  = NormalizationLevels[normalizationLevel]
@@ -478,12 +477,6 @@ class TimeSeries(object):
         end             = self._timeseriesData[-1][0]
         span            = end - start
         bucketcnt       = int(span / normalizationLevel)+ 1
-
-        ### add a bucket, if the last value is at the end of a bucket
-        #if bucketcnt != int(bucketcnt):
-        #    bucketcnt += 1
-        #
-        #bucketcnt = int(bucketcnt) + 1
 
         buckethalfwidth = normalizationLevel / 2.0
         bucketstart     = start + buckethalfwidth
@@ -548,14 +541,19 @@ class TimeSeries(object):
         ## at the end set self._normalized to True
         self._normalized = True
 
-        return True
-
     def is_normalized(self):
         """Returns if the TimeSeries is normalized.
 
         @return Returns True if the TimeSeries is normalized, False otherwise.
         """
         return self._normalized
+
+    def is_sorted(self):
+        """Returns if the TimeSeries is sorted.
+
+        @return Returns True if the TimeSeries is sorted ascending, False otherwise.
+        """
+        return self._sorted
 
     def apply(self, method):
         """Applies the given ForecastingAlgorithm or SmoothingMethod from the

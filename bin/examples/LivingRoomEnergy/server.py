@@ -7,15 +7,6 @@ from pycast.common.timeseries import TimeSeries
 db = sqlite3.connect('energy.db')
 MY_ROOT = os.path.join(os.path.dirname(__file__), 'static')
 
-@get('/')
-def index(request):
-	return serve_static_file(request, 'index.html', root=os.path.join(os.path.dirname(__file__), './'))
-
-@get('/sampleData')
-def sample_data(request):
-	result = [[1350029449.14, 0.988454545454551], [1350115849.14, 0.7318750000000174], [1350202249.14, 1.1735972850678742]]
-	return json.dumps(result)
-
 @get('/energyData')
 def energy_data(request):
 	"""
@@ -27,6 +18,10 @@ def energy_data(request):
 	original.normalize("day")
 	result = [entry for entry in original]
 	return Response(json.dumps(result), content_type='application/json')
+
+@post('/optimize')
+def optimize(request):
+	
 
 @post('/holtWinters')
 def holtWinters(request):
@@ -62,6 +57,10 @@ def holtWinters(request):
 				'original': [entry for entry in original],
 				'smoothed': [entry for entry in smoothed]}
 	return Response(json.dumps(result), content_type='application/json')
+
+@get('/')
+def index(request):
+	return serve_static_file(request, 'index.html', root=os.path.join(os.path.dirname(__file__), './'))
 
 @get('/static/(?P<filename>.+)')
 def serve_static(request, filename):

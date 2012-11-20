@@ -34,9 +34,8 @@ class BaseOptimizationMethodTest(unittest.TestCase):
     """Test class containing all tests for pycast.optimization.BaseOptimizationMethod."""
 
     def initialization_errormeasure_test(self):
-        """Test optimization methods error measure inizialization."""
-        be = BaseErrorMeasure()
-        bom = BaseOptimizationMethod(be, -1)
+        """Test optimization methods error measure initialization."""
+        bom = BaseOptimizationMethod(BaseErrorMeasure, -1)
 
         try:
             bom = BaseOptimizationMethod(None, -1)
@@ -45,16 +44,21 @@ class BaseOptimizationMethodTest(unittest.TestCase):
         else:
             assert False    # pragma: no cover
 
+        try:
+            bom = BaseOptimizationMethod(BaseOptimizationMethodTest, -1)
+        except TypeError:
+            pass
+        else:
+            assert False    # pragma: no cover
+
     def initialization_precision_test(self):
         """Test the parameter range durign the initialization."""
-        be = BaseErrorMeasure()
-        
         for precision in xrange(-10, 1, 1):
-            bom = BaseOptimizationMethod(be, precision)
+            bom = BaseOptimizationMethod(BaseErrorMeasure, precision)
 
         for precision in [-1020, -324, -11, 1, 42, 123, 2341]:
             try:
-                bom = BaseOptimizationMethod(be, precision)
+                bom = BaseOptimizationMethod(BaseErrorMeasure, precision)
             except ValueError:
                 pass
             else:
@@ -63,9 +67,8 @@ class BaseOptimizationMethodTest(unittest.TestCase):
 
     def optimze_value_error_test(self):
         """Test the optimize call."""
-        be = BaseErrorMeasure()
-        bom = BaseOptimizationMethod(be, -3)
-        bm = BaseMethod()
+        bom = BaseOptimizationMethod(BaseErrorMeasure, -3)
+        bm  = BaseMethod()
 
         bom.optimize(TimeSeries(), [bm])
         

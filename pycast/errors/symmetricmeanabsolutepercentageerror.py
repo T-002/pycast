@@ -29,6 +29,8 @@ class SymmetricMeanAbsolutePercentageError(BaseErrorMeasure):
 
     Explanation:
         http://monashforecasting.com/index.php?title=SMAPE (Formula (3))
+
+    If the calculated value and the original value are equal, the error is 0.
     """
 
     def calculate(self, startingPercentage, endPercentage):
@@ -58,4 +60,8 @@ class SymmetricMeanAbsolutePercentageError(BaseErrorMeasure):
 
         @return Returns your custom local error.
         """
+        ## error is zero
+        if originalValue == calculatedValue:
+            return 0.0
+
         return abs(originalValue - calculatedValue) / ((abs(originalValue) + abs(calculatedValue)) / 2)

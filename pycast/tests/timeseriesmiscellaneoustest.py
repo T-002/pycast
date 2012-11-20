@@ -277,7 +277,8 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         tsOne   = TimeSeries.from_twodim_list(dataOne)
         tsTwo   = TimeSeries.from_twodim_list(dataTwo)
         
-        if not tsOne.normalize("second"): raise AssertionError
+        tsOne.normalize("second")
+
         if not len(tsOne) == len(tsTwo): raise AssertionError
         if not tsOne == tsTwo:           raise AssertionError
 
@@ -289,8 +290,9 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         tsOne   = TimeSeries.from_twodim_list(dataOne)
         tsTwo   = TimeSeries.from_twodim_list(dataTwo)
         
-        if not tsOne.normalize("second"): raise AssertionError
-        if not tsOne.normalize("second"): raise AssertionError
+        tsOne.normalize("second")
+        tsOne.normalize("second")
+        
         if not len(tsOne) == len(tsTwo):  raise AssertionError
         if not tsOne == tsTwo:            raise AssertionError
 
@@ -299,6 +301,23 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         data = [[0.0, 0.0], [1.0, 1.0], [2.0, 2.0], [5.0, 5.0]]
         ts   = TimeSeries.from_twodim_list(data)
 
-        if ts.normalize(normalizationLevel="ILLEGAL_PARAMETER"):  raise AssertionError
-        if ts.normalize(fusionMethod="ILLEGAL_PARAMETER"):        raise AssertionError
-        if ts.normalize(interpolationMethod="ILLEGAL_PARAMETER"): raise AssertionError
+        try:
+            ts.normalize(normalizationLevel="ILLEGAL_PARAMETER")
+        except ValueError:
+            pass
+        else:
+            assert False    # pragma: no cover
+
+        try:
+            ts.normalize(fusionMethod="ILLEGAL_PARAMETER")
+        except ValueError:
+            pass
+        else:
+            assert False    # pragma: no cover
+
+        try:
+            ts.normalize(interpolationMethod="ILLEGAL_PARAMETER")
+        except ValueError:
+            pass
+        else:
+            assert False    # pragma: no cover

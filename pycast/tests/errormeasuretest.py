@@ -179,7 +179,6 @@ class MeanSquaredErrorTest(unittest.TestCase):
 
         mse = MeanSquaredError(80.0)
         mse.initialize(tsOrg, tsCalc)
-        print mse.get_error()
 
         assert str(mse.get_error()) == "5.125"
 
@@ -190,9 +189,9 @@ class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
 
     def local_error_test(self):
         """Test SymmetricMeanAbsolutePercentageError local error."""
-        dataPtsOrg  = [2.30,     .373,           .583,          1.88,  1.44,         -0.0852, -.341,  .619,  .131,  1.27]
-        dataPtsCalc = [-1.21,   -.445,           .466,          .226, -.694,           -.575,  2.73, -1.49, -1.45, -.193]
-        localErrors = [  2.0,     2.0, 0.223069590086, 1.57075023742,   2.0,   1.48379279006,   2.0,   2.0,   2.0,   2.0]
+        dataPtsOrg  = [2.30,     .373,           .583,          1.88,  1.44,         -0.0852, -.341,  .619,  .131,  1.27, 4.0]
+        dataPtsCalc = [-1.21,   -.445,           .466,          .226, -.694,           -.575,  2.73, -1.49, -1.45, -.193, 4.0]
+        localErrors = [  2.0,     2.0, 0.223069590086, 1.57075023742,   2.0,   1.48379279006,   2.0,   2.0,   2.0,   2.0, 0.0]
 
         smape = SymmetricMeanAbsolutePercentageError()
 
@@ -205,8 +204,8 @@ class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
 
     def error_calculation_test(self):
         """Test the calculation of the SymmetricMeanAbsolutePercentageError."""
-        dataPtsOrg  = [2.30,     .373,           .583,          1.88,  1.44,         -0.0852, -.341,  .619,  .131,  1.27]
-        dataPtsCalc = [-1.21,   -.445,           .466,          .226, -.694,           -.575,  2.73, -1.49, -1.45, -.193]
+        dataPtsOrg  = [2.30,     .373,           .583,          1.88,  1.44,         -0.0852, -.341,  .619,  .131,  1.27, 0]
+        dataPtsCalc = [-1.21,   -.445,           .466,          .226, -.694,           -.575,  2.73, -1.49, -1.45, -.193, 0]
 
         tsOrg  = TimeSeries()
         tsCalc = TimeSeries()
@@ -219,4 +218,4 @@ class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
         smape.initialize(tsOrg, tsCalc)
 
         ## compare the strings due to accuracy
-        assert "1.7277" == str(smape.get_error())[:6]
+        assert "1.5706" == str(smape.get_error())[:6]

@@ -22,6 +22,8 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import types 
+
 from pycast.errors import BaseErrorMeasure
 
 class BaseOptimizationMethod(object):
@@ -34,11 +36,14 @@ class BaseOptimizationMethod(object):
         @param precision Defines the accuracy for parameter tuning in 10^precision.
                          This parameter has to be an integer in [-10, 0].
 
-        @throw TypeError Throws a TypeError if errorMeasureClass is an invalid class.
+        @throw TypeError Throws a TypeError if errorMeasureClass is not a valid class.
+                         Valid classes are derived from pycast.BaseErrorMeasure.
         @throw ValueError Throws a ValueError if precision is not in [-10, 0].
         """
-        if not isinstance(errorMeasureClass, BaseErrorMeasure):
-            raise TypeError("errorMeasureClass has to be of type pycasst.errors.BaseErrorMeasure or of an inherited class.")
+        if not isinstance(errorMeasureClass, (type, types.ClassType)):
+            raise TypeError("errorMeasureClass has to be of type pycast.errors.BaseErrorMeasure or of an inherited class.")
+        if not issubclass(errorMeasureClass, BaseErrorMeasure):
+            raise TypeError("errorMeasureClass has to be of type pycast.errors.BaseErrorMeasure or of an inherited class.")
         if not -10 <= precision <= 0:
             raise ValueError("precision has to be in [-10,0].")
 

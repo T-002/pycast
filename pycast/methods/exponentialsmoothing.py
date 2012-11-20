@@ -22,10 +22,10 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from pycast.methods import BaseMethod
+from pycast.methods import BaseForecastingMethod
 from pycast.common.timeseries import TimeSeries
 
-class ExponentialSmoothing(BaseMethod):
+class ExponentialSmoothing(BaseForecastingMethod):
     """Implements an exponential smoothing algorithm.
 
     Explanation:
@@ -41,14 +41,31 @@ class ExponentialSmoothing(BaseMethod):
 
         @throw ValueError, when smoothingFactor has an invalid value.
         """
-        super(ExponentialSmoothing, self).__init__(["smoothingFactor", "valuesToForecast"], True, True)
-
-        if not 0.0 < smoothingFactor < 1.0:
-            raise ValueError("smoothingFactor has to be in (0.0, 1.0).")
+        super(ExponentialSmoothing, self).__init__(["smoothingFactor"], valuesToForecast, True, True)
 
         self.set_parameter("smoothingFactor",  smoothingFactor)
-        self.set_parameter("valuesToForecast", valuesToForecast)
 
+    def _get_parameter_intervals(self):
+        """Returns the intervals for the methods parameter.
+
+        Only parameters with defined intervals can be used for optimization!
+
+        @return Returns a dictionary containing the parameter intervals, using the parameter
+                name as key, while the value hast the following format:
+                [minValue, maxValue, minIntervalClosed, maxIntervalClosed]
+
+                minValue:          Minimal value for the parameter
+                maxValue:          Maximal value for the parameter
+                minIntervalClosed: True, if minValue represents a valid value for the parameter.
+                                   False otherwise.
+                maxIntervalClosed: True, if maxValue represents a valid value for the parameter.
+                                   False otherwise.
+        """
+        parameterIntervals = {}
+
+        parameterIntervals["smoothingFactor"] = [0.0, 1.0, False, False]
+
+        return parameterIntervals
 
     def execute(self, timeSeries):
         """Creates a new TimeSeries containing the smoothed values and one forecasted one.
@@ -58,6 +75,9 @@ class ExponentialSmoothing(BaseMethod):
         
         @todo Currently the first normalized value is simply chosen as the starting point.
         """
+        ## determine the number of values to forecast, if necessary
+        self._calculate_values_to_forecast(timeSeries)
+
         ## extract the required parameters, performance improvement
         alpha            = self._parameters["smoothingFactor"]
         valuesToForecast = self._parameters["valuesToForecast"]
@@ -119,7 +139,7 @@ class ExponentialSmoothing(BaseMethod):
         ## return a TimeSeries, containing the result
         return TimeSeries.from_twodim_list(resultList)
 
-class HoltMethod(BaseMethod):
+class HoltMethod(BaseForecastingMethod):
     """Implements the Holt algorithm.
 
     Explanation:
@@ -139,18 +159,34 @@ class HoltMethod(BaseMethod):
         @raises ValueError, when smoothingFactor or trendSmoothingFactor has an invalid value.
         """
         super(HoltMethod, self).__init__(["smoothingFactor",
-                                          "trendSmoothingFactor", 
-                                          "valuesToForecast"],
-                                          True, True)
-
-        if not 0.0 < smoothingFactor < 1.0:
-            raise ValueError("smoothingFactor has to be in (0.0, 1.0).")
-        if not 0.0 < trendSmoothingFactor < 1.0:
-            raise ValueError("trendSmoothingFactor has to be in (0.0, 1.0).")
+                                          "trendSmoothingFactor"],
+                                          valuesToForecast, True, True)
 
         self.set_parameter("smoothingFactor",      smoothingFactor)
         self.set_parameter("trendSmoothingFactor", trendSmoothingFactor)
-        self.set_parameter("valuesToForecast",     valuesToForecast)
+
+    def _get_parameter_intervals(self):
+        """Returns the intervals for the methods parameter.
+
+        Only parameters with defined intervals can be used for optimization!
+
+        @return Returns a dictionary containing the parameter intervals, using the parameter
+                name as key, while the value hast the following format:
+                [minValue, maxValue, minIntervalClosed, maxIntervalClosed]
+
+                minValue:          Minimal value for the parameter
+                maxValue:          Maximal value for the parameter
+                minIntervalClosed: True, if minValue represents a valid value for the parameter.
+                                   False otherwise.
+                maxIntervalClosed: True, if maxValue represents a valid value for the parameter.
+                                   False otherwise.
+        """
+        parameterIntervals = {}
+
+        parameterIntervals["smoothingFactor"]      = [0.0, 1.0, False, False]
+        parameterIntervals["trendSmoothingFactor"] = [0.0, 1.0, False, False]
+
+        return parameterIntervals
 
     def execute(self, timeSeries):
         """Creates a new TimeSeries containing the smoothed values.
@@ -160,6 +196,9 @@ class HoltMethod(BaseMethod):
         
         @todo Currently the first normalized value is simply chosen as the starting point.
         """
+        ## determine the number of values to forecast, if necessary
+        self._calculate_values_to_forecast(timeSeries)
+
         ## extract the required parameters, performance improvement
         alpha            = self._parameters["smoothingFactor"]
         beta             = self._parameters["trendSmoothingFactor"]
@@ -225,7 +264,7 @@ class HoltMethod(BaseMethod):
     
 ## TODO:A second method, referred to as either Brown's linear exponential smoothing (LES) or Brown's double exponential smoothing works as follows.[9]
 
-class HoltWintersMethod(BaseMethod):
+class HoltWintersMethod(BaseForecastingMethod):
     """Implements the Holt-Winters algorithm.
 
     Explanation:
@@ -247,8 +286,7 @@ class HoltWintersMethod(BaseMethod):
         """
         super(HoltWintersMethod, self).__init__(["smoothingFactor",
                                           "trendSmoothingFactor",
-                                          "seasonSmoothingFactor"
-                                          "valuesToForecast",
+                                          "seasonSmoothingFactor",
                                           "seasonLength"],
                                           True, True)
 
@@ -265,7 +303,6 @@ class HoltWintersMethod(BaseMethod):
         self.set_parameter("trendSmoothingFactor", trendSmoothingFactor)
         self.set_parameter("seasonSmoothingFactor", seasonSmoothingFactor)
         self.set_parameter("seasonLength",         seasonLength)
-        self.set_parameter("valuesToForecast",     valuesToForecast)
 
     def execute(self, timeSeries):
         """Creates a new TimeSeries containing the smoothed values.
@@ -278,6 +315,8 @@ class HoltWintersMethod(BaseMethod):
 
         @throw Throws a NotImplementedError if the child class does not overwrite this function.
         """
+        ## determine the number of values to forecast, if necessary
+        self._calculate_values_to_forecast(timeSeries)
 
         seasonLength = self.get_parameter("seasonLength")
         if len(timeSeries) < seasonLength:
@@ -317,7 +356,7 @@ class HoltWintersMethod(BaseMethod):
         
         for m in xrange(1, valuesToForecast + 1):
             currentTime += normalizedTimeDiff
-            lastSeasonValue = seasonValues[(t + m-1) % seasonLength]
+            lastSeasonValue = seasonValues[(idx + m-1) % seasonLength]
             forecast = (lastEstimator + m * lastTrend) * lastSeasonValue
             resultList.append([currentTime, estimator])
         

@@ -27,17 +27,18 @@ from pycast.common.timeseries import TimeSeries
 class BaseMethod(object):
     """Baseclass for all smoothing and forecasting methods."""
 
+    _interval_definitions = { True: ["[", "]"], False: ["(", ")"]}
+
     def __init__(self, requiredParameters=[], hasToBeSorted=True, hasToBeNormalized=True):
         """Initializes the BaseMethod.
 
         @param requiredParameters List of parameternames that have to be defined.
-
-        @param sorted Defines if the TimeSeries has to be sorted or not.
-
-        @param normalized Defines if the TimeSeries has to be normalized or not.
+        @param hasToBeSorted Defines if the TimeSeries has to be sorted or not.
+        @param hasToBeNormalized Defines if the TimeSeries has to be normalized or not.
         """
         super(BaseMethod, self).__init__()
         self._parameters = {}
+        self._parameterIntervals = self._get_parameter_intervals()
 
         self._requiredParameters = {}
         for entry in requiredParameters:
@@ -46,16 +47,107 @@ class BaseMethod(object):
         self._hasToBeSorted     = hasToBeSorted
         self._hasToBeNormalized = hasToBeNormalized
 
+    def _get_parameter_intervals(self):
+        """Returns the intervals for the methods parameter.
+
+        Only parameters with defined intervals can be used for optimization!
+
+        @return Returns a dictionary containing the parameter intervals, using the parameter
+                name as key, while the value hast the following format:
+                [minValue, maxValue, minIntervalClosed, maxIntervalClosed]
+
+                minValue:          Minimal value for the parameter
+                maxValue:          Maximal value for the parameter
+                minIntervalClosed: True, if minValue represents a valid value for the parameter.
+                                   False otherwise.
+                maxIntervalClosed: True, if maxValue represents a valid value for the parameter.
+                                   False otherwise.
+        """
+        parameterIntervals = {}
+
+        ## YOUR METHOD SPECIFIC CODE HERE!
+
+        return parameterIntervals
+
+    def get_interval(self, parameter):
+        """Returns the interval for a given parameter.
+
+        @param parameter Name of the parameter.
+
+        @return Returns a list containing with [minValue, maxValue, minIntervalClosed, maxIntervalClosed].
+                If no interval definitions for the given parameter exist, None is returned
+
+                minValue:          Minimal value for the parameter
+                maxValue:          Maximal value for the parameter
+                minIntervalClosed: True, if minValue represents a valid value for the parameter.
+                                   False otherwise.
+                maxIntervalClosed: True, if maxValue represents a valid value for the parameter.
+                                   False otherwise.
+        """
+        if not parameter in self._parameterIntervals:
+            return None
+
+        return self._parameterIntervals[parameter]
+
+    def get_required_parameters(self):
+        """Returns a list with the names of all required parameters.
+
+        @return Returns a list with the names of all required parameters.
+        """
+        return self._requiredParameters.keys()
+
+    def _in_valid_interval(self, parameter, value):
+        """Returns if the parameter is within its valid interval.
+
+        @param parameter Name of the parameter that has to be checked.
+        @param value, value of the parameter.
+
+        @return Returns True it the value for the given parameter is valid,
+                        False otherwise.
+        """
+        ## return True, if not interval is defined for the parameter
+        if not parameter in self._parameterIntervals:
+            return True
+
+        interval = self._parameterIntervals[parameter]
+
+        if True == interval[2] and True == interval[3]:
+            return interval[0] <= value <= interval[1]
+
+        if False == interval[2] and True == interval[3]:
+            return interval[0] <  value <= interval[1]
+
+        if True == interval[2] and False == interval[3]:
+            return interval[0] <= value <  interval[1]
+
+        #if False == interval[2] and False == interval[3]:
+        return interval[0] < value < interval[1]
+
+    def _get_value_error_message_for_invalid_prarameter(self, parameter):
+        """Returns the ValueError message for the given parameter.
+
+        @param parameter Name of the parameter the message has to be created for.
+
+        @return Returns a string containing hte message.
+        """
+        ## return if not interval is defined for the parameter
+        if not parameter in self._parameterIntervals:
+            return 
+
+        interval = self._parameterIntervals[parameter]
+        return "%s has to be in %s%s, %s%s." % (parameter, BaseMethod._interval_definitions[interval[2]][0], interval[0], interval[1], BaseMethod._interval_definitions[interval[3]][1])
+
     def set_parameter(self, name, value):
         """Sets a parameter for the BaseMethod.
 
-        @param name Name of the parameter.
-                             This should be a string.
-
+        @param name Name of the parameter. This should be a string.
         @param value Value of the parameter.
         """
-        if name in self._parameters:
-            print "Parameter %s already existed. It's old value will be replaced with %s" % (name, value)
+        if not self._in_valid_interval(name, value):
+            raise ValueError(self._get_value_error_message_for_invalid_prarameter(name))
+
+        #if name in self._parameters:
+        #    print "Parameter %s already existed. It's old value will be replaced with %s" % (name, value)
 
         self._parameters[name] = value
     
@@ -102,3 +194,89 @@ class BaseMethod(object):
         @throw Throws a NotImplementedError if the child class does not overwrite this function.
         """
         raise NotImplementedError
+
+class BaseForecastingMethod(BaseMethod):
+    """Basemethod for all forecasting methods."""
+
+    def __init__(self, requiredParameters=[], valuesToForecast=1, hasToBeSorted=True, hasToBeNormalized=True):
+        """Initializes the BaseForecastingMethod.
+
+        @param requiredParameters List of parameternames that have to be defined.
+        @param valuesToForecast Number of entries that will be forecasted.
+                                This can be changed by using forecast_until().
+        @param hasToBeSorted Defines if the TimeSeries has to be sorted or not.
+        @param hasToBeNormalized Defines if the TimeSeries has to be normalized or not.
+        """
+        if not "valuesToForecast" in requiredParameters:
+            requiredParameters.append("valuesToForecast")
+
+        super(BaseForecastingMethod, self).__init__(requiredParameters, hasToBeSorted=hasToBeSorted, hasToBeNormalized=hasToBeNormalized)
+
+        self.set_parameter("valuesToForecast", valuesToForecast)
+
+        self._forecastUntil = None
+
+    def get_optimizable_parameters(self):
+        """Returns a list with optimizable parameters.
+
+        All required parameters of a forecasting method with defined intervals can be used for optimization.
+
+        @return Returns a list with optimizable parameter names.
+
+        @todo should we return all parameter names from the self._parameterIntervals instead?
+        """
+        return filter(lambda parameter: parameter in self._parameterIntervals, self._requiredParameters)
+
+    def set_parameter(self, name, value):
+        """Sets a parameter for the BaseForecastingMethod.
+
+        @param name Name of the parameter.
+                             This should be a string.
+
+        @param value Value of the parameter.
+        """
+        ## set the furecast until variable to None if necessary
+        if name == "valuesToForecast":
+            self._forecastUntil = None
+
+        ## continue with the parents implementation
+        return super(BaseForecastingMethod, self).set_parameter(name, value)
+
+    def forecast_until(self, timestamp, format=None):
+        """Sets the forecasting goal (timestamp wise).
+
+        This function enables the automatic determination of valuesToForecast.
+
+        @param timestamp timestamp containing the end date of the forecast.
+        @param format    Format of the given timestamp. This is used to convert the
+                         timestamp into UNIX epochs, if necessary. For valid examples
+                         take a look into the time.strptime() documentation.
+        """
+        if None != format:
+            timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, format)
+
+        self._forecastUntil = timestamp
+
+    def _calculate_values_to_forecast(self, timeSeries):
+        """Calculates the number of values, that need to be forecasted to match the goal set in forecast_until.
+
+        This sets the parameter "valuesToForecast" and should be called at the beginning of the execute() implementation.
+
+        @param timeSeries Should be a sorted and normalized TimeSeries instance.
+
+        @throw Throws a ValueError if the TimeSeries is either not normalized or sorted.
+        """
+        ## do not set anything, if it is not required
+        if None == self._forecastUntil:
+            return
+
+        ## check the TimeSeries for correctness
+        if not timeSeries.is_sorted():
+            raise ValueError("timeSeries has to be sorted.")
+        if not timeSeries.is_normalized():
+            raise ValueError("timeSeries has to be normalized.")
+
+        timediff = timeSeries[-1][0] - timeSeries[-2][0]
+        forecastSpan = self._forecastUntil - timeSeries[-1][0]
+
+        self.set_parameter("valuesToForecast", int(forecastSpan / timediff) + 1)

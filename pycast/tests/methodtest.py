@@ -27,7 +27,7 @@ import unittest, os, random
 
 ## required modules from pycast
 from pycast.common.timeseries import TimeSeries
-from pycast.methods import BaseMethod
+from pycast.methods import BaseMethod, BaseForecastingMethod
 from pycast.methods import SimpleMovingAverage
 from pycast.methods import ExponentialSmoothing, HoltMethod, HoltWintersMethod
 from pycast.errors import MeanSquaredError
@@ -53,6 +53,91 @@ class BaseMethodTest(unittest.TestCase):
 
         if not len(b._parameters) == 2: raise AssertionError
 
+    def required_parameter_test(self):
+        """Test for required parameters."""
+        parameters = ["param1", "param2"]
+        
+        b = BaseMethod(parameters)
+
+        requiredParameters = b.get_required_parameters()
+
+        for parameter in parameters:
+            if not parameter in requiredParameters:
+                raise AssertionError    # pragma: no cover
+
+        assert len(parameters) == len(requiredParameters)
+
+    def interval_validity_test(self):
+        """Test if BaseMethod handles parameter validity correctly."""
+        parameters = ["param1", "param2", "param3", "param4"]
+
+        b = BaseMethod(parameters)
+        
+        ## overwrite parameter validity dictionary for testing
+        b._parameterIntervals = {
+            "param1": [0.0, 1.0, False, False],
+            "param2": [0.0, 1.0, False, True],
+            "param3": [0.0, 1.0, True, False],
+            "param4": [0.0, 1.0, True, True]
+        }
+
+        ## definetely invalid parameters
+        for value in [-1.5, 3.2]:
+            for parameter in parameters:
+                if b._in_valid_interval(parameter, value):
+                    assert False    # pragma: no cover
+
+        ## definetly valid parameters
+        for value in [0.3, 0.42]:
+            for parameter in parameters:
+                if not b._in_valid_interval(parameter, value):
+                    assert False    # pragma: no cover
+
+    def get_interval_test(self):
+        """Test if correct intervals are returned."""
+        parameters = ["param1", "param2", "param3", "param4"]
+
+        b = BaseMethod(parameters)
+        
+        ## overwrite parameter validity dictionary for testing
+        parameterIntervals = {
+            "param1": [0.0, 1.0, False, False],
+            "param2": [0.0, 1.0, False, True],
+            "param3": [0.0, 1.0, True, False],
+            "param4": [0.0, 1.0, True, True]
+        }
+        b._parameterIntervals = parameterIntervals
+
+        for parameter in parameters:
+            i = b.get_interval(parameter)
+            if not i == parameterIntervals[parameter]:
+                raise AssertionError    # pragma: no cover
+
+        assert None == b.get_interval("unknown")
+
+    def value_error_message_test(self):
+        """Test the value error message."""
+        parameters = ["param1", "param2", "param3", "param4"]
+
+        b = BaseMethod(parameters)
+
+        ## overwrite parameter validity dictionary for testing
+        b._parameterIntervals = {
+            "param1": [0.0, 1.0, False, False],
+            "param2": [0.0, 1.0, False, True],
+            "param3": [0.0, 1.0, True, False],
+            "param4": [0.0, 1.0, True, True]
+        }
+
+        ## Unknown parameters should return no message
+        if None != b._get_value_error_message_for_invalid_prarameter("unknown"):
+            assert False    # pragma: no cover
+
+        ## Known parameters should return a message
+        for parameter in parameters:
+            if not isinstance(b._get_value_error_message_for_invalid_prarameter(parameter), basestring):
+                assert False    # pragma: no cover
+
     def parameter_get_test(self):
         """Test the parameter set function."""
         b = BaseMethod()
@@ -68,7 +153,7 @@ class BaseMethodTest(unittest.TestCase):
         else:
             assert False    # pragma: no cover
 
-    def method_completition_Test(self):
+    def method_completition_test(self):
         """Test if methods detect their executable state correctly."""
         b = BaseMethod(["param1", "param2"])
 
@@ -94,6 +179,102 @@ class BaseMethodTest(unittest.TestCase):
             pass
         else:
             assert False    # pragma: no cover
+
+class BaseForecastingMethodTest(unittest.TestCase):
+    """Test class for the BaseForecastingMethod."""
+
+    def initialization_test(self):
+        """Testing BaseForecastingMethod initialization."""
+
+        class FM1(BaseForecastingMethod):
+            def __init__(self):
+                super(FM1, self).__init__(["valuesToForecast"])
+
+        class FM2(BaseForecastingMethod):
+            def __init__(self):
+                super(FM2, self).__init__([])
+
+        FM1()
+        FM2()
+        BaseForecastingMethod(valuesToForecast=4, hasToBeNormalized=False, hasToBeSorted=True, requiredParameters=[])
+        BaseForecastingMethod(valuesToForecast=4, hasToBeNormalized=False, hasToBeSorted=True)
+        BaseForecastingMethod(["valuesToForecast"])
+        BaseForecastingMethod(["valuesToForecast"], valuesToForecast=1)
+        BaseForecastingMethod([], hasToBeNormalized=True)
+
+    def get_optimizable_parameters_test(self):
+        """Test get optimizable parameters."""
+        ## Initialize parameter lists
+        parameters = ["param1", "param2", "param3", "param4", "param5"]
+        intervals = {
+            "param3": [0.0, 1.0, True, True],
+            "param4": [0.0, 1.0, True, True],
+            "param5": [0.0, 1.0, True, True],
+            "param6": [0.0, 1.0, True, True]
+        }
+
+        ## initialize BaseForecastingMethod and set some parameter intervals
+        bfm = BaseForecastingMethod(parameters, valuesToForecast=4, hasToBeNormalized=False, hasToBeSorted=True)
+        bfm._parameterIntervals = intervals
+
+        ## check, if the BaseForecastingMethod returns the correct parameters
+        correctResult = ["param3", "param4", "param5"]
+        result = sorted(bfm.get_optimizable_parameters())
+        assert correctResult == result
+
+    def forecast_until_test(self):
+        """Testing the forecast_until function."""
+        for validts in (xrange(1,100)):
+            BaseForecastingMethod(["valuesToForecast"]).forecast_until(validts, format=None)
+
+        BaseForecastingMethod(["valuesToForecast"]).forecast_until("2012", format="%Y")
+
+    def calculate_values_to_forecast_exception_test(self):
+        """Test for correct handling of illegal TimeSeries instances.
+
+        @todo remove NotImplementedError Catch."""
+        data = [[1.5, 152.0],[2.5, 172.8],[3.5, 195.07200000000003],[4.5, 218.30528000000004]]
+        ts   = TimeSeries.from_twodim_list(data)
+        ts.add_entry(3, 1343)
+        bfm  = BaseForecastingMethod()
+
+        ## nothing has to be done, because forecast_until was never called
+        bfm._calculate_values_to_forecast(ts)
+
+        bfm.forecast_until(134)
+
+        try:
+            bfm._calculate_values_to_forecast(ts)
+        except ValueError:
+            pass
+        else:
+            assert False    # pragma: no cover
+
+        ts.sort_timeseries()
+        try:
+            bfm._calculate_values_to_forecast(ts)
+        except ValueError:
+            pass
+        else:
+            assert False    # pragma: no cover
+
+        ts.normalize("second")
+        bfm._calculate_values_to_forecast(ts)
+
+    def number_of_values_to_forecast_test(self):
+        """Test the valid calculation of values to forecast."""
+        data = [[1.5, 152.0],[2.5, 172.8],[3.5, 195.07200000000003],[4.5, 218.30528000000004]]
+        ts   = TimeSeries.from_twodim_list(data)
+        ts.normalize("second")
+
+        bfm  = BaseForecastingMethod()
+
+        bfm.forecast_until(100)
+        bfm._calculate_values_to_forecast(ts)
+
+        assert bfm.get_parameter("valuesToForecast") == 96
+
+
 
 class SimpleMovingAverageTest(unittest.TestCase):
     """Test class for the SimpleMovingAverage method."""
@@ -130,7 +311,7 @@ class ExponentialSmoothingTest(unittest.TestCase):
         """Test the initialization of the ExponentialSmoothing method."""
         sm = ExponentialSmoothing(0.2, 0)
         
-        for alpha in [-0.1, 1.1, 3.1, -4.2]:
+        for alpha in [-42.23, -0.1, 0.0, 1.0, 1.1, 3.1, 4.2]:
             try:
                 ExponentialSmoothing(alpha)
             except ValueError:
