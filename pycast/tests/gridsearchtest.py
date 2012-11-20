@@ -212,3 +212,21 @@ class GridSearchTest(unittest.TestCase):
         ## automatically determine the best alpha using GridSearch
         gridSearch = GridSearch(SMAPE, -2)
         result     = gridSearch.optimize(self.timeSeries, [fm1, fm2])
+
+    def optimization_loop_test(self):
+        """Testing the optimozation loop."""
+        gridSearch = GridSearch(SMAPE, -2)
+
+        def crap_execute(ignoreMe):
+            ts = self.timeSeries.to_twodim_list()
+            ts = TimeSeries.from_twodim_list(ts)
+
+            for entry in ts:
+                entry[0] += 0.1
+
+            return ts
+
+        self.bfm.execute = crap_execute
+
+        result = gridSearch.optimization_loop(self.timeSeries, self.bfm, [], {})
+        assert result == []
