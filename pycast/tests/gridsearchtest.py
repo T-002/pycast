@@ -28,7 +28,7 @@ import unittest
 ## required modules from pycast
 from pycast.errors            import SymmetricMeanAbsolutePercentageError as SMAPE
 from pycast.common.timeseries import TimeSeries
-from pycast.methods           import BaseForecastingMethod, ExponentialSmoothing
+from pycast.methods           import BaseForecastingMethod, ExponentialSmoothing, HoltMethod
 
 from pycast.optimization import GridSearch
 
@@ -184,14 +184,9 @@ class GridSearchTest(unittest.TestCase):
 
         bestManualResult = min(results, key=lambda item: item[0].get_error(startingPercentage, endPercentage))
 
-        ### Debugging
-        #print ""
-        #for item in results:
-        #    print "Manual: %s / %s" % (str(item[0].get_error(startingPercentage, endPercentage))[:8], item[1])
-        #print ""
-
         ## automatically determine the best alpha using GridSearch
         gridSearch = GridSearch(SMAPE, -4)
+       
         ## used, because we test a submethod here
         gridSearch._startingPercentage = startingPercentage
         gridSearch._endPercentage      = endPercentage
@@ -205,11 +200,15 @@ class GridSearchTest(unittest.TestCase):
         bestGridSearchAlpha   = result[1]["smoothingFactor"]
         errorGridSearchResult = result[0].get_error()
 
-        ## Debugging
-        #print ""
-        #print "GridSearch Result"
-        #print "Manual:     SMAPE / Alpha: %s / %s" % (str(errorManualResult)[:10],     bestManualAlpha)
-        #print "GridSearch: SMAPE / Alpha: %s / %s" % (str(errorGridSearchResult)[:10], bestGridSearchAlpha)
-        #print ""
-
         assert errorManualResult > errorGridSearchResult
+
+    def outer_optimization_result_test(self):
+        """Test the multiple method optimization."""
+        fm1 = ExponentialSmoothing()
+        fm2 = HoltMethod()
+
+        self.timeSeries.normalize("second")
+
+        ## automatically determine the best alpha using GridSearch
+        gridSearch = GridSearch(SMAPE, -2)
+        result     = gridSearch.optimize(self.timeSeries, [fm1, fm2])

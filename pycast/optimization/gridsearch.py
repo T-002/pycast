@@ -42,8 +42,9 @@ class GridSearch(BaseOptimizationMethod):
             It represents the vlaue, after which all error values will be ignored. 90.0 for example means that
             the last 10% of all local errors will be ignored.
 
-        :return:    Returns the optimzed forecasting method with the smallest error.
-        :rtype:     BaseForecastingMethod, Dictionary
+        :return:    Returns the optimzed forecasting method, the corresponding error measure and the forecasting methods
+            parameters.
+        :rtype:     [BaseForecastingMethod, BaseErrorMeasure, Dictionary]
 
         :raise:    Raises a :py:exc:`ValueError` ValueError if no forecastingMethods is empty.
         """
@@ -54,10 +55,14 @@ class GridSearch(BaseOptimizationMethod):
         self._startingPercentage = startingPercentage
         self._endPercentage      = endPercentage
 
+        results = []
         for forecastingMethod in forecastingMethods:
-            parameters = self.optimize_forecasting_method(timeSeries, forecastingMethod)
+            results.append([forecastingMethod] + self.optimize_forecasting_method(timeSeries, forecastingMethod))
 
-        return bestForecastingMethod, parameters
+        ## get the forecasting method with the smallest error
+        bestForecastingMethod = min(results, key=lambda item: item[1].get_error(self._startingPercentage, self._endPercentage))
+
+        return bestForecastingMethod
 
     def _generate_next_parameter_value(self, parameter, forecastingMethod):
         """Generator for a specific parameter of the given forecasting method.
