@@ -129,12 +129,12 @@ class BaseMethodTest(unittest.TestCase):
         }
 
         ## Unknown parameters should return no message
-        if None != b._get_value_error_message_for_invalid_prarameter("unknown"):
+        if None != b._get_value_error_message_for_invalid_prarameter("unknown", 0.0):
             assert False    # pragma: no cover
 
         ## Known parameters should return a message
         for parameter in parameters:
-            if not isinstance(b._get_value_error_message_for_invalid_prarameter(parameter), basestring):
+            if not isinstance(b._get_value_error_message_for_invalid_prarameter(parameter, 0.4), basestring):
                 assert False    # pragma: no cover
 
     def parameter_get_test(self):

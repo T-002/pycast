@@ -135,10 +135,11 @@ class BaseMethod(object):
         #if False == interval[2] and False == interval[3]:
         return interval[0] < value < interval[1]
 
-    def _get_value_error_message_for_invalid_prarameter(self, parameter):
+    def _get_value_error_message_for_invalid_prarameter(self, parameter, value):
         """Returns the ValueError message for the given parameter.
 
         :param String parameter:    Name of the parameter the message has to be created for.
+        :param Numeric value:    Value outside the parameters interval.
 
         :return:    Returns a string containing hte message.
         :rtype:     String
@@ -148,7 +149,7 @@ class BaseMethod(object):
             return 
 
         interval = self._parameterIntervals[parameter]
-        return "%s has to be in %s%s, %s%s." % (parameter, BaseMethod._interval_definitions[interval[2]][0], interval[0], interval[1], BaseMethod._interval_definitions[interval[3]][1])
+        return "%s has to be in %s%s, %s%s. Current value is %s." % (parameter, BaseMethod._interval_definitions[interval[2]][0], interval[0], interval[1], BaseMethod._interval_definitions[interval[3]][1], value)
 
     def set_parameter(self, name, value):
         """Sets a parameter for the BaseMethod.
@@ -157,7 +158,7 @@ class BaseMethod(object):
         :param Numeric value:     Value of the parameter.
         """
         if not self._in_valid_interval(name, value):
-            raise ValueError(self._get_value_error_message_for_invalid_prarameter(name))
+            raise ValueError(self._get_value_error_message_for_invalid_prarameter(name, value))
 
         #if name in self._parameters:
         #    print "Parameter %s already existed. It's old value will be replaced with %s" % (name, value)
