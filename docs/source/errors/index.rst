@@ -8,6 +8,7 @@ Error Measures
    
    baseerrormeasure
    meansquarederror
+   meanabsolutedeviationerror
    symmetricmeanabsolutepercentageerror
 
    customerrormeasure

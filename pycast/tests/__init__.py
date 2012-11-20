@@ -36,7 +36,7 @@ from helpertest import HelperTest
 from methodtest import BaseMethodTest, BaseForecastingMethodTest, SimpleMovingAverageTest, ExponentialSmoothingTest, HoltMethodTest, HoltWintersMethodTest
 
 ## error measure tests
-from errormeasuretest import BaseErrorMeasureTest, MeanSquaredErrorTest, SymmetricMeanAbsolutePercentageErrorTest
+from errormeasuretest import BaseErrorMeasureTest, MeanSquaredErrorTest, SymmetricMeanAbsolutePercentageErrorTest, MeanAbsoluteDeviationErrorTest
 #from mapetest import MeanAbsolutePercentageErrorTest, GeometricMeanAbsolutePercentageErrorTest
 
 ## optimization method

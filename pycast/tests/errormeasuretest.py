@@ -29,6 +29,7 @@ import unittest
 from pycast.errors import BaseErrorMeasure
 from pycast.errors import MeanSquaredError
 from pycast.errors import SymmetricMeanAbsolutePercentageError
+from pycast.errors import MeanAbsoluteDeviationError
 from pycast.common.timeseries import TimeSeries
 
 class BaseErrorMeasureTest(unittest.TestCase):
@@ -250,3 +251,41 @@ class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
 
         ## compare the strings due to accuracy
         assert "1.5706" == str(smape.get_error())[:6]
+
+class MeanAbsoluteDeviationErrorTest(unittest.TestCase):
+    """Testing symmetric mean absolute deviation error."""
+
+    def local_error_test(self):
+        """Test SymmetricMeanAbsolutePercentageError local error."""
+        dataPtsOrg  = [ 2.30,  .373, .583, 1.880, 500]
+        dataPtsCalc = [-1.21, -.445, .466,  .226, 300]
+        localErrors = [ 3.51,  .818, .117, 1.654, 200]
+
+        mad = MeanAbsoluteDeviationError()
+
+        for idx in xrange(len(dataPtsOrg)):
+            le = mad.local_error(dataPtsOrg[idx], dataPtsCalc[idx])
+            ple = localErrors[idx]
+
+            ## compare the strings due to accuracy
+            print le, ple
+            assert str(le) == str(ple)
+
+    def error_calculation_test(self):
+        """Test the calculation of the SymmetricMeanAbsolutePercentageError."""
+        dataPtsOrg  = [2.30,     .373,           .583,          1.88,  1.44,         -0.0852, -.341,  .619,  .131,  1.27, 0]
+        dataPtsCalc = [-1.21,   -.445,           .466,          .226, -.694,           -.575,  2.73, -1.49, -1.45, -.193, 0]
+
+        tsOrg  = TimeSeries()
+        tsCalc = TimeSeries()
+        
+        for idx in xrange(len(dataPtsOrg)):
+            tsOrg.add_entry(float(idx),  dataPtsOrg[idx])
+            tsCalc.add_entry(float(idx), dataPtsCalc[idx])
+
+        mad = MeanAbsoluteDeviationError()
+        mad.initialize(tsOrg, tsCalc)
+
+        ## compare the strings due to accuracy
+        print str(mad.get_error())[:6]
+        assert "1.5406" == str(mad.get_error())[:6]

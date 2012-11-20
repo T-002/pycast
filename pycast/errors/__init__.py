@@ -24,7 +24,8 @@
 
 from baseerrormeasure import BaseErrorMeasure
 
-from meansquarederror import MeanSquaredError, MSE
+from meansquarederror                     import MeanSquaredError, MSE
 from symmetricmeanabsolutepercentageerror import SymmetricMeanAbsolutePercentageError, SMAPE
+from meanabsolutedeviationerror           import MeanAbsoluteDeviationError, MAD
 
 from meanabsolutepercentageerror import MeanAbsolutePercentageError, GeometricMeanAbsolutePercentageError
