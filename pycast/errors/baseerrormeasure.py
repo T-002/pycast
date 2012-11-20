@@ -75,10 +75,8 @@ class BaseErrorMeasure(object):
                 calcPair = calculatedTimeSeries[calcIdx]
 
                 ## Skip values that can not be compared
-                if calcPair[0] < orgPair[0]:
+                if calcPair[0] != orgPair[0]:
                     continue
-                if calcPair[0] > orgPair[0]:
-                    break
 
                 append(local_error(orgPair[1], calcPair[1]))
 
