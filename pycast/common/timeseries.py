@@ -138,7 +138,7 @@ class TimeSeries(object):
             append("""["%s",%s]""" % (convert(entry[0], format), entry[1]))
 
         ## return the result
-        return """{[%s]}""" % ",".join(valuepairs)
+        return """[%s]""" % ",".join(valuepairs)
 
     @classmethod
     def from_json(cls, json, format=None):
@@ -158,12 +158,9 @@ class TimeSeries(object):
             All assumtions regarding normalization and sort order will be ignored and 
             set to default.
         """
-        ## remove the JSON encapsulation
-        jsonString = json[1:-1]
-
         ## create and fill the given TimeSeries
         ts = TimeSeries()
-        for entry in eval(jsonString):
+        for entry in eval(json):
             ts.add_entry(*entry, format=format)
 
         return ts
