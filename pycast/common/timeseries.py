@@ -39,11 +39,12 @@ NormalizationLevels = {
 }
 
 ## Fusion methods that can be used to fusionate multiple data points within
-## the same time bucket.
+## the same time bucket. This might sort the list it is used on.
 FusionMethods = {
-    "average": lambda l: sum(l) / len(l),       # pragma: no cover
-    "median":  lambda l: sorted(l)[len(l)//2],  # pragma: no cover
-    "sum":     lambda l: sum(l)                 # pragma: no cover
+    "mean":       lambda l: sum(l) / float(len(l)),                         # pragma: no cover
+    "median":     lambda l: sorted(l)[len(l)//2],                           # pragma: no cover
+    "sum":        lambda l: sum(l),                                         # pragma: no cover
+    "winsorized": lambda l: l.sort() or sum(l[1], l[1:-2], l[-2]) / len(l)  # pragma: no cover
 }
 
 ## Interpolation methods that can be used for interpolation missing data points.
@@ -360,7 +361,6 @@ class TimeSeries(object):
         """
         return time.strftime(format, time.localtime(timestamp))
 
-    ## @todo: only floats as data for now. (2012-10-09 Christian)
     def add_entry(self, timestamp, data, format=None):
         """Adds a new data entry to the TimeSeries.
 
@@ -430,7 +430,7 @@ class TimeSeries(object):
 
         return newTS
 
-    def normalize(self, normalizationLevel="minute", fusionMethod="average", interpolationMethod="linear"):
+    def normalize(self, normalizationLevel="minute", fusionMethod="mean", interpolationMethod="linear"):
         """Normalizes the TimeSeries data points.
 
         If this function is called, the TimeSeries gets ordered ascending

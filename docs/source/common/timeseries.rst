@@ -29,7 +29,7 @@ Valid values for fusion methods required by :py:meth:`pycast.common.TimeSeries.n
 Valid fusion methods are:
 
   - "sum": Sums up all valid values stored in the specific time bucket
-  - "average": Calculates the mean value within the time bucket
+  - "mean": Calculates the mean value within the time bucket
   - "median": Calculates the median of the given time bucket values.  In the case the number of entries within that bucket is even, the larger of the both values will be chosen as median.  
   - "winsorized": :todo: Some information about winsorized mean here
 
