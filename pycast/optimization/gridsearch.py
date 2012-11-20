@@ -80,11 +80,9 @@ class GridSearch(BaseOptimizationMethod):
         if interval[3]:
             endValue += precision
 
-        nbrOfDecimals = 2 + (-self._precison)
-
         while startValue < endValue:
             ## fix the parameter precision
-            parameterValue = float(str(startValue)[:nbrOfDecimals])
+            parameterValue = startValue
             
             yield parameterValue
             startValue += precision
@@ -111,9 +109,9 @@ class GridSearch(BaseOptimizationMethod):
         ### Debugging GridSearchTest.inner_optimization_result_test
         #print ""
         #print "GridSearch"
-        #print "   SMAPE / Alpha"
+        #print "Instance    /    SMAPE / Alpha"
         #for item in forecastingResults:
-        #    print "%s / %s" % (str(item[0].get_error(self._startingPercentage, self._endPercentage))[:8], item[1]["smoothingFactor"])
+        #    print "%s / %s / %s" % (str(item[0])[-12:-1], str(item[0].get_error(self._startingPercentage, self._endPercentage))[:8], item[1]["smoothingFactor"])
         #print ""
 
         ## Collect the parameters that resulted in the smallest error
@@ -142,7 +140,7 @@ class GridSearch(BaseOptimizationMethod):
         if 0 == len(remainingParameters):
             ## set the forecasting parameters
             for parameter in currentParameterValues:
-                forecastingMethod.set_parameter("parameter", currentParameterValues[parameter])
+                forecastingMethod.set_parameter(parameter, currentParameterValues[parameter])
 
             ## calculate the forecast
             forecast = timeSeries.apply(forecastingMethod)
@@ -154,8 +152,8 @@ class GridSearch(BaseOptimizationMethod):
             if not error.initialize(timeSeries, forecast):
                 return []
 
-            ### Debugging GridSearchTest.inner_optimization_result_test
-            #print "SMAPE / Alpha: %s / %s" % (str(error.get_error(self._startingPercentage, self._endPercentage))[:8], currentParameterValues["smoothingFactor"])
+            ## Debugging GridSearchTest.inner_optimization_result_test
+            #print "Instance / SMAPE / Alpha: %s / %s / %s" % (str(error)[-12:-1], str(error.get_error(self._startingPercentage, self._endPercentage))[:8], currentParameterValues["smoothingFactor"])
 
             ## return the result
             return [[error, dict(currentParameterValues)]]

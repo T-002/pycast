@@ -137,7 +137,7 @@ class GridSearchTest(unittest.TestCase):
         ### Debugging
         #print ""
         #for item in results:
-        #    print item[0].get_error(startingPercentage, endPercentage), item[1]
+        #    print "Manual: %s / %s" % (str(item[0].get_error(startingPercentage, endPercentage))[:8], item[1])
         #print ""
 
         bestManualResult = min(results, key=lambda item: item[0].get_error(startingPercentage, endPercentage))
@@ -147,7 +147,6 @@ class GridSearchTest(unittest.TestCase):
         ## used, because we test a submethod here
         gridSearch._startingPercentage = startingPercentage
         gridSearch._endPercentage      = endPercentage
-
         result     = gridSearch.optimize_forecasting_method(self.timeSeries, fm)
 
         ## the grid search should have determined the same alpha
@@ -166,3 +165,51 @@ class GridSearchTest(unittest.TestCase):
 
         assert str(errorManualResult)[:8] >= str(errorGridSearchResult)[:8]
         assert str(bestManualAlpha)[:5]   == str(bestGridSearchAlpha)[:5]
+
+    def inner_optimization_result_accuracy_test(self):
+        """Test for the correct result of a GridSearch optimization."""
+        fm = ExponentialSmoothing()
+        startingPercentage =   0.0
+        endPercentage      = 100.0
+
+        ## manually select the best alpha
+        self.timeSeries.normalize("second")
+        results = []
+        for smoothingFactor in [alpha / 100.0 for alpha in xrange(1, 100)]:
+            fm.set_parameter("smoothingFactor", smoothingFactor)
+            resultTS = self.timeSeries.apply(fm)
+            error = SMAPE()
+            error.initialize(self.timeSeries, resultTS)
+            results.append([error, smoothingFactor])
+
+        ### Debugging
+        #print ""
+        #for item in results:
+        #    print "Manual: %s / %s" % (str(item[0].get_error(startingPercentage, endPercentage))[:8], item[1])
+        #print ""
+
+        bestManualResult = min(results, key=lambda item: item[0].get_error(startingPercentage, endPercentage))
+
+        ## automatically determine the best alpha using GridSearch
+        gridSearch = GridSearch(SMAPE, -4)
+        ## used, because we test a submethod here
+        gridSearch._startingPercentage = startingPercentage
+        gridSearch._endPercentage      = endPercentage
+
+        result     = gridSearch.optimize_forecasting_method(self.timeSeries, fm)
+
+        ## the grid search should have determined the same alpha
+        bestManualAlpha     = bestManualResult[1]
+        errorManualResult     = bestManualResult[0].get_error()
+
+        bestGridSearchAlpha   = result[1]["smoothingFactor"]
+        errorGridSearchResult = result[0].get_error()
+
+        ## Debugging
+        #print ""
+        #print "GridSearch Result"
+        #print "Manual:     SMAPE / Alpha: %s / %s" % (str(errorManualResult)[:10],     bestManualAlpha)
+        #print "GridSearch: SMAPE / Alpha: %s / %s" % (str(errorGridSearchResult)[:10], bestGridSearchAlpha)
+        #print ""
+
+        assert errorManualResult > errorGridSearchResult
