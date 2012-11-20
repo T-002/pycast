@@ -130,12 +130,12 @@ class BaseMethodTest(unittest.TestCase):
         }
 
         ## Unknown parameters should return no message
-        if None != b._get_value_error_message_for_invalid_prarameter("unknown"):
+        if None != b._get_value_error_message_for_invalid_prarameter("unknown", 0.0):
             assert False    # pragma: no cover
 
         ## Known parameters should return a message
         for parameter in parameters:
-            if not isinstance(b._get_value_error_message_for_invalid_prarameter(parameter), basestring):
+            if not isinstance(b._get_value_error_message_for_invalid_prarameter(parameter, 0.4), basestring):
                 assert False    # pragma: no cover
 
     def parameter_get_test(self):
@@ -222,6 +222,16 @@ class BaseForecastingMethodTest(unittest.TestCase):
         result = sorted(bfm.get_optimizable_parameters())
         assert correctResult == result
 
+    def initialization_exception_test(self):
+        """Test BaseForecastingMethod initialization for ValueError."""
+        for valuesToForecast in xrange(-10,0):
+            try:
+                bfm = BaseForecastingMethod(valuesToForecast=valuesToForecast)
+            except ValueError:
+                pass
+            else:
+                assert False    # pragma: no cover
+
     def forecast_until_test(self):
         """Testing the forecast_until function."""
         for validts in (xrange(1,100)):
@@ -274,8 +284,6 @@ class BaseForecastingMethodTest(unittest.TestCase):
 
         assert bfm.get_parameter("valuesToForecast") == 96
 
-
-
 class SimpleMovingAverageTest(unittest.TestCase):
     """Test class for the SimpleMovingAverage method."""
 
@@ -284,6 +292,24 @@ class SimpleMovingAverageTest(unittest.TestCase):
         sm = SimpleMovingAverage(3)
         
         if not sm._parameters["windowsize"] == 3:   raise AssertionError
+
+    def initialization_exception_Test(self):
+        """Test the exeptions of SimpleMovingAverage's __init__."""
+        for invalidWindowSize in xrange(-5, 1):
+            try:
+                SimpleMovingAverage(invalidWindowSize)
+            except ValueError:
+                pass
+            else:
+                assert False    # pragma: no cover
+
+        for invalidWindowSize in xrange(2, 10, 2):
+            try:
+                SimpleMovingAverage(invalidWindowSize)
+            except ValueError:
+                pass
+            else:
+                assert False    # pragma: no cover
 
     def execute_test(self):
         """Test the execution of SimpleMovingAverage."""

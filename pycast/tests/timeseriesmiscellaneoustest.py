@@ -27,7 +27,7 @@ from nose import with_setup
 import unittest, re, os
 
 ## required modules from pycast
-from pycast.common.timeseries import TimeSeries
+from pycast.common.timeseries import TimeSeries, FusionMethods
 from pycast.methods.basemethod import BaseMethod
 
 class TimeSeriesMiscellaneousTest(unittest.TestCase):
@@ -84,7 +84,6 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
             pass
         else:
             assert False    # pragma: no cover
-
 
     def validity_of___str___test(self):
         """Test the validity of __str__ for a given TimeSeries."""
@@ -268,6 +267,8 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         """Test TimeSeries.is_normalized()."""
         ts = TimeSeries(isNormalized=True)
         assert ts.is_normalized()
+        ts = TimeSeries(isNormalized=False)
+        assert False == ts.is_normalized()
 
     def normalize_test(self):
         """Test timeseries normalization."""
@@ -321,3 +322,35 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
             pass
         else:
             assert False    # pragma: no cover
+
+    def sum_fusion_method_test(self):
+        """Testing the sum fusion method."""
+        data  = [1,2,3,4,5,6,0,7]
+        data2 = [1,3,5,65,3,2,1,34,0.5]
+        
+        assert FusionMethods["sum"](data)  == 28
+        assert FusionMethods["sum"](data2) == 114.5
+    
+    def median_fusion_method_test(self):
+        """Testing the median fusion method."""
+        data0 = [3]
+        data1 = [0,1,2,3,4,5,6,7]
+        data2 = [0,1,8,7,3,4,5,2,6]
+        data3 = [2,0.5,0.5,34,1,5,1,3,3,65]
+
+        assert FusionMethods["median"](data0) == 3
+        assert FusionMethods["median"](data1) == 4
+        assert FusionMethods["median"](data2) == 4
+        assert FusionMethods["median"](data3) == 3
+    
+    def mean_fusion_method_test(self):
+        """Testing the average fusion method."""
+        data0 = [3]
+        data1 = [0,1,2,3,4,5,6,7]
+        data2 = [0,1,8,7,3,4,5,2,6]
+        data3 = [2,0.5,0.5,34,1,5,1,3,3,65]
+
+        assert str(FusionMethods["mean"](data0))[:6] == "3.0"
+        assert str(FusionMethods["mean"](data1))[:6] == "3.5"
+        assert str(FusionMethods["mean"](data2))[:6] == "4.0"
+        assert str(FusionMethods["mean"](data3))[:6] == "11.5"

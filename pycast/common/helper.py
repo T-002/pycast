@@ -30,13 +30,12 @@ import time
 def linear_interpolation(first, last, steps):
     """Interpolates all missing values using linear interpolation.
 
-    @param first Starting value for the interpolation.
+    :param Numeric first:    Start value for the interpolation.
+    :param Numeric last:    End Value for the interpolation
+    :param Integer steps:    Number of missing values that have to be calculated.
 
-    @param last  End Value for the interpolation
-
-    @param steps Number of missing values that have to be calculated.
-
-    @return Returns a list of floats containing only the missing values.
+    :return:    Returns a list of floats containing only the missing values.
+    :rtype:     List
     """
     result = []
 

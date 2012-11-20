@@ -53,7 +53,7 @@ class BaseOptimizationMethodTest(unittest.TestCase):
 
     def initialization_precision_test(self):
         """Test the parameter range durign the initialization."""
-        for precision in xrange(-10, 1, 1):
+        for precision in xrange(-7, 1, 1):
             bom = BaseOptimizationMethod(BaseErrorMeasure, precision)
 
         for precision in [-1020, -324, -11, 1, 42, 123, 2341]:

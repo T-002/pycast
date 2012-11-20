@@ -39,11 +39,11 @@ NormalizationLevels = {
 }
 
 ## Fusion methods that can be used to fusionate multiple data points within
-## the same time bucket.
+## the same time bucket. This might sort the list it is used on.
 FusionMethods = {
-    "average": lambda l: sum(l) / len(l),       # pragma: no cover
-    "median":  lambda l: sorted(l)[len(l)//2],  # pragma: no cover
-    "sum":     lambda l: sum(l)                 # pragma: no cover
+    "mean":       lambda l: sum(l) / float(len(l)),    # pragma: no cover
+    "median":     lambda l: sorted(l)[len(l)//2],      # pragma: no cover
+    "sum":        lambda l: sum(l)                     # pragma: no cover
 }
 
 ## Interpolation methods that can be used for interpolation missing data points.
@@ -53,25 +53,22 @@ InterpolationMethods = {
 }
 
 class TimeSeries(object):
-    """Represents the base class for all time series data.
+    """A TimeSeries instance stores all relevant data for a real world time series.
 
-    @warning TimeSeries instances are NOT threadsafe.
+    :warning: TimeSeries instances are NOT threadsafe.
     """
 
     def __init__(self, isNormalized=False, isSorted=False):
         """Initializes the TimeSeries.
 
-        @param isNormalized Within a normalized TimeSeries, all data points
-                            have the same temporal distance to each other.
-                            When this is True, the memory consumption of the
-                            TimeSeries might be reduced. Also some algorithms
-                            will probably run faster on normalized TimeSeries.
-                            This should only be set to True, if the TimeSeries
-                            is realy normalized!
-                            TimeSeries normalization can be forced, by executing
-                            normalize().
-        @param isSorted     If all data points added to the time series are added
-                            in their ascending temporal order, this should set to True.
+        :param Boolean isNormalized:    Within a normalized TimeSeries, all data points
+            have the same temporal distance to each other.
+            When this is :py:const:`True`, the memory consumption of the TimeSeries might be reduced.
+            Also algorithms will probably run faster on normalized TimeSeries.
+            This should only be set to :py:const:`True`, if the TimeSeries is realy normalized!
+            TimeSeries normalization can be forced by executing :py:meth:`TimeSeries.normalize`.
+        :param Boolean isSorted:    If all data points added to the time series are added
+            in their ascending temporal order, this should set to :py:const:`True`.
         """
         super(TimeSeries, self).__init__()
         self._normalized           = isNormalized
@@ -85,13 +82,14 @@ class TimeSeries(object):
     def to_gnuplot_datafile(self, datafilepath, format=None):
         """Dumps the TimeSeries into a gnuplot compatible data file.
 
-        @param datafilepath Path used to create the file. If that file already exists,
-                            it will be overwritten!
-        @param format    Format of the timestamp. This is used to convert the
-                         timestamp from UNIX epochs, if necessary. For valid examples
-                         take a look into the time.strptime() documentation.
+        :param String datafilepath:    Path used to create the file. If that file already exists,
+            it will be overwritten!
+        :param String format:    Format of the timestamp. This is used to convert the
+            timestamp from UNIX epochs, if set. For valid examples take a look into the
+            :py:func:`time.strptime` documentation.
 
-        @return Returns True if the data could be written, False otherwise.
+        :return:   Returns :py:const:`True` if the data could be written, :py:const:`False` otherwise.
+        :rtype:    Boolean
         """
         try:
             datafile = file(datafilepath, "wb")
@@ -118,12 +116,14 @@ class TimeSeries(object):
     def to_json(self, format=None):
         """Returns a JSON representation of the TimeSeries data.
 
-        @param format    Format of the timestamp. This is used to convert the
-                         timestamp from UNIX epochs, if necessary. For valid examples
-                         take a look into the time.strptime() documentation.
+        :param String format:    Format of the given timestamp. This is used to convert the
+            timestamp into UNIX epochs, if set. For valid examples take a look into
+            the :py:func:`time.strptime` documentation.
 
-        @return Returns a basestring, containing the JSON representation of the current
-        data stored within the TimeSeries.
+
+        :return:    Returns a basestring, containing the JSON representation of the current
+            data stored within the TimeSeries.
+        :rtype:     String
         """
         ## return the simple way if no timestamp format was requested
         if None == format:
@@ -138,30 +138,29 @@ class TimeSeries(object):
             append("""["%s",%s]""" % (convert(entry[0], format), entry[1]))
 
         ## return the result
-        return """{[%s]}""" % ",".join(valuepairs)
+        return """[%s]""" % ",".join(valuepairs)
 
     @classmethod
-    def from_json(cls, jsonBaseString, format=None):
+    def from_json(cls, json, format=None):
         """Creates a new TimeSeries instance from the given json string.
 
-        @param jsonBaseString JSON string, containing the time series data. This
-                              should be a string created by to_json().
-        @param format    Format of the given timestamp. This is used to convert the
-                         timestamp into UNIX epochs, if necessary. For valid examples
-                         take a look into the time.strptime() documentation.
+        :param String json:    JSON string, containing the time series data. This
+            should be a string created by :py:meth:`TimeSeries.to_json`.
+        :param String format:    Format of the given timestamps. This is used to convert the
+            timestamps into UNIX epochs, if set. For valid examples take a look into
+            the :py:func:`time.strptime` documentation.
 
-        @return Returns a TimeSeries instance containing the data.
+        :return:    Returns a TimeSeries instance containing the data.
+        :rtype:     TimeSeries
 
-        @warning This is an unsafe version! Only use it with the original version.
-              All assumtions regarding normalization and sort order will be ignored
-              and set to default.
+        :warning:    This is probably an unsafe version! Only use it with JSON strings created by 
+            :py:meth:`TimeSeries.to_json`.
+            All assumtions regarding normalization and sort order will be ignored and 
+            set to default.
         """
-        ## remove the JSON encapsulation
-        jsonString = jsonBaseString[1:-1]
-
         ## create and fill the given TimeSeries
         ts = TimeSeries()
-        for entry in eval(jsonString):
+        for entry in eval(json):
             ts.add_entry(*entry, format=format)
 
         return ts
@@ -169,11 +168,12 @@ class TimeSeries(object):
     def to_twodim_list(self, format=None):
         """Serializes the TimeSeries data into a two dimensional list of [timestamp, value] pairs.
 
-        @param format    Format of the timestamp. This is used to convert the
-                         timestamp from UNIX epochs, if necessary. For valid examples
-                         take a look into the time.strptime() documentation.
+        :param String format:    Format of the timestamp. This is used to convert the
+            timestamp from UNIX epochs, if set. For valid examples
+            take a look into the :py:func:`time.strptime` documentation.
 
-        @return Returns a two dimensional list containing [timestamp, value] pairs.
+        :return:    Returns a two dimensional list containing [timestamp, value] pairs.
+        :rtype:     List
         """
         if None == format:
             return self._timeseriesData
@@ -187,47 +187,39 @@ class TimeSeries(object):
         return datalist
 
     @classmethod
-    def from_twodim_list(cls, datalist, format=None, isSorted=False):
-        """Initializes the TimeSeries's data from the two dimensional list.
+    def from_twodim_list(cls, datalist, format=None):
+        """Creates a new TimeSeries instance from the data stored inside a two dimensional list.
 
-        @param datalist List containing multiple iterables with at least two values.
-                        The first item will always be used as timestamp in the
-                        predefined format, the second represents the value. All other
-                        items in those sublists will be ignored.
-        @param format   Format of the given timestamp. This is used to convert the
-                        timestamp into UNIX epochs, if necessary. For valid examples
-                        take a look into the time.strptime() documentation.
-        @param isSorted Determines if the datalist is sorted by the timestamps. If this
-                        is False, the TimeSeries instance sorts itself after all
-                        values are read.
+        :param List datalist:    List containing multiple iterables with at least two values.
+            The first item will always be used as timestamp in the predefined format,
+            the second represents the value. All other items in those sublists will be ignored.
+        :param String format:    Format of the given timestamp. This is used to convert the
+            timestamp into UNIX epochs, if necessary. For valid examples take a look into
+            the :py:func:`time.strptime` documentation.
 
-        @return         Returns a TimeSeries instance containing the data from datalist.
+        :return:    Returns a TimeSeries instance containing the data from datalist.
+        :rtype:     TimeSeries
         """
         ## create and fill the given TimeSeries
-        ts = TimeSeries(isSorted=isSorted)
+        ts = TimeSeries()
 
         for entry in datalist:
             ts.add_entry(*entry[:2], format=format)        
 
         return ts
 
-    def initialize_from_sql_cursor(self, sqlcursor, format=None, isSorted=False):
+    def initialize_from_sql_cursor(self, sqlcursor, format=None):
         """Initializes the TimeSeries's data from the given SQL cursor.
 
-        @param sqlcursor Cursor that was holds the SQL result for any given
-                         "SELECT timestamp, value, ... FROM ..." SQL query.
-                         Only the first two attributes of the SQL result will
-                         be used.
-        @param format    Format of the given timestamp. This is used to convert the
-                         timestamp into UNIX epochs, if necessary. For valid examples
-                         take a look into the time.strptime() documentation.
-        @param isSorted  Determines if the SQL result is already sorted. If this
-                         is False, the TimeSeries instance sorts itself after all
-                         values are read.
+        :param SQLCursor sqlcursor:    Cursor that was holds the SQL result for any given
+            "SELECT timestamp, value, ... FROM ..." SQL query.
+            Only the first two attributes of the SQL result will be used.
+        :param String format:    Format of the given timestamp. This is used to convert the
+            timestamp into UNIX epochs, if set. For valid examples take a look into
+            the :py:func:`time.strptime` documentation.
 
-        @return Returns the number of entries added to the TimeSeries.
-
-        @todo This function is not bulletprove, yet.
+        :return:    Returns the number of entries added to the TimeSeries.
+        :rtype:     Integer
         """
         ## initialize the result
         tuples = 0
@@ -239,55 +231,51 @@ class TimeSeries(object):
                 self.add_entry(*entry[:2], format=format)
 
             data = sqlcursor.fetchmany()
-
-
-
-        ## sort the TimeSeries, if necessary
-        if False == isSorted:
-            self.sort_timeseries()
         
-        self._sorted = True
-
         ## return the number of tuples added to the timeseries.
         return tuples
 
     def __str__(self):
         """Returns a string representation of the TimeSeries.
 
-        @return Returns a string representing the TimeSeries in the format:
-                TimeSeries([timestamp, data], [timestamp, data], [timestamp, data]).
+        :return:    Returns a string representing the TimeSeries in the format:
+            
+            "TimeSeries([timestamp, data], [timestamp, data], [timestamp, data])".
+        :rtype:     String
         """
         return """TimeSeries(%s)""" % ",".join([str(entry) for entry in self._timeseriesData])
 
     def __add__(self, otherTimeSeries):
-        """Creates a new TimeSeries instance containing hte data of self and otherTimeSeries.
+        """Creates a new TimeSeries instance containing the data of :py:obj:`self` and otherTimeSeries.
 
-        @param otherTimeSeries TimeSeries instance that will be merged with self.
+        :param TimeSeries otherTimeSeries:    TimeSeries instance that will be merged with :py:obj:`self`.
 
-        @return Returns a new TimeSeries instance containing the data entries of self and otherTimeSeries.
-                This TimeSeries will be sorted.
+        :return:    Returns a new TimeSeries instance containing the data entries of :py:obj:`self` and otherTimeSeries.
+        :rtype:     TimeSeries
         """
         data = self._timeseriesData + otherTimeSeries.to_twodim_list()
-        return TimeSeries.from_twodim_list(data).sort_timeseries()
+        return TimeSeries.from_twodim_list(data)
 
     def __len__(self):
-        """Returns the number of data entries that are part of the time series.
+        """Returns the number of data entries stored in the TimeSeries.
 
-        @return Returns an Integer representing the number on data entries stored
-        within the TimeSeries.
+        :return:    Returns an Integer representing the number on data entries stored
+            within the TimeSeries.
+        :rtype:     Integer
         """
         return len(self._timeseriesData)
 
     def __eq__(self, otherTimeSeries):
-        """Returns if the TimeSeries equals another one.
+        """Returns if :py:obj:`self` and the other TimeSeries are equal.
 
         TimeSeries are equal to each other if:
             - they contain the same number of entries
-            - that each data entry in one TimeSeries is also member of the other one.
+            - each data entry in one TimeSeries is also member of the other one.
 
-        The sort order within the TimeSeries datapoints does not matter!
+        :param TimeSeries otherTimeSeries:    TimeSeries instance that is compared with :py:obj:`self`.
 
-        @return True if the TimeSeries objects are equal, False otherwise.
+        :return:    :py:const:`True` if the TimeSeries objects are equal, :py:const:`False` otherwise.
+        :rtype:     Boolean
         """
         ## Compare the length of the time series
         if len(self) != len(otherTimeSeries):
@@ -310,31 +298,33 @@ class TimeSeries(object):
         return True
 
     def __iter__(self):
-        """Returns an iterator to the TimeSeries stored data.
+        """Returns an iterator that can be used to iterate over the data stored within the TimeSeries.
 
-        @return Returns an iterator for the TimeSeries.
+        :return:    Returns an iterator for the TimeSeries.
+        :rtype:     Iterator
         """
         return self._timeseriesData.__iter__()
 
     def __getitem__(self, index):
         """Returns the item stored at the TimeSeries index-th position.
 
-        @param index Position of the element that should be returned.
-                     Starts at 0
+        :param Integer index:    Position of the element that should be returned.
+            Starts at 0
 
-        @return Returns a list consisting of [timestamp, data].
+        :return:    Returns a list containing [timestamp, data] lists.
+        :rtype:     List
 
-        @exception IndexError is the index is out of range.
+        :raise:     Raises an :py:exc:`IndexError` if the index is out of range.
         """
         return self._timeseriesData[index]
 
     def __setitem__(self, index, value):
         """Sets the item at the index-th position of the TimeSeries.
 
-        @param index Index of the element that should be set.
-        @param value A list of the form [timestamp, data]
+        :param Integer index:    Index of the element that should be set.
+        :param List value:    A list of the form [timestamp, data]
 
-        @exception IndexError if the index is out of range.
+        :raise:    Raises an :py:exc:`IndexError` if the index is out of range.
         """
         self._timeseriesData[index] = value
 
@@ -342,11 +332,14 @@ class TimeSeries(object):
     def convert_timestamp_to_epoch(cls, timestamp, format):
         """Converts the given timestamp into a float representing UNIX-epochs.
 
-        @param timestamp Timestamp in the defined format.
-        @param format    Format of the timestamp. For valid examples take a look
-                         into the time.strptime() documentation.
+        :param String timestamp: Timestamp in the defined format.
+        :param String format:    Format of the given timestamp. This is used to convert the
+            timestamp into UNIX epochs. For valid examples take a look into
+            the :py:func:`time.strptime` documentation.
 
-        @return Returns an float, representing the UNIX-epochs for the given timestamp.
+
+        :return:    Returns an float, representing the UNIX-epochs for the given timestamp.
+        :rtype:     Float
         """
         return time.mktime(time.strptime(timestamp, format))
 
@@ -354,26 +347,26 @@ class TimeSeries(object):
     def convert_epoch_to_timestamp(cls, timestamp, format):
         """Converts the given float representing UNIX-epochs into an actual timestamp.
 
-        @param timestamp Timestamp as UNIX-epochs.
-        @param format    Format of the timestamp. For valid examples take a look
-                         into the time.strptime() documentation.
+        :param Float timestamp:    Timestamp as UNIX-epochs.
+        :param String format:    Format of the given timestamp. This is used to convert the
+            timestamp from UNIX epochs. For valid examples take a look into the 
+            :py:func:`time.strptime` documentation.
 
-        @return Returns an timestamp as defined by format. 
+        :return:    Returns the timestamp as defined in format.
+        :rtype:     String
         """
         return time.strftime(format, time.localtime(timestamp))
 
-    ## @todo: only floats as data for now. (2012-10-09 Christian)
     def add_entry(self, timestamp, data, format=None):
         """Adds a new data entry to the TimeSeries.
 
-        @param timestamp Time stamp of the datas occurence.
-                         This has either to be a float representing the UNIX epochs
-                         or a string containing a timestamp in the given format.
-        @param data      Data points information.
-                         This has to be a numeric value for now.
-        @param format    Format of the given timestamp. This is used to convert the
-                         timestamp into UNIX epochs, if necessary. For valid examples
-                         take a look into the time.strptime() documentation.
+        :param timestamp:    Time stamp of the data.
+            This has either to be a float representing the UNIX epochs
+            or a string containing a timestamp in the given format.
+        :param Numeric data:    Actual data value.
+        :param String format:    Format of the given timestamp. This is used to convert the
+            timestamp into UNIX epochs, if set. For valid examples take a look into
+            the :py:func:`time.strptime` documentation.
         """
         self._normalized = self._predefinedNormalized
         self._sorted     = self._predefinedSorted
@@ -384,14 +377,14 @@ class TimeSeries(object):
         self._timeseriesData.append([float(timestamp), float(data)])
 
     def sort_timeseries(self, ascending=True):
-        """Sorts the data points within the TimeSeries according to their occurence
-        inline.
+        """Sorts the data points within the TimeSeries according to their occurence inline.
 
-        @param ascending Determines if the TimeSeries will be ordered ascending or
-                         decending. If this is set to decending once, the ordered
-                         parameter defined in __init__() will be set to False FOREVER.
+        :param Boolean ascending: Determines if the TimeSeries will be ordered ascending or
+            decending. If this is set to decending once, the ordered parameter defined in 
+            :py:meth:`TimeSeries.__init__` will be set to False FOREVER.
 
-        @return Returns self for convenience.
+        :return:    Returns :py:obj:`self` for convenience.
+        :rtype:     TimeSeries
         """
         # the time series is sorted by default
         if ascending and self._sorted:
@@ -411,12 +404,13 @@ class TimeSeries(object):
     def sorted_timeseries(self, ascending=True):
         """Returns a sorted copy of the TimeSeries, preserving the original one.
 
-        As an assumtion this new TimeSeries is not ordered anymore by default.
+        As an assumtion this new TimeSeries is not ordered anymore if a new value is added.
 
-        @param ascending Determines if the TimeSeries will be ordered ascending
-               or decending.
+        :param Boolean ascending:    Determines if the TimeSeries will be ordered ascending
+            or decending.
 
-        @return Returns a new TimeSeries instance sorted in the requested order.
+        :return:    Returns a new TimeSeries instance sorted in the requested order.
+        :rtype:     TimeSeries
         """
         sortorder = 1
         if False == ascending:
@@ -432,24 +426,21 @@ class TimeSeries(object):
 
         return newTS
 
-    def normalize(self, normalizationLevel="minute", fusionMethod="average", interpolationMethod="linear"):
+    def normalize(self, normalizationLevel="minute", fusionMethod="mean", interpolationMethod="linear"):
         """Normalizes the TimeSeries data points.
 
         If this function is called, the TimeSeries gets ordered ascending
         automatically. The new timestamps will represent the center of each time
-        bucket.
+        bucket. Within a normalized TimeSeries, the temporal distance between two consecutive data points is constant.
 
-        @param normalizationLevel Level of normalization that has to be applied.
-                                  The available normalization levels are defined
-                                  in timeseries.NormalizationLevels.
-        @param method Normalization method that has to be used if multiple data
-                      entries exist within the same normalization bucket.
-                      The available methods are defined in timeseries.FusionMethods.
-        @param interpolation Interpolation method that is used if a data entry at a
-                             specific time is missing. The available interpolation
-                             methods are defined in timeseries.InterpolationMethods.
+        :param String normalizationLevel:    Level of normalization that has to be applied.
+            The available normalization levels are defined in :py:data:`timeseries.NormalizationLevels`.
+        :param String fusionMethod:    Normalization method that has to be used if multiple data entries exist
+            within the same normalization bucket. The available methods are defined in :py:data:`timeseries.FusionMethods`.
+        :param String interpolationMethod: Interpolation method that is used if a data entry at a specific time
+            is missing. The available interpolation methods are defined in :py:data:`timeseries.InterpolationMethods`.
 
-        @throw Throws a ValueError if a parameter has an unknown method.
+        :raise: Raises a :py:exc:`ValueError` if a normalizationLevel, fusionMethod or interpolationMethod hanve an unknown value.
         """
         ## do not normalize the TimeSeries if it is already normalized, either by
         ## definition or a prior call of normalize(*)
@@ -544,24 +535,25 @@ class TimeSeries(object):
     def is_normalized(self):
         """Returns if the TimeSeries is normalized.
 
-        @return Returns True if the TimeSeries is normalized, False otherwise.
+        :return:    Returns :py:const:`True` if the TimeSeries is normalized, :py:const:`False` otherwise.
+        :rtype:     Boolean
         """
         return self._normalized
 
     def is_sorted(self):
         """Returns if the TimeSeries is sorted.
 
-        @return Returns True if the TimeSeries is sorted ascending, False otherwise.
+        :return:    Returns :py:const:`True` if the TimeSeries is sorted ascending, :py:const:`False` in all other cases.
+        :rtype:     Boolean
         """
         return self._sorted
 
     def apply(self, method):
-        """Applies the given ForecastingAlgorithm or SmoothingMethod from the
-        pycast.methods module to the TimeSeries.
+        """Applies the given ForecastingAlgorithm or SmoothingMethod from the :py:mod:`pycast.methods`
+        module to the TimeSeries.
 
-        @param method Method that should be used with the TimeSeries.
-                      For more information about the methods take a look into
-                      their corresponding documentation.
+        :param BaseMethod method: Method that should be used with the TimeSeries.
+            For more information about the methods take a look into their corresponding documentation.
         """
         ## sort and normalize, if necessary
         if method.has_to_be_normalized():

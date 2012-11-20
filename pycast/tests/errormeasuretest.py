@@ -63,6 +63,37 @@ class BaseErrorMeasureTest(unittest.TestCase):
         else:
             assert False    # pragma: no cover
 
+    def double_initialize_test(self):
+        """Test for the error ocuring when the same error measure is initialized twice."""
+        data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
+        tsOrg  = TimeSeries.from_twodim_list(data)
+        tsCalc = TimeSeries.from_twodim_list(data)
+
+
+        bem = BaseErrorMeasure()
+
+        bem_calculate  = bem._calculate
+        bem_local_error = bem.local_error
+        
+        def return_zero(ignoreMe, ignoreMeToo):
+            return 0
+
+        ## remove the NotImplementedErrors for initialization
+        bem.local_error = return_zero
+        bem._calculate   = return_zero
+        
+        ## correct initialize call
+        bem.initialize(tsOrg, tsCalc)
+
+        ## incorrect initialize call
+        for cnt in xrange(10):
+            try:
+                bem.initialize(tsOrg, tsCalc)        
+            except StandardError:
+                pass
+            else:
+                assert False    # pragma: no cover
+
     def initialize_test(self):
         """Test if calculate throws an error as expected."""
         data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
@@ -88,7 +119,7 @@ class BaseErrorMeasureTest(unittest.TestCase):
 
         bem = BaseErrorMeasure()
 
-        bem_calculate  = bem.calculate
+        bem_calculate  = bem._calculate
         bem_local_error = bem.local_error
         
         def return_zero(ignoreMe, ignoreMeToo):
@@ -96,11 +127,11 @@ class BaseErrorMeasureTest(unittest.TestCase):
 
         ## remove the NotImplementedErrors for initialization
         bem.local_error = return_zero
-        bem.calculate   = return_zero
+        bem._calculate   = return_zero
         bem.initialize(tsOrg, tsCalc)
 
         bem.local_error = bem_local_error
-        bem.calculate  = bem_calculate
+        bem._calculate  = bem_calculate
 
         try:
             bem.get_error(10.0, 90.0)
@@ -144,7 +175,7 @@ class MeanSquaredErrorTest(unittest.TestCase):
 
         mse = MeanSquaredError()
         for idx in xrange(len(orgValues)):
-            res = (calValues[idx] - orgValues[idx])**2
+            res = (calValues[idx] - orgValues[idx])**2.0
             assert  str(res)[:6] == str(mse.local_error(orgValues[idx], calValues[idx]))[:6]
 
     def number_of_comparisons_test(self):
