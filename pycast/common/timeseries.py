@@ -127,7 +127,7 @@ class TimeSeries(object):
         """
         ## return the simple way if no timestamp format was requested
         if None == format:
-            return """{[%s]}""" % ",".join([str(entry) for entry in self._timeseriesData])
+            return """[%s]""" % ",".join([str(entry) for entry in self._timeseriesData])
 
         ## initialize the result
         valuepairs = []
