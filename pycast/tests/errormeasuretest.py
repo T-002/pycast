@@ -63,6 +63,37 @@ class BaseErrorMeasureTest(unittest.TestCase):
         else:
             assert False    # pragma: no cover
 
+    def double_initialize_test(self):
+        """Test for the error ocuring when the same error measure is initialized twice."""
+        data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
+        tsOrg  = TimeSeries.from_twodim_list(data)
+        tsCalc = TimeSeries.from_twodim_list(data)
+
+
+        bem = BaseErrorMeasure()
+
+        bem_calculate  = bem._calculate
+        bem_local_error = bem.local_error
+        
+        def return_zero(ignoreMe, ignoreMeToo):
+            return 0
+
+        ## remove the NotImplementedErrors for initialization
+        bem.local_error = return_zero
+        bem._calculate   = return_zero
+        
+        ## correct initialize call
+        bem.initialize(tsOrg, tsCalc)
+
+        ## incorrect initialize call
+        for cnt in xrange(10):
+            try:
+                bem.initialize(tsOrg, tsCalc)        
+            except StandardError:
+                pass
+            else:
+                assert False    # pragma: no cover
+
     def initialize_test(self):
         """Test if calculate throws an error as expected."""
         data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]

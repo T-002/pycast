@@ -58,7 +58,13 @@ class BaseErrorMeasure(object):
         :return:    Return :py:const:`True` if the error could be calculated, :py:const:`False`
             otherwise based on the minimalErrorCalculationPercentage.
         :rtype:     Boolean
+
+        :raise:    Raises a :py:exc:`StandardError` if the error measure is initialized multiple times.
         """
+        ## ErrorMeasure was already initialized.
+        if 0 < len(self._errorValues):
+            raise StandardError("An ErrorMeasure can only be initialized once.")
+        
         ## sort the TimeSeries to reduce the required comparison operations
         originalTimeSeries.sort_timeseries()
         calculatedTimeSeries.sort_timeseries()
