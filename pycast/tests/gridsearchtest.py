@@ -127,20 +127,20 @@ class GridSearchTest(unittest.TestCase):
         ## manually select the best alpha
         self.timeSeries.normalize("second")
         results = []
-        for smoothingFactor in [alpha / 100.0 for alpha in xrange(1, 100)]:
+        for smoothingFactor in [alpha / 100.0 for alpha in xrange(1, 100)]:    # pragma: no cover
             fm.set_parameter("smoothingFactor", smoothingFactor)
             resultTS = self.timeSeries.apply(fm)
             error = SMAPE()
             error.initialize(self.timeSeries, resultTS)
             results.append([error, smoothingFactor])
 
+        bestManualResult = min(results, key=lambda item: item[0].get_error(startingPercentage, endPercentage))
+
         ### Debugging
         #print ""
         #for item in results:
         #    print "Manual: %s / %s" % (str(item[0].get_error(startingPercentage, endPercentage))[:8], item[1])
         #print ""
-
-        bestManualResult = min(results, key=lambda item: item[0].get_error(startingPercentage, endPercentage))
 
         ## automatically determine the best alpha using GridSearch
         gridSearch = GridSearch(SMAPE, -2)
@@ -175,20 +175,20 @@ class GridSearchTest(unittest.TestCase):
         ## manually select the best alpha
         self.timeSeries.normalize("second")
         results = []
-        for smoothingFactor in [alpha / 100.0 for alpha in xrange(1, 100)]:
+        for smoothingFactor in [alpha / 100.0 for alpha in xrange(1, 100)]:    # pragma: no cover
             fm.set_parameter("smoothingFactor", smoothingFactor)
             resultTS = self.timeSeries.apply(fm)
             error = SMAPE()
             error.initialize(self.timeSeries, resultTS)
             results.append([error, smoothingFactor])
 
+        bestManualResult = min(results, key=lambda item: item[0].get_error(startingPercentage, endPercentage))
+
         ### Debugging
         #print ""
         #for item in results:
         #    print "Manual: %s / %s" % (str(item[0].get_error(startingPercentage, endPercentage))[:8], item[1])
         #print ""
-
-        bestManualResult = min(results, key=lambda item: item[0].get_error(startingPercentage, endPercentage))
 
         ## automatically determine the best alpha using GridSearch
         gridSearch = GridSearch(SMAPE, -4)
