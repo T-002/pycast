@@ -5,7 +5,7 @@ Documentation
 .. toctree::
    :maxdepth: 2
 
-   common
+   common/index
    timeseries
    basemethods
    smoothingmethods
