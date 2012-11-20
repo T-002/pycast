@@ -24,16 +24,7 @@
 
 from baseerrormeasure import BaseErrorMeasure
 
-from meansquarederror import MeanSquaredError
-from symmetricmeanabsolutepercentageerror import SymmetricMeanAbsolutePercentageError
+from meansquarederror import MeanSquaredError, MSE
+from symmetricmeanabsolutepercentageerror import SymmetricMeanAbsolutePercentageError, SMAPE
 
 from meanabsolutepercentageerror import MeanAbsolutePercentageError, GeometricMeanAbsolutePercentageError
-
-## inserted for sphinx viewcode extension
-__all__ = [
-    "BaseErrorMeasure",
-    "MeanSquaredError",
-    "SymmetricMeanAbsolutePercentageError",
-    "MeanAbsolutePercentageError",
-    "GeometricMeanAbsolutePercentageError"
-]

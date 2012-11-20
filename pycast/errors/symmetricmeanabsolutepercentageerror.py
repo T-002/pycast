@@ -67,3 +67,5 @@ class SymmetricMeanAbsolutePercentageError(BaseErrorMeasure):
             return 0.0
 
         return abs(originalValue - calculatedValue) / ((abs(originalValue) + abs(calculatedValue)) / 2)
+
+SMAPE = SymmetricMeanAbsolutePercentageError

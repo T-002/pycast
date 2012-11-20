@@ -63,3 +63,5 @@ class MeanSquaredError(BaseErrorMeasure):
         :rtype:     Float
         """
         return (calculatedValue - originalValue)**2.0
+
+MSE = MeanSquaredError
