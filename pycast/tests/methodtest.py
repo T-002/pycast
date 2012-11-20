@@ -279,7 +279,7 @@ class HoltWintersMethodTest(unittest.TestCase):
     
     def initialization_test(self):
         """Test the initialization of the HoltWintersMethod method."""
-        HoltWintersMethod(0.2, 0.3, 0.4)
+        HoltWintersMethod(0.2, 0.3, 0.4, 5)
         
         for alpha in [-0.1, 0.81, 1.1]:
             for beta in [-1.4, 0.12, 3.2]:
@@ -314,7 +314,7 @@ class HoltWintersMethodTest(unittest.TestCase):
         initialA_2 = hwm.computeA(2, tsSrc)
         assert  initialA_2 == 510.5, "Third initial A_2 should be 510.5, but it %d" % initialA_2
 
-        initialTrend = hwm.initialTrendSmoothingFactor(tsSrc)
+        initialTrend = hwm.initialTrendSmoothingFactors(tsSrc)
         assert initialTrend == 9.75, "Initial Trend should be 9.75 but is %d" % initialTrend
         
 
@@ -336,3 +336,13 @@ class HoltWintersMethodTest(unittest.TestCase):
         tsSrc = TimeSeries.from_twodim_list(data)
         seasonValues = hwm.initSeasonFactors(tsSrc)
         assert False, 'TODO find correct values for initialization' 
+
+    def initial_trend_values_test(self):
+        hwm = HoltWintersMethod(seasonLength=4)
+        data = [[0, 362.0], [1,385.0], [2, 432.0], [3, 341.0], [4, 382.0], [5, 425.0]]
+        tsSrc = TimeSeries.from_twodim_list(data)
+        try:
+            trend = hwm.initialTrendSmoothingFactors(tsSrc)
+            assert trend == 7.5, "Initial Trend should be 7.5 but is %f" % trend
+        except IndexError:
+            assert False, "Bug, if there is only one cycle initial trend calculation should still work."

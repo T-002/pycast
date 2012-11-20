@@ -232,7 +232,7 @@ class HoltWintersMethod(BaseMethod):
         http://en.wikipedia.org/wiki/Exponential_smoothing#Triple_exponential_smoothing
     """
 
-    def __init__(self, smoothingFactor=0.1, trendSmoothingFactor=0.5, seasonSmoothingFactor=0.5, seasonLength=42, valuesToForecast=0):
+    def __init__(self, smoothingFactor=0.1, trendSmoothingFactor=0.5, seasonSmoothingFactor=0.5, seasonLength=0, valuesToForecast=0):
         """Initializes the HoltWintersMethod.
 
         @param smoothingFactor Defines the alpha for the Holt-Winters algorithm.
@@ -258,6 +258,8 @@ class HoltWintersMethod(BaseMethod):
             raise ValueError("trendSmoothingFactor has to be in (0.0, 1.0).")
         if not 0.0 < seasonSmoothingFactor < 1.0:
             raise ValueError("seasonSmoothingFactor has to be in (0.0, 1.0).")
+        if not 0 < seasonLength:
+            raise ValueError("Please specify season length that is greater than 0.");
 
         self.set_parameter("smoothingFactor",      smoothingFactor)
         self.set_parameter("trendSmoothingFactor", trendSmoothingFactor)
@@ -295,7 +297,7 @@ class HoltWintersMethod(BaseMethod):
             t = timeSeries[idx][0]
             x_t = timeSeries[idx][1]
             if idx == 0:
-                lastTrend = self.initialTrendSmoothingFactor(timeSeries)
+                lastTrend = self.initialTrendSmoothingFactors(timeSeries)
                 lastEstimator = x_t
                 resultList.append([t, x_t])
                 continue
@@ -342,7 +344,7 @@ class HoltWintersMethod(BaseMethod):
             seasonValues.append(c_i)
         return seasonValues
 
-    def initialTrendSmoothingFactor(self, timeSeries):
+    def initialTrendSmoothingFactors(self, timeSeries):
         """ Calculate the initial Trend smoothing Factor b0 according to:
         http://en.wikipedia.org/wiki/Exponential_smoothing#Triple_exponential_smoothing
 
@@ -351,9 +353,11 @@ class HoltWintersMethod(BaseMethod):
 
         result = 0.0
         seasonLength = self.get_parameter("seasonLength")
-        for i in xrange(0, seasonLength):
+        k = min(len(timeSeries) - seasonLength, seasonLength) #In case of only one full season, use average trend of the months that we have twice
+        print k
+        for i in xrange(0, k):
             result += (timeSeries[seasonLength + i][1] - timeSeries[i][1]) / seasonLength
-        return result / seasonLength
+        return result / k
 
 
     def computeA(self, j, timeSeries):
