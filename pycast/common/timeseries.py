@@ -134,7 +134,7 @@ class TimeSeries(object):
         ## return the simple way if no timestamp format was requested
         format = self._timestampFormat
         if None == self._timestampFormat:
-            return """[%s]""" % ",".join([str(entry) for entry in self._timeseriesData])
+            return "[%s]"% ",".join([str(entry) for entry in self._timeseriesData])
 
         ## initialize the result
         valuepairs = []
@@ -142,10 +142,10 @@ class TimeSeries(object):
         convert    = TimeSeries.convert_epoch_to_timestamp
         
         for entry in self._timeseriesData:
-            append("""["%s",%s]""" % (convert(entry[0], format), entry[1]))
+            append('["%s",%s]' % (convert(entry[0], format), entry[1]))
 
         ## return the result
-        return """[%s]""" % ",".join(valuepairs)
+        return "[%s]" % ",".join(valuepairs)
 
     @classmethod
     def from_json(cls, json, format=None):
@@ -561,8 +561,8 @@ class TimeSeries(object):
             For more information about the methods take a look into their corresponding documentation.
         """
         ## sort and normalize, if necessary
-        if method.has_to_be_normalized():
-            self.normalize()
+        if not self.is_normalized() and method.has_to_be_normalized():
+            self.normalize() #bugm leads to way too many values if applied on a day aggregated TimeSeries
         elif method.has_to_be_sorted():
             self.sort_timeseries()
 

@@ -1,8 +1,11 @@
 from itty import *
 import json, sqlite3
 sys.path.append('../../../')
-from pycast.methods.exponentialsmoothing import HoltWintersMethod 
+from pycast.methods.exponentialsmoothing import HoltWintersMethod
+from pycast.optimization import GridSearch
+from pycast.errors import SymmetricMeanAbsolutePercentageError as SMAPE
 from pycast.common.timeseries import TimeSeries
+from pycast.common.json_encoder import PycastEncoder
 
 db = sqlite3.connect('energy.db')
 MY_ROOT = os.path.join(os.path.dirname(__file__), 'static')
@@ -21,6 +24,36 @@ def energy_data(request):
 
 @post('/optimize')
 def optimize(request):
+	"""
+	Performs Holt Winters Parameter Optimization on the given post data.
+	Expects the following values set in the post of the request:
+		seasonLength - integer
+		valuesToForecast - integer
+		data - two dimensional array of [timestamp, value]
+	"""
+	#Parse arguments
+	seasonLength = int(request.POST.get('seasonLength', 6))
+	valuesToForecast = int(request.POST.get('valuesToForecast', 0))
+	data = json.loads(request.POST.get('data', []))
+
+	original = TimeSeries.from_twodim_list(data)
+	original.normalize("day") #due to bug in TimeSeries.apply
+	original.set_timeformat("%d.%m")
+	
+	#optimize smoothing
+	hwm = HoltWintersMethod(seasonLength = seasonLength, valuesToForecast = valuesToForecast)
+	gridSearch = GridSearch(SMAPE)
+	optimal_forecasting, optimal_params = gridSearch.optimize(original, [hwm])
+	
+	#perform smoothing
+	optimal_forecasting._parameters.update(optimal_params)
+	smoothed = optimal_forecasting.execute(original)
+	smoothed.set_timeformat("%d.%m")
+	result = {	'params': optimal_params,
+				'original': original,
+				'smoothed': smoothed
+				}
+	return Response(json.dumps(result, cls=PycastEncoder), content_type='application/json') 
 	
 
 @post('/holtWinters')
@@ -50,13 +83,14 @@ def holtWinters(request):
     						seasonLength = seasonLength,
     						valuesToForecast = valuesToForecast)
 	original = TimeSeries.from_twodim_list(data)
+	original.set_timeformat("%d.%m")
 	smoothed = hwm.execute(original)
+	smoothed.set_timeformat("%d.%m")
 	
 	#process the result	
-	result = {	'x': zip(*original)[0], #extracts the first dimension of the two dimensional list
-				'original': [entry for entry in original],
-				'smoothed': [entry for entry in smoothed]}
-	return Response(json.dumps(result), content_type='application/json')
+	result = {	'original': original,
+				'smoothed': smoothed}
+	return Response(json.dumps(result, cls=PycastEncoder), content_type='application/json')
 
 @get('/')
 def index(request):

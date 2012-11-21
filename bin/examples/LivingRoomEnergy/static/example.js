@@ -3,85 +3,107 @@ $.postJSON = function(url, data, callback) {
 };
 
 $(document).ready(function() {
-    $('#smooth_btn').click(replot);
+    $('#smooth_btn').click(smooth);
+    $('#optimize_btn').click(optimize);
     $.getJSON('/energyData', function(data) {
        // Set initial values and draw
-        $('#smoothingFactor').val("0.2");
+        $('#smoothingFactor').val(0.2);
         $('#trendSmoothingFactor').val(0.3);
         $('#seasonSmoothingFactor').val(0.4);
         $('#seasonLength').val(7);
         $('#valuesToForecast').val(0);
         $('#data').val(JSON.stringify(data));
-        replot(); 
+        smooth(); 
     });
 });
 
-replot = function() {
-    $.postJSON( '/holtWinters', 
-                {   
-                    'smoothingFactor': $('#smoothingFactor').val(),
-                    'trendSmoothingFactor': $('#trendSmoothingFactor').val(),
-                    'seasonSmoothingFactor': $('#seasonSmoothingFactor').val(),
-                    'seasonLength': $('#seasonLength').val(),
-                    'valuesToForecast': $('#valuesToForecast').val(),
-                    'data': $('#data').val()
-                },
-                function(data) {
-        minX = Math.min.apply(null, data['x'])
-        maxX = Math.max.apply(null, data['x'])
-        chart = new Highcharts.Chart({
-            chart: {
-                renderTo: 'container',
-                type: 'line',
-                marginRight: 130,
-                marginBottom: 25
-            },
-            title: {
-                text: 'Energy Data',
-                x: -20 //center
-            },
-            xAxis: {
-                min: minX,
-                max: maxX,
-                tickInterval: 60 * 60 * 24,
-                labels : {
-                    formatter: function() {
-                        date = new Date(this.value * 1000);
-                        return date.getDate() + "." + (date.getMonth() + 1);
-                    }
-                }
-            },
-            yAxis: {
-                title: {
-                    text: 'Energy Consumption in kwH'
-                },
-                plotLines: [{
-                    value: 0,
-                    width: 1,
-                    color: '#8080FF'
-                }]
-            },
-            tooltip: {
-                formatter: function() {
-                        return '<b>'+ this.series.name +'</b><br/>'+
-                        new Date(this.x) +': '+ this.y +'kwH';
-                }
-            },
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'top',
-                x: -10,
-                y: 100,
-                borderWidth: 0
-            },
-            series: [{
-                name: 'Original',
-                data: data['original']
-            }, {
-                name: 'Smoothed',
-                data: data['smoothed']
-            }]
+optimize = function() {
+    $.postJSON( '/optimize', 
+        {   
+            'seasonLength': $('#seasonLength').val(),
+            'valuesToForecast': $('#valuesToForecast').val(),
+            'data': $('#data').val()
+        }, function(data) {
+            $('#smoothingFactor').val(round(data['params']['smoothingFactor'], 3));
+            $('#smoothingFactor_control-group').effect("highlight", {}, 2000);
+            $('#trendSmoothingFactor').val(round(data['params']['trendSmoothingFactor'], 3));
+            $('#trendSmoothingFactor_control-group').effect("highlight", {}, 2000);
+            $('#seasonSmoothingFactor').val(round(data['params']['seasonSmoothingFactor'], 3));
+            $('#seasonSmoothingFactor_control-group').effect("highlight", {}, 2000);
+            replot(data);
         });
+}
+
+smooth = function () {
+    $.postJSON( '/holtWinters', 
+        {   
+            'smoothingFactor': $('#smoothingFactor').val(),
+            'trendSmoothingFactor': $('#trendSmoothingFactor').val(),
+            'seasonSmoothingFactor': $('#seasonSmoothingFactor').val(),
+            'seasonLength': $('#seasonLength').val(),
+            'valuesToForecast': $('#valuesToForecast').val(),
+            'data': $('#data').val()
+        },
+        replot);
+}
+
+replot = function(data) {
+    chart = new Highcharts.Chart({
+        chart: {
+            renderTo: 'container',
+            type: 'line',
+            marginRight: 130,
+            marginBottom: 25
+        },
+        title: {
+            text: 'Energy Data',
+            x: -20 //center
+        },
+        xAxis: {
+            categories: getCol(data['smoothed'], 0)
+        },
+        yAxis: {
+            title: {
+                text: 'Energy Consumption in kwH'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#8080FF'
+            }]
+        },
+        tooltip: {
+            formatter: function() {
+                    return '<b>'+ this.series.name +'</b><br/>'+
+                    this.x +': '+ round(this.y, 3) +'kwH';
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'top',
+            x: -10,
+            y: 100,
+            borderWidth: 0
+        },
+        series: [{
+            name: 'Original',
+            data: data['original']
+        }, {
+            name: 'Smoothed',
+            data: data['smoothed']
+        }]
     });
 };
+
+function round(number, precision) {
+    return Math.round(number * Math.pow(10, precision)) / Math.pow(10, precision);
+}
+
+function getCol(matrix, col){
+       var column = [];
+       for(var i=0; i<matrix.length; i++){
+          column.push(matrix[i][col]);
+       }
+       return column;
+    }

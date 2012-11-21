@@ -55,9 +55,9 @@ class GridSearch(BaseOptimizationMethod):
         self._endPercentage      = endPercentage
 
         for forecastingMethod in forecastingMethods:
-            parameters = self.optimize_forecasting_method(timeSeries, forecastingMethod)
+            parameters = self.optimize_forecasting_method(timeSeries, forecastingMethod)[1]
 
-        return bestForecastingMethod, parameters
+        return forecastingMethod, parameters
 
     def _generate_next_parameter_value(self, parameter, forecastingMethod):
         """Generator for a specific parameter of the given forecasting method.
