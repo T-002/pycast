@@ -515,7 +515,7 @@ class HoltWintersMethodTest(unittest.TestCase):
 
         data = [362.0, 385.0, 432.0, 341.0, 382.0, 409.0, 498.0, 387.0, 473.0, 513.0, 582.0, 474.0, 544.0, 582.0, 681.0, 557.0, 628.0, 707.0, 773.0, 592.0, 627.0, 725.0, 854.0, 661.0]
         tsSrc = TimeSeries.from_twodim_list(zip(range(len(data)),data))
-
+        exprected = [[0.0, 362.0],[1.0, 379.93673257607463],[2.0, 376.86173719924875],[3.0, 376.0203652542205],[4.0, 408.21988583215574],[5.0, 407.16235446485433],[6.0, 430.0950666716297],[7.0, 429.89797609228435],[8.0, 489.4888959723074],[9.0, 507.8407281475308],[10.0, 506.3556647249702],[11.0, 523.9422448655133],[12.0, 556.0311543025242],[13.0, 573.6520991970604],[14.0, 590.2149136780341],[15.0, 611.8813425659495],[16.0, 637.0393967524727],[17.0, 684.6600411792656],[18.0, 675.9589298142507],[19.0, 659.0266828674846],[20.0, 644.0903317144154],[21.0, 690.4507762388047],[22.0, 735.3219292023371],[23.0, 737.9752345691215]]
         hwm = HoltWintersMethod(.7556, 0.0000001, .9837, 4)
         
         initialA_2 = hwm.computeA(2, tsSrc)
@@ -523,17 +523,10 @@ class HoltWintersMethodTest(unittest.TestCase):
 
         initialTrend = hwm.initialTrendSmoothingFactors(tsSrc)
         assert initialTrend == 9.75, "Initial Trend should be 9.75 but is %d" % initialTrend
-        
 
+        #correctness is not proven, but will be enough for regression testing
         res = hwm.execute(tsSrc)
-        
-        mse = MeanSquaredError(100)
-        mse.initialize(tsSrc, res)
-        error = mse.get_error()
-        
-        print res
-        print error
-        assert error < 520
+        assert res == TimeSeries.from_twodim_list(exprected), "Smoothing result not correct."
 
     def season_factor_initialization_test(self):
         """ Test if seasonal correction factors are initialized correctly."""
@@ -542,7 +535,9 @@ class HoltWintersMethodTest(unittest.TestCase):
         data = [[0, 362.0], [1,385.0], [2, 432.0], [3, 341.0], [4, 382.0], [5, 409.0], [6, 498.0], [7, 387.0], [8, 473.0], [9, 513.0], [10, 582.0], [11, 474.0]]
         tsSrc = TimeSeries.from_twodim_list(data)
         seasonValues = hwm.initSeasonFactors(tsSrc)
-        assert False, 'TODO find correct values for initialization' 
+
+        #correctness is not proven, but will be enough for regression testing
+        assert seasonValues == [0.9302895649920525, 0.9980629019785198, 1.1551483413078523, 0.9164991917215755], "Season Values are not initialized correctly"
 
     def initial_trend_values_test(self):
         hwm = HoltWintersMethod(seasonLength=4)
