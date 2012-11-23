@@ -71,7 +71,8 @@ class TimeSeries(object):
             in their ascending temporal order, this should set to :py:const:`True`.
         """
         super(TimeSeries, self).__init__()
-        self._normalized           = isNormalized
+        self._normalized           = True
+        self._normalizationLevel   = None
         self._predefinedNormalized = isNormalized
 
         self._sorted               = isSorted
@@ -172,6 +173,10 @@ class TimeSeries(object):
         for entry in eval(json):
             ts.add_entry(*entry)
 
+        ## set the normalization level
+        ts._normalized = ts.check_normalization()
+        ts.sort_timeseries()
+
         return ts
 
     def to_twodim_list(self):
@@ -212,7 +217,11 @@ class TimeSeries(object):
         ts.set_timeformat(format)
 
         for entry in datalist:
-            ts.add_entry(*entry[:2])        
+            ts.add_entry(*entry[:2])
+
+        ## set the normalization level
+        ts._normalized = ts.check_normalization()
+        ts.sort_timeseries()  
 
         return ts
 
@@ -238,6 +247,9 @@ class TimeSeries(object):
                 self.add_entry(*entry[:2])
 
             data = sqlcursor.fetchmany()
+
+        ## set the normalization level
+        self._normalized = self.check_normalization
         
         ## return the number of tuples added to the timeseries.
         return tuples
@@ -449,8 +461,9 @@ class TimeSeries(object):
         """
         ## do not normalize the TimeSeries if it is already normalized, either by
         ## definition or a prior call of normalize(*)
-        if self._normalized:
-            return
+        if self._normalizationLevel == normalizationLevel:
+            if self._normalized:
+                return
 
         ## check if all parameters are defined correctly
         if not normalizationLevel in NormalizationLevels:
@@ -460,10 +473,16 @@ class TimeSeries(object):
         if not interpolationMethod in InterpolationMethods:
             raise ValueError("Interpolation method %s is unknown." % interpolationMethod)
 
+        ## (nearly) empty TimeSeries instances do not require normalization
+        if len(self) < 2:
+            self._normalized = True
+            return
+
         ## get the defined methods and parameter
-        normalizationLevel  = NormalizationLevels[normalizationLevel]
-        fusionMethod        = FusionMethods[fusionMethod]
-        interpolationMethod = InterpolationMethods[interpolationMethod]
+        normalizationLevelString = normalizationLevel
+        normalizationLevel       = NormalizationLevels[normalizationLevel]
+        fusionMethod             = FusionMethods[fusionMethod]
+        interpolationMethod      = InterpolationMethods[interpolationMethod]
 
         ## sort the TimeSeries
         self.sort_timeseries()
@@ -536,6 +555,7 @@ class TimeSeries(object):
 
         ## at the end set self._normalized to True
         self._normalized = True
+        self._normalizationLevel = normalizationLevelString
 
     def is_normalized(self):
         """Returns if the TimeSeries is normalized.
@@ -544,6 +564,29 @@ class TimeSeries(object):
         :rtype:     Boolean
         """
         return self._normalized
+
+    def check_normalization(self):
+        """Checks, if the TimeSeries is normalized.
+
+        :return:    Returns :py:const:`True` if all data entries of the TimeSeries have an equal temporal
+            distance, :py:const:`False` otherwise.
+        """
+        lastDistance = None
+        distance     = None
+        for idx in xrange(len(self) - 1):
+            distance = self[idx+1][0] - self[idx][0]
+
+            ## first run
+            if None == lastDistance:
+                lastDistance = distance
+                continue
+
+            if lastDistance != distance:
+                return False
+
+            lastDistance = distance
+
+        return True
 
     def is_sorted(self):
         """Returns if the TimeSeries is sorted.
@@ -559,11 +602,15 @@ class TimeSeries(object):
 
         :param BaseMethod method: Method that should be used with the TimeSeries.
             For more information about the methods take a look into their corresponding documentation.
+
+        :raise:    Raises a StandardError when the TimeSeries was not normalized and hte method requires a 
+            normalized TimeSeries
         """
-        ## sort and normalize, if necessary
-        if not self.is_normalized() and method.has_to_be_normalized():
-            self.normalize() #bugm leads to way too many values if applied on a day aggregated TimeSeries
-        elif method.has_to_be_sorted():
+        ## check, if the methods requirements are fullfilled
+        if method.has_to_be_normalized() and not self._normalized:
+                raise StandardError("method requires a normalized TimeSeries instance.")
+        
+        if method.has_to_be_sorted():
             self.sort_timeseries()
 
         return method.execute(self)

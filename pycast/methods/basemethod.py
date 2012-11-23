@@ -71,6 +71,8 @@ class BaseMethod(object):
         parameterIntervals = {}
 
         ## YOUR METHOD SPECIFIC CODE HERE!
+        if self.__class__.__name__ not in ["BaseMethod", "BaseForecastingMethod"]:
+            raise NotImplementedError
 
         return parameterIntervals
 
