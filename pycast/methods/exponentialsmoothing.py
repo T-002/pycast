@@ -435,7 +435,6 @@ class HoltWintersMethod(BaseForecastingMethod):
         result = 0.0
         seasonLength = self.get_parameter("seasonLength")
         k = min(len(timeSeries) - seasonLength, seasonLength) #In case of only one full season, use average trend of the months that we have twice
-        print k
         for i in xrange(0, k):
             result += (timeSeries[seasonLength + i][1] - timeSeries[i][1]) / seasonLength
         return result / k

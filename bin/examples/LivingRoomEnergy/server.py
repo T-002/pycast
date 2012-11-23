@@ -15,10 +15,10 @@ def energy_data(request):
 	"""
 		Connects to the database and loads Readings for device 8.
 	"""
-	cur = db.cursor().execute("""SELECT timestamp, current FROM Readings WHERE deviceId = 8""")
+	cur = db.cursor().execute("""SELECT timestamp, current FROM Readings""")
 	original = TimeSeries()
 	original.initialize_from_sql_cursor(cur)
-	original.normalize("day")
+	original.normalize("day", fusionMethod = "sum")
 	result = [entry for entry in original]
 	return Response(json.dumps(result), content_type='application/json')
 
@@ -43,10 +43,9 @@ def optimize(request):
 	#optimize smoothing
 	hwm = HoltWintersMethod(seasonLength = seasonLength, valuesToForecast = valuesToForecast)
 	gridSearch = GridSearch(SMAPE)
-	optimal_forecasting, optimal_params = gridSearch.optimize(original, [hwm])
+	optimal_forecasting, error, optimal_params = gridSearch.optimize(original, [hwm])
 	
 	#perform smoothing
-	optimal_forecasting._parameters.update(optimal_params)
 	smoothed = optimal_forecasting.execute(original)
 	smoothed.set_timeformat("%d.%m")
 	result = {	'params': optimal_params,

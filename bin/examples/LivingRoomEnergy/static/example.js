@@ -25,11 +25,11 @@ optimize = function() {
             'data': $('#data').val()
         }, function(data) {
             $('#smoothingFactor').val(round(data['params']['smoothingFactor'], 3));
-            $('#smoothingFactor_control-group').effect("highlight", {}, 2000);
+            $('#smoothingFactor_control-group').effect("highlight", {color: '#5BB75B'}, 2000);
             $('#trendSmoothingFactor').val(round(data['params']['trendSmoothingFactor'], 3));
-            $('#trendSmoothingFactor_control-group').effect("highlight", {}, 2000);
+            $('#trendSmoothingFactor_control-group').effect("highlight", {color: '#5BB75B'}, 2000);
             $('#seasonSmoothingFactor').val(round(data['params']['seasonSmoothingFactor'], 3));
-            $('#seasonSmoothingFactor_control-group').effect("highlight", {}, 2000);
+            $('#seasonSmoothingFactor_control-group').effect("highlight", {color: '#5BB75B'}, 2000);
             replot(data);
         });
 }
@@ -60,7 +60,10 @@ replot = function(data) {
             x: -20 //center
         },
         xAxis: {
-            categories: getCol(data['smoothed'], 0)
+            categories: getCol(data['smoothed'], 0),
+            labels: {
+                rotation: 45
+            }
         },
         yAxis: {
             title: {
@@ -75,7 +78,7 @@ replot = function(data) {
         tooltip: {
             formatter: function() {
                     return '<b>'+ this.series.name +'</b><br/>'+
-                    this.x +': '+ round(this.y, 3) +'kwH';
+                    this.x +': '+ round(this.y, 3) +' wH';
             }
         },
         legend: {
