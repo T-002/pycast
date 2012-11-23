@@ -25,6 +25,7 @@
 ## required external modules
 from nose import with_setup
 import unittest, re, os
+from copy import copy
 
 ## required modules from pycast
 from pycast.common.timeseries import TimeSeries, FusionMethods
@@ -365,3 +366,23 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         assert str(FusionMethods["mean"](data1))[:6] == "3.5"
         assert str(FusionMethods["mean"](data2))[:6] == "4.0"
         assert str(FusionMethods["mean"](data3))[:6] == "11.5"
+
+    def copy_test(self):
+        """Test TimeSeries cloning."""
+        ts = TimeSeries.from_twodim_list([[0.5, 0.0], [1.5, 1.0], [2.5, 2.0], [3.5, 3.0], [4.5, 4.0], [5.5, 5.0]])
+        tsClone = copy(ts)
+
+        assert tsClone == ts
+        
+        ts[0][0] = 0.0
+        assert ts != tsClone
+
+        ts.add_entry(0.0, 1.1)
+        assert len(ts) > len(tsClone)
+
+
+
+
+
+
+

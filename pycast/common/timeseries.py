@@ -125,6 +125,23 @@ class TimeSeries(object):
         datafile.close()
         return True
 
+    def __copy__(self):
+        """Returns a new clone of the TimeSeries.
+
+        :return:    Returns a TimeSeries containing the same data and configuration as self.
+        :rtype:     TimeSeries
+        """
+        ts = TimeSeries.from_twodim_list(self._timeseriesData)
+        
+        ts._normalizationLevel   = self._normalizationLevel
+        ts._normalized           = self._normalized
+        ts._sorted               = self._sorted
+        ts._predefinedSorted     = self._predefinedSorted
+        ts._predefinedNormalized = self._predefinedNormalized
+        ts._timestampFormat      = self._timestampFormat
+
+        return ts
+
     def to_json(self):
         """Returns a JSON representation of the TimeSeries data.
 
