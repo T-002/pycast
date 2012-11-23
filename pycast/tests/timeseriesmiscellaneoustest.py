@@ -50,7 +50,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         mThree = BaseMethod([], hasToBeSorted=True, hasToBeNormalized=False)
         mFour  = BaseMethod([], hasToBeSorted=False, hasToBeNormalized=False)
 
-        ts = TimeSeries()
+        ts = TimeSeries(isNormalized=True)
         ts.add_entry(0.0, 0.0)
         ts.add_entry(0.1, 0.1)
         ts.add_entry(0.2, 0.2)
@@ -271,7 +271,12 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         ts = TimeSeries(isNormalized=True)
         assert ts.is_normalized()
         ts = TimeSeries(isNormalized=False)
+        assert ts.is_normalized()
+        ts.add_entry(0.1, 3.2)
+        ts.add_entry(0.4, 3.2)
+        ts.add_entry(0.3, 3.2)
         assert False == ts.is_normalized()
+
 
     def normalize_test(self):
         """Test timeseries normalization."""
@@ -294,8 +299,11 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         tsOne   = TimeSeries.from_twodim_list(dataOne)
         tsTwo   = TimeSeries.from_twodim_list(dataTwo)
         
+        print tsOne
         tsOne.normalize("second")
+        print tsOne
         tsOne.normalize("second")
+        print tsOne
         
         if not len(tsOne) == len(tsTwo):  raise AssertionError
         if not tsOne == tsTwo:            raise AssertionError

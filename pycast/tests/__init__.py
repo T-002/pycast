@@ -37,7 +37,7 @@ from methodtest import BaseMethodTest, BaseForecastingMethodTest, SimpleMovingAv
 
 ## error measure tests
 from errormeasuretest import BaseErrorMeasureTest, MeanSquaredErrorTest, SymmetricMeanAbsolutePercentageErrorTest, MeanAbsoluteDeviationErrorTest
-#from mapetest import MeanAbsolutePercentageErrorTest, GeometricMeanAbsolutePercentageErrorTest
+##from mapetest import MeanAbsolutePercentageErrorTest, GeometricMeanAbsolutePercentageErrorTest
 
 ## optimization method
 from baseoptimizationtest import BaseOptimizationMethodTest

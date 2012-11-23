@@ -190,9 +190,15 @@ class BaseForecastingMethodTest(unittest.TestCase):
             def __init__(self):
                 super(FM1, self).__init__(["valuesToForecast"])
 
+            def _get_parameter_intervals(self):
+                return {}
+
         class FM2(BaseForecastingMethod):
             def __init__(self):
                 super(FM2, self).__init__([])
+
+            def _get_parameter_intervals(self):
+                return {}
 
         FM1()
         FM2()
@@ -311,13 +317,31 @@ class SimpleMovingAverageTest(unittest.TestCase):
             else:
                 assert False    # pragma: no cover
 
+    def execute_value_error_test(self):
+        """Test for the ValueError in SimpleMovingAverage.execute()."""
+        tsOne = TimeSeries()
+        data  = [[1.5, 10.0],[2.5, 12.4],[3.5, 17.380000000000003],[4.5, 16.666],[5.5, 20.6662],[6.5, 23.46634],[7.5, 20.026438]]
+        tsTwo = TimeSeries.from_twodim_list(data)
+
+        sma = SimpleMovingAverage(3)
+
+        tsOne.normalize("second")
+
+        res = tsTwo.apply(sma)
+
+        try:
+            res = tsOne.apply(sma)
+        except ValueError:
+            pass
+        else:
+            assert False    # pragma: no cover
+
     def execute_test(self):
         """Test the execution of SimpleMovingAverage."""
         ## Initialize the source
         data  = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
         tsSrc = TimeSeries.from_twodim_list(data)
         tsSrc.normalize("second")
-
 
         ## Initialize a correct result.
         ### The numbers look a little bit odd, based on the binary translation problem
@@ -328,6 +352,7 @@ class SimpleMovingAverageTest(unittest.TestCase):
         sma = SimpleMovingAverage(3)
         res = tsSrc.apply(sma)
 
+        #print tsSrc, res
         if not res == tsDst: raise AssertionError
 
 class ExponentialSmoothingTest(unittest.TestCase):
@@ -375,7 +400,6 @@ class ExponentialSmoothingTest(unittest.TestCase):
         """Test smoothing part of ExponentialSmoothing a second time."""
         data  = [[0.0, 1000], [1, 1050], [2, 1120], [3, 980], [4, 110]]
         tsSrc = TimeSeries.from_twodim_list(data)
-        tsSrc.normalize("second")
 
         ## Initialize a correct result.
         ### The numbers look a little bit odd, based on the binary translation problem
@@ -383,9 +407,12 @@ class ExponentialSmoothingTest(unittest.TestCase):
         tsDst = TimeSeries.from_twodim_list(data)
 
         ## Initialize the method
+        tsSrc.normalize("second")
+        #print tsSrc
         es = ExponentialSmoothing(0.6, 0)
         res = tsSrc.apply(es)
 
+        #print tsSrc, res
         if not res == tsDst: raise AssertionError
 
     def forecasting_test(self):

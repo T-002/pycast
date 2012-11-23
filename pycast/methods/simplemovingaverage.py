@@ -50,6 +50,31 @@ class SimpleMovingAverage(BaseMethod):
         super(SimpleMovingAverage, self).__init__(["windowsize"], True, True)
         self.set_parameter("windowsize", windowsize)
 
+    def _get_parameter_intervals(self):
+        """Returns the intervals for the methods parameter.
+
+        Only parameters with defined intervals can be used for optimization!
+
+        :return:    Returns a dictionary containing the parameter intervals, using the parameter
+            name as key, while the value hast the following format:
+            [minValue, maxValue, minIntervalClosed, maxIntervalClosed]
+
+                - minValue
+                    Minimal value for the parameter
+                - maxValue
+                    Maximal value for the parameter
+                - minIntervalClosed
+                    :py:const:`True`, if minValue represents a valid value for the parameter.
+                    :py:const:`False` otherwise.
+                - maxIntervalClosed:
+                    :py:const:`True`, if maxValue represents a valid value for the parameter.
+                    :py:const:`False` otherwise.
+        :rtype:     Dictionary
+        """
+        parameterIntervals = {}
+
+        return parameterIntervals
+
     def execute(self, timeSeries):
         """Creates a new TimeSeries containing the SMA values for the predefined windowsize.
 
@@ -58,16 +83,22 @@ class SimpleMovingAverage(BaseMethod):
         :return:    TimeSeries object containing the smooth moving average.
         :rtype:     TimeSeries
         
+        :raise:   Raises a :py:exc:`ValueError` wif the defined windowsize is larger than the number of elements
+            in timeSeries
+
         :note:    This implementation aims to support independent for loop execution.
         """
-        res = TimeSeries()
+        windowsize    = self._parameters["windowsize"]
+
+        if len (timeSeries) < windowsize:
+            raise ValueError("windowsize is larger than the number of elements in timeSeries.")
 
         minIdx = len(timeSeries) / 2
-
-        windowsize    = self._parameters["windowsize"]
+        
         tsLength      = len(timeSeries)
         nbrOfLoopRuns = tsLength - windowsize + 1
-        
+
+        res = TimeSeries()        
         for idx in xrange(nbrOfLoopRuns):
             end = idx + windowsize
             data = timeSeries[idx:end]

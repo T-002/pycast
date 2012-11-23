@@ -45,6 +45,7 @@ class GridSearchTest(unittest.TestCase):
         self.bfm = bfm
         data = [[0.0, 0.0], [1.1, 0.2], [2.2, 0.6], [3.3, 0.2], [4.4, 0.3], [5.5, 0.5]]
         self.timeSeries = TimeSeries.from_twodim_list(data)
+        self.timeSeries.normalize("second")
 
     def tearDown(self):
         """Deletes the BaseForecastingMethod of the test."""
