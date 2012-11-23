@@ -283,7 +283,7 @@ class HoltWintersMethod(BaseForecastingMethod):
         http://en.wikipedia.org/wiki/Exponential_smoothing#Triple_exponential_smoothing
     """
 
-    def __init__(self, smoothingFactor=0.1, trendSmoothingFactor=0.5, seasonSmoothingFactor=0.5, seasonLength=42, valuesToForecast=1):
+    def __init__(self, smoothingFactor=0.1, trendSmoothingFactor=0.5, seasonSmoothingFactor=0.5, seasonLength=0, valuesToForecast=0):
         """Initializes the HoltWintersMethod.
 
         @param smoothingFactor Defines the alpha for the Holt-Winters algorithm.
@@ -300,19 +300,51 @@ class HoltWintersMethod(BaseForecastingMethod):
                                           "trendSmoothingFactor",
                                           "seasonSmoothingFactor",
                                           "seasonLength"],
+                                          valuesToForecast,
                                           True, True)
 
         if not 0.0 < smoothingFactor < 1.0:
-            raise ValueError("smoothingFactor has to be in (0.0, 1.0).")
+            raise ValueError("smoothingFactor has to be in (0.0, 1.0), but is %f" % smoothingFactor)
         if not 0.0 < trendSmoothingFactor < 1.0:
             raise ValueError("trendSmoothingFactor has to be in (0.0, 1.0).")
         if not 0.0 < seasonSmoothingFactor < 1.0:
             raise ValueError("seasonSmoothingFactor has to be in (0.0, 1.0).")
+        if not 0 < seasonLength:
+            raise ValueError("Please specify season length that is greater than 0.");
 
         self.set_parameter("smoothingFactor",      smoothingFactor)
         self.set_parameter("trendSmoothingFactor", trendSmoothingFactor)
         self.set_parameter("seasonSmoothingFactor", seasonSmoothingFactor)
         self.set_parameter("seasonLength",         seasonLength)
+
+    def _get_parameter_intervals(self):
+        """Returns the intervals for the methods parameter.
+
+        Only parameters with defined intervals can be used for optimization!
+
+        :return:    Returns a dictionary containing the parameter intervals, using the parameter
+            name as key, while the value hast the following format:
+            [minValue, maxValue, minIntervalClosed, maxIntervalClosed]
+
+                - minValue
+                    Minimal value for the parameter
+                - maxValue
+                    Maximal value for the parameter
+                - minIntervalClosed
+                    :py:const:`True`, if minValue represents a valid value for the parameter.
+                    :py:const:`False` otherwise.
+                - maxIntervalClosed:
+                    :py:const:`True`, if maxValue represents a valid value for the parameter.
+                    :py:const:`False` otherwise.
+        :rtype:     Dictionary
+        """
+        parameterIntervals = {}
+
+        parameterIntervals["smoothingFactor"]      = [0.0, 1.0, False, False]
+        parameterIntervals["trendSmoothingFactor"] = [0.0, 1.0, False, False]
+        parameterIntervals["seasonSmoothingFactor"] = [0.0, 1.0, False, False]
+
+        return parameterIntervals
 
     def execute(self, timeSeries):
         """Creates a new TimeSeries containing the smoothed values.
@@ -327,5 +359,95 @@ class HoltWintersMethod(BaseForecastingMethod):
         """
         ## determine the number of values to forecast, if necessary
         self._calculate_values_to_forecast(timeSeries)
+
+        seasonLength = self.get_parameter("seasonLength")
+        if len(timeSeries) < seasonLength:
+            raise ValueError("The time series must contain at least one full season.")
+
+        alpha = self.get_parameter("smoothingFactor")
+        beta = self.get_parameter("trendSmoothingFactor")
+        gamma = self.get_parameter("seasonSmoothingFactor")
+        valuesToForecast = self._parameters["valuesToForecast"]
+
+
+        seasonValues = self.initSeasonFactors(timeSeries)
+        resultList = []
+        lastEstimator = 0
+
+        for idx in xrange(len(timeSeries)):
+            t = timeSeries[idx][0]
+            x_t = timeSeries[idx][1]
+            if idx == 0:
+                lastTrend = self.initialTrendSmoothingFactors(timeSeries)
+                lastEstimator = x_t
+                resultList.append([t, x_t])
+                continue
+
+            lastSeasonValue = seasonValues[idx % seasonLength]
+            
+            estimator = alpha * x_t/lastSeasonValue + (1 - alpha) * (lastEstimator + lastTrend)
+            lastTrend = beta * (estimator - lastEstimator) + (1 - beta) * lastTrend
+            seasonValues[idx % seasonLength] = gamma * x_t/estimator + (1 - gamma) * lastSeasonValue
+            
+            lastEstimator = estimator
+            resultList.append([t, estimator])
+
+        #Forecasting. Determine the time difference between two points for extrapolation
+        currentTime        = resultList[-1][0]
+        normalizedTimeDiff = currentTime - resultList[-2][0]
         
-        raise NotImplementedError    # pragma: no cover
+        for m in xrange(1, valuesToForecast + 1):
+            currentTime += normalizedTimeDiff
+            lastSeasonValue = seasonValues[(idx + m-1) % seasonLength]
+            forecast = (lastEstimator + m * lastTrend) * lastSeasonValue
+            resultList.append([currentTime, forecast])
+        
+        return TimeSeries.from_twodim_list(resultList)
+
+    def initSeasonFactors(self, timeSeries):
+        """ Computes the initial season smoothing factors.
+
+        @return a list of season vectors of length "seasonLength"
+        """
+
+        seasonValues = []
+        seasonLength = self.get_parameter("seasonLength")
+        completeCycles = len(timeSeries) / seasonLength
+        A = {} #cache values for A_j
+        
+        for i in xrange(seasonLength):
+            c_i = 0
+            for j in xrange(completeCycles):
+                if j not in A:
+                    A[j] = self.computeA(j, timeSeries)
+                c_i += timeSeries[(seasonLength * j) + i][1] / A[j] #wikipedia suggests j-1, but we worked with indices in the first place
+            c_i /= completeCycles
+            seasonValues.append(c_i)
+        return seasonValues
+
+    def initialTrendSmoothingFactors(self, timeSeries):
+        """ Calculate the initial Trend smoothing Factor b0 according to:
+        http://en.wikipedia.org/wiki/Exponential_smoothing#Triple_exponential_smoothing
+
+        @return initial Trend smoothing Factor b0
+        """
+
+        result = 0.0
+        seasonLength = self.get_parameter("seasonLength")
+        k = min(len(timeSeries) - seasonLength, seasonLength) #In case of only one full season, use average trend of the months that we have twice
+        print k
+        for i in xrange(0, k):
+            result += (timeSeries[seasonLength + i][1] - timeSeries[i][1]) / seasonLength
+        return result / k
+
+
+    def computeA(self, j, timeSeries):
+        """ Calculates A_j. Aj is the average value of x in the jth cycle of your data
+
+        @return A_j
+        """
+        seasonLength = self.get_parameter("seasonLength")
+        A_j = 0
+        for i in range(seasonLength):
+            A_j += timeSeries[(seasonLength * (j)) + i][1]
+        return A_j / seasonLength

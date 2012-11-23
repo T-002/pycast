@@ -1,0 +1,67 @@
+<html>
+	<head>
+		<title>PyCast Example</title>
+		<script type="text/javascript" src="/static/jquery-1.8.3.js"></script>
+		<link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="/static/example.js"></script>
+	</head>
+	<body>
+		<script src="/static/highcharts.js"></script>
+		<script src="/static/exporting.js"></script>
+		<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+		<h1>PyCast Example</h1>
+		<div class="container-fluid">
+		  <div class="row-fluid">
+		    <div class="span4">
+		      <form class="form-horizontal">
+		  <div id="smoothingFactor_control-group" class="control-group">
+		    <label class="control-label" for="smoothingFactor">Smoothing Factor</label>
+		    <div class="controls">
+		      <input class="input-mini" type="text" id="smoothingFactor">
+		    </div>
+		  </div>
+		  <div id="trendSmoothingFactor_control-group" class="control-group">
+		    <label class="control-label" for="trendSmoothingFactor">Tremd Smoothing Factor</label>
+		    <div class="controls">
+		      <input class="input-mini" type="text" id="trendSmoothingFactor">
+		    </div>
+		  </div>
+		  <div id="seasonSmoothingFactor_control-group" class="control-group">
+		    <label class="control-label" for="seasonSmoothingFactor">Season Smoothing Factor</label>
+		    <div class="controls">
+		      <input class="input-mini" type="text" id="seasonSmoothingFactor">
+		    </div>
+		  </div>
+		  <div class="control-group">
+		    <label class="control-label" for="seasonLength">Season Length</label>
+		    <div class="controls">
+		      <input class="input-mini" type="text" id="seasonLength">
+		    </div>
+		  </div>
+		  <div class="control-group">
+		    <label class="control-label" for="valuesToForecast">Predict</label>
+		    <div class="controls">
+		      <input class="input-mini" type="text" id="valuesToForecast">
+		    </div>
+		  </div>
+		  <div class="control-group">
+		    <label class="control-label" for="data">Data</label>
+		    <div class="controls">
+				<textarea rows="3" id='data'></textarea>
+			</div>
+		  </div>
+		  </form>
+		  <p>
+		    <button id="smooth_btn" class="btn btn-primary">Smooth</button>
+		    <button id="optimize_btn" class="btn btn-success">Optimize</button>
+		  </p>
+		    </div>
+		    <div class="span8">
+				<div id="container" style="min-width: 400px; height: 400px; margin: 0 auto;";></div>		    
+			</div>
+		  </div>
+		</div>	
+		</body>
+</html>

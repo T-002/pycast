@@ -64,6 +64,7 @@ class GridSearch(BaseOptimizationMethod):
 
         return bestForecastingMethod
 
+
     def _generate_next_parameter_value(self, parameter, forecastingMethod):
         """Generator for a specific parameter of the given forecasting method.
 

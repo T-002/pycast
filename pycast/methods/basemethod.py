@@ -230,7 +230,6 @@ class BaseForecastingMethod(BaseMethod):
         """
         if not "valuesToForecast" in requiredParameters:
             requiredParameters.append("valuesToForecast")
-
         if valuesToForecast < 0:
             raise ValueError("valuesToForecast has to be larger than zero.")
 
