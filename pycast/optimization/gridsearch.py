@@ -62,6 +62,9 @@ class GridSearch(BaseOptimizationMethod):
         ## get the forecasting method with the smallest error
         bestForecastingMethod = min(results, key=lambda item: item[1].get_error(self._startingPercentage, self._endPercentage))
 
+        for parameter in bestForecastingMethod[2]:
+            bestForecastingMethod[0].set_parameter(parameter, bestForecastingMethod[2][parameter])
+
         return bestForecastingMethod
 
 
