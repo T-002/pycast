@@ -87,7 +87,8 @@ class BaseErrorMeasure(object):
                 append(local_error(orgPair[1], calcPair[1]))
 
         ## return False, if the error cannot be calculated
-        if len(self._errorValues) < self._minimalErrorCalculationPercentage * len(originalTimeSeries):
+
+        if len(filter(lambda item: item != None, self._errorValues)) < self._minimalErrorCalculationPercentage * len(originalTimeSeries):
             self._errorValues = []
             return False
 
