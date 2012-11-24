@@ -479,7 +479,7 @@ class TimeSeries(object):
         ## do not normalize the TimeSeries if it is already normalized, either by
         ## definition or a prior call of normalize(*)
         if self._normalizationLevel == normalizationLevel:
-            if self._normalized:
+            if self._normalized:    # pragma: no cover
                 return
 
         ## check if all parameters are defined correctly
