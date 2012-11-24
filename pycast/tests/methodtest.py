@@ -535,7 +535,7 @@ class HoltWintersMethodTest(unittest.TestCase):
         except ValueError, e:
             pass
         else:
-            assert False, "HoltWinters should throw an Exception if applied to a Time Series shorter than the season length"
+            assert False, "HoltWinters should throw an Exception if applied to a Time Series shorter than the season length"    # pragma: no cover
 
     def smoothing_test(self):
         """ Test if the smoothing works correctly"""
@@ -564,7 +564,7 @@ class HoltWintersMethodTest(unittest.TestCase):
         seasonValues = hwm.initSeasonFactors(tsSrc)
 
         #correctness is not proven, but will be enough for regression testing
-        assert seasonValues == [0.9302895649920525, 0.9980629019785198, 1.1551483413078523, 0.9164991917215755], "Season Values are not initialized correctly"
+        assert seasonValues == [0.9302895649920525, 0.9980629019785198, 1.1551483413078523, 0.9164991917215755], "Season Values are not initialized correctly"    # pragma: no cover
 
     def initial_trend_values_test(self):
         hwm = HoltWintersMethod(seasonLength=4)
@@ -572,6 +572,7 @@ class HoltWintersMethodTest(unittest.TestCase):
         tsSrc = TimeSeries.from_twodim_list(data)
         try:
             trend = hwm.initialTrendSmoothingFactors(tsSrc)
-            assert trend == 7.5, "Initial Trend should be 7.5 but is %f" % trend
         except IndexError:
-            assert False, "Bug, if there is only one cycle initial trend calculation should still work."
+            assert False, "Bug, if there is only one cycle initial trend calculation should still work."    # pragma: no cover
+
+        assert trend == 7.5, "Initial Trend should be 7.5 but is %f" % trend
