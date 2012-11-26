@@ -410,8 +410,15 @@ class HoltWintersMethod(BaseForecastingMethod):
         @return a list of season vectors of length "seasonLength"
         """
 
-        seasonValues = []
         seasonLength = self.get_parameter("seasonLength")
+        try:
+            seasonValues = self.get_parameter("seasonValues")
+            assert seasonLength == len(seasonValues), "Preset Season Values have to have to be of season's length"
+            return seasonValues
+        except KeyError:
+            pass
+
+        seasonValues = []
         completeCycles = len(timeSeries) / seasonLength
         A = {} #cache values for A_j
         

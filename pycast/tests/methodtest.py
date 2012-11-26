@@ -566,6 +566,26 @@ class HoltWintersMethodTest(unittest.TestCase):
         #correctness is not proven, but will be enough for regression testing
         assert seasonValues == [0.9302895649920525, 0.9980629019785198, 1.1551483413078523, 0.9164991917215755], "Season Values are not initialized correctly"
 
+    def preset_season_factor_test(self):
+        """Initial Season Factors should be presetable"""
+        hwm = HoltWintersMethod(seasonLength=4)
+        factors = [0,1,2,3]
+        hwm.set_parameter("seasonValues", factors)
+
+        data = [[0, 362.0], [1,385.0], [2, 432.0], [3, 341.0], [4, 382.0], [5, 409.0], [6, 498.0], [7, 387.0], [8, 473.0], [9, 513.0], [10, 582.0], [11, 474.0]]
+        tsSrc = TimeSeries.from_twodim_list(data)
+        seasonValues = hwm.initSeasonFactors(tsSrc)
+
+        assert seasonValues == factors, "Preset Season Factors are not returned by initSeasonFactors"
+
+        hwm.set_parameter("seasonValues", factors[:2])
+        try:
+            hwm.initSeasonFactors(tsSrc)
+        except AssertionError:
+            pass
+        else:
+            assert False, "If preset season factors and season length do not comply, initSeasonFactors should throw an AssertionError"
+
     def initial_trend_values_test(self):
         hwm = HoltWintersMethod(seasonLength=4)
         data = [[0, 362.0], [1,385.0], [2, 432.0], [3, 341.0], [4, 382.0], [5, 425.0]]
