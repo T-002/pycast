@@ -22,7 +22,9 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import math
 from pycast.errors import BaseErrorMeasure
+from pycast.common.timeseries import TimeSeries
 
 class MeanAbsolutePercentageError(BaseErrorMeasure):
 
@@ -40,11 +42,10 @@ class MeanAbsolutePercentageError(BaseErrorMeasure):
 
         @return Returns a float representing the error.
         """
-        ## get the defined subset of error values
         errorValues = self._get_error_values(startingPercentage, endPercentage)
+        errorValues = filter(lambda item: item != None, errorValues)
 
-        ## @todo Implement the error calculation here!
-        raise NotImplementedError
+        return float(sum(errorValues)) / float(len(errorValues))
 
     def local_error(self, originalValue, calculatedValue):
         """Calculates the error between the two given values.
@@ -55,10 +56,16 @@ class MeanAbsolutePercentageError(BaseErrorMeasure):
 
         @return Returns your custom local error.
         """
-        ## @todo Implement the local error calculation here!
-        raise NotImplementedError
+        if 0 == originalValue:
+            return None
+
+        return ((math.fabs(calculatedValue - originalValue))/float(originalValue)) * 100.0
 
 class GeometricMeanAbsolutePercentageError(BaseErrorMeasure):
+
+    def initialize(self, originalTimeSeries, calculatedTimeSeries):
+        originalTS_filtered = TimeSeries.from_twodim_list(filter(lambda x: x[1] != 0 , originalTimeSeries.to_twodim_list()))
+        BaseErrorMeasure.initialize(self, originalTS_filtered, calculatedTimeSeries)
 
     def calculate(self, startingPercentage, endPercentage):
         """This is the error calculation function that gets called by get_error().
@@ -74,12 +81,17 @@ class GeometricMeanAbsolutePercentageError(BaseErrorMeasure):
 
         @return Returns a float representing the error.
         """
-        ## get the defined subset of error values
         errorValues = self._get_error_values(startingPercentage, endPercentage)
-
-        ## @todo Implement the error calculation here!
-        raise NotImplementedError
-
+        errorValues = filter(lambda item: item != None, errorValues)
+        
+        len_errorValues = len(errorValues)
+        product = 1
+        for i in errorValues:
+            if i != 0:
+                product *= (float(i)**(1.0/float(len_errorValues)))
+        
+        return product
+    
     def local_error(self, originalValue, calculatedValue):
         """Calculates the error between the two given values.
 
@@ -89,5 +101,7 @@ class GeometricMeanAbsolutePercentageError(BaseErrorMeasure):
 
         @return Returns your custom local error.
         """
-        ## @todo Implement the local error calculation here!
-        raise NotImplementedError
+        if 0 == originalValue:
+            return None
+        
+        return ((math.fabs(calculatedValue - originalValue))/float(originalValue)) * 100.0

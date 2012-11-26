@@ -380,6 +380,27 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         ts.add_entry(0.0, 1.1)
         assert len(ts) > len(tsClone)
 
+    def normalized_method_requirement_test(self):
+        """Test for StandardError."""
+        data = [[0.0, 0.0], [1.1, 1.0], [2.0, 2.0], [5.0, 5.0]]
+        ts   = TimeSeries.from_twodim_list(data)
+
+        def nothing(self):
+            return
+
+        mOne   = BaseMethod([], hasToBeSorted=True, hasToBeNormalized=True)
+        mOne.execute = nothing
+
+        try:
+            ts.apply(mObe)
+        except StandardError:
+            pass
+        else:
+            assert False    # pragma: no cover
+
+        ts.normalize("second")
+        ts.apply(mOne)
+
 
 
 
