@@ -53,6 +53,18 @@ class BaseMethodTest(unittest.TestCase):
 
         if not len(b._parameters) == 2: raise AssertionError
 
+    def get_parameter_intervals_exception_test(self):
+        """Testing for NotImplementedError."""
+        class IllegalMethodErrorClass(BaseMethod):
+            pass
+
+        try:
+            method = IllegalMethodErrorClass()
+        except NotImplementedError:
+            pass
+        else:
+            assert False    # pragma: no cover
+
     def required_parameter_test(self):
         """Test for required parameters."""
         parameters = ["param1", "param2"]
