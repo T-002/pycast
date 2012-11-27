@@ -382,17 +382,17 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
 
     def normalized_method_requirement_test(self):
         """Test for StandardError."""
-        data = [[0.0, 0.0], [1.1, 1.0], [2.0, 2.0], [5.0, 5.0]]
-        ts   = TimeSeries.from_twodim_list(data)
-
         def nothing(self):
             return
+
+        data = [[0.0, 0.0], [1.1, 1.0], [2.0, 2.0], [5.0, 5.0]]
+        ts   = TimeSeries.from_twodim_list(data)
 
         mOne   = BaseMethod([], hasToBeSorted=True, hasToBeNormalized=True)
         mOne.execute = nothing
 
         try:
-            ts.apply(mObe)
+            ts.apply(mOne)
         except StandardError:
             pass
         else:

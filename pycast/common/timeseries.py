@@ -625,7 +625,7 @@ class TimeSeries(object):
         """
         ## check, if the methods requirements are fullfilled
         if method.has_to_be_normalized() and not self._normalized:
-                raise StandardError("method requires a normalized TimeSeries instance.")
+            raise StandardError("method requires a normalized TimeSeries instance.")
         
         if method.has_to_be_sorted():
             self.sort_timeseries()
