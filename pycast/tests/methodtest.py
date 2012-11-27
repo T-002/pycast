@@ -593,3 +593,16 @@ class HoltWintersMethodTest(unittest.TestCase):
         trend = hwm.initialTrendSmoothingFactors(tsSrc)
 
         assert trend == 7.5, "Initial Trend should be 7.5 but is %f" % trend
+
+    def season_length_test(self):
+        """Test that the season length has to be greater than 0."""
+        for seasonLength in xrange(-4, 1):
+            try:
+                HoltWintersMethod(seasonLength=seasonLength)
+            except ValueError:
+                pass
+            else:
+                assert False    # pragma: no cover
+        
+        for seasonLength in xrange(1,12414, 412):
+            HoltWintersMethod(seasonLength)

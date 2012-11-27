@@ -303,12 +303,6 @@ class HoltWintersMethod(BaseForecastingMethod):
                                           valuesToForecast,
                                           True, True)
 
-        if not 0.0 < smoothingFactor < 1.0:
-            raise ValueError("smoothingFactor has to be in (0.0, 1.0), but is %f" % smoothingFactor)
-        if not 0.0 < trendSmoothingFactor < 1.0:
-            raise ValueError("trendSmoothingFactor has to be in (0.0, 1.0).")
-        if not 0.0 < seasonSmoothingFactor < 1.0:
-            raise ValueError("seasonSmoothingFactor has to be in (0.0, 1.0).")
         if not 0 < seasonLength:
             raise ValueError("Please specify season length that is greater than 0.");
 
