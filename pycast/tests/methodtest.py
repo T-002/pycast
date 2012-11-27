@@ -617,4 +617,4 @@ class HoltWintersMethodTest(unittest.TestCase):
                 assert False    # pragma: no cover
         
         for seasonLength in xrange(1,12414, 412):
-            HoltWintersMethod(seasonLength)
+            HoltWintersMethod(seasonLength=seasonLength)
