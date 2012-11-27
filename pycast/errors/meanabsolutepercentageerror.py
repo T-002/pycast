@@ -33,11 +33,11 @@ class MeanAbsolutePercentageError(BaseErrorMeasure):
 
         Both parameters will be correct at this time.
 
-        :parameter Float startingPercentage:    Defines the start of the interval. This has
+        :param Float startingPercentage:    Defines the start of the interval. This has
             to be a float value in [0.0, 100.0]. It represents the value, where the error
             calculation should be started. 25.0 for example means that the first 25%% of all
             calculated errors will be ignored.
-        :parameter Float endPercentage:    Defines the end of the interval. This has to be a
+        :param Float endPercentage:    Defines the end of the interval. This has to be a
             float value in [0.0, 100.0]. It represents the vlaue, after which all error values
             will be ignored. 90.0 for example means that the last 10%% of all local errors
             will be ignored.
@@ -75,11 +75,11 @@ class GeometricMeanAbsolutePercentageError(BaseErrorMeasure):
 
         Both parameters will be correct at this time.
 
-        :parameter Float startingPercentage:    Defines the start of the interval. This has
+        :param Float startingPercentage:    Defines the start of the interval. This has
             to be a float value in [0.0, 100.0]. It represents the value, where the error
             calculation should be started. 25.0 for example means that the first 25%% of all
             calculated errors will be ignored.
-        :parameter Float endPercentage:    Defines the end of the interval. This has to be a
+        :param Float endPercentage:    Defines the end of the interval. This has to be a
             float value in [0.0, 100.0]. It represents the vlaue, after which all error values
             will be ignored. 90.0 for example means that the last 10%% of all local errors
             will be ignored.
