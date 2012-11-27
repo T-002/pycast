@@ -584,15 +584,12 @@ class HoltWintersMethodTest(unittest.TestCase):
         except AssertionError:
             pass
         else:
-            assert False, "If preset season factors and season length do not comply, initSeasonFactors should throw an AssertionError"
+            assert False, "If preset season factors and season length do not comply, initSeasonFactors should throw an AssertionError"    # pragma: no cover
 
     def initial_trend_values_test(self):
         hwm = HoltWintersMethod(seasonLength=4)
         data = [[0, 362.0], [1,385.0], [2, 432.0], [3, 341.0], [4, 382.0], [5, 425.0]]
         tsSrc = TimeSeries.from_twodim_list(data)
-        try:
-            trend = hwm.initialTrendSmoothingFactors(tsSrc)
-        except IndexError:
-            assert False, "Bug, if there is only one cycle initial trend calculation should still work."    # pragma: no cover
+        trend = hwm.initialTrendSmoothingFactors(tsSrc)
 
         assert trend == 7.5, "Initial Trend should be 7.5 but is %f" % trend
