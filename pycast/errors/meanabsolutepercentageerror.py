@@ -28,19 +28,22 @@ from pycast.common.timeseries import TimeSeries
 
 class MeanAbsolutePercentageError(BaseErrorMeasure):
 
-    def calculate(self, startingPercentage, endPercentage):
+    def _calculate(self, startingPercentage, endPercentage):
         """This is the error calculation function that gets called by get_error().
 
         Both parameters will be correct at this time.
 
-        @param startingPercentage Defines the start of the interval. This has to be a float value in [0.0, 100.0].
-                             It represents the value, where the error calculation should be started. 
-                             25.0 for example means that the first 25%% of all calculated errors will be ignored.
-        @param endPercentage      Defines the end of the interval. This has to be a float value in [0.0, 100.0].
-                             It represents the vlaue, after which all error values will be ignored.
-                             90.0 for example means that the last 10%% of all local errors will be ignored.
+        :parameter Float startingPercentage:    Defines the start of the interval. This has
+            to be a float value in [0.0, 100.0]. It represents the value, where the error
+            calculation should be started. 25.0 for example means that the first 25%% of all
+            calculated errors will be ignored.
+        :parameter Float endPercentage:    Defines the end of the interval. This has to be a
+            float value in [0.0, 100.0]. It represents the vlaue, after which all error values
+            will be ignored. 90.0 for example means that the last 10%% of all local errors
+            will be ignored.
 
-        @return Returns a float representing the error.
+        :return:    Returns a float representing the error.
+        :rtype:     Float
         """
         errorValues = self._get_error_values(startingPercentage, endPercentage)
         errorValues = filter(lambda item: item != None, errorValues)
@@ -50,58 +53,69 @@ class MeanAbsolutePercentageError(BaseErrorMeasure):
     def local_error(self, originalValue, calculatedValue):
         """Calculates the error between the two given values.
 
-        @param originalValue   Value of the original data.
-        @param calculatedValue Value of the calculated TimeSeries that
-                               corresponds to originalValue.
+        :param Numeric originalValue:    Value of the original data.
+        :param Numeric calculatedValue:    Value of the calculated TimeSeries that
+            corresponds to originalValue.
 
-        @return Returns your custom local error.
+        :return:    Returns the error measure of the two given values.
+        :rtype:     Numeric
         """
         if 0 == originalValue:
             return None
 
         return ((math.fabs(calculatedValue - originalValue))/float(originalValue)) * 100.0
 
+MAPE = MeanAbsolutePercentageError
+
 class GeometricMeanAbsolutePercentageError(BaseErrorMeasure):
+    """Calculates the geometric MAPE."""
 
-    def initialize(self, originalTimeSeries, calculatedTimeSeries):
-        originalTS_filtered = TimeSeries.from_twodim_list(filter(lambda x: x[1] != 0 , originalTimeSeries.to_twodim_list()))
-        BaseErrorMeasure.initialize(self, originalTS_filtered, calculatedTimeSeries)
-
-    def calculate(self, startingPercentage, endPercentage):
+    def _calculate(self, startingPercentage, endPercentage):
         """This is the error calculation function that gets called by get_error().
 
         Both parameters will be correct at this time.
 
-        @param startingPercentage Defines the start of the interval. This has to be a float value in [0.0, 100.0].
-                             It represents the value, where the error calculation should be started. 
-                             25.0 for example means that the first 25%% of all calculated errors will be ignored.
-        @param endPercentage      Defines the end of the interval. This has to be a float value in [0.0, 100.0].
-                             It represents the vlaue, after which all error values will be ignored.
-                             90.0 for example means that the last 10%% of all local errors will be ignored.
+        :parameter Float startingPercentage:    Defines the start of the interval. This has
+            to be a float value in [0.0, 100.0]. It represents the value, where the error
+            calculation should be started. 25.0 for example means that the first 25%% of all
+            calculated errors will be ignored.
+        :parameter Float endPercentage:    Defines the end of the interval. This has to be a
+            float value in [0.0, 100.0]. It represents the vlaue, after which all error values
+            will be ignored. 90.0 for example means that the last 10%% of all local errors
+            will be ignored.
 
-        @return Returns a float representing the error.
+        :return:    Returns a float representing the error.
+        :rtype:     Float
         """
         errorValues = self._get_error_values(startingPercentage, endPercentage)
         errorValues = filter(lambda item: item != None, errorValues)
         
-        len_errorValues = len(errorValues)
-        product = 1
-        for i in errorValues:
-            if i != 0:
-                product *= (float(i)**(1.0/float(len_errorValues)))
+        share = 1.0 / float(len(errorValues))
+
+        product = 1.0
+
+        for errorValue in errorValues:
+            ## never multiply with zero!
+            if 0 == errorValue:
+                continue
+            
+            product *= errorValue**share
         
         return product
     
     def local_error(self, originalValue, calculatedValue):
         """Calculates the error between the two given values.
 
-        @param originalValue   Value of the original data.
-        @param calculatedValue Value of the calculated TimeSeries that
-                               corresponds to originalValue.
+        :param Numeric originalValue:    Value of the original data.
+        :param Numeric calculatedValue:    Value of the calculated TimeSeries that
+            corresponds to originalValue.
 
-        @return Returns your custom local error.
+        :return:    Returns the error measure of the two given values.
+        :rtype:     Numeric
         """
         if 0 == originalValue:
             return None
         
         return ((math.fabs(calculatedValue - originalValue))/float(originalValue)) * 100.0
+
+GMAPE = GeometricMeanAbsolutePercentageError
