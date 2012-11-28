@@ -9,3 +9,4 @@ pycast Smoothing and Forecasting Methods
    basemethods
    smoothingmethods
    forecastingmethods
+   custommethods
