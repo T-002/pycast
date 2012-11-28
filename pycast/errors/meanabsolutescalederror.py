@@ -102,7 +102,7 @@ class MeanAbsoluteScaledError(BaseErrorMeasure):
 
         ## calculating the number of datapoints used within the history
         if isinstance(self._historyLength, float):
-            self._historyLength = int(self._historyLength * len(originalTimeSeries))
+            self._historyLength = int((self._historyLength * len(originalTimeSeries)) / 100.0) + 1
         
         ## sort the TimeSeries to reduce the required comparison operations
         originalTimeSeries.sort_timeseries()
@@ -125,11 +125,6 @@ class MeanAbsoluteScaledError(BaseErrorMeasure):
                     continue
 
                 append(local_error(orgPair[1], calcPair[1]))
-
-        ## return False, if the error cannot be calculated
-        if len(filter(lambda item: item != None, self._errorValues)) < self._minimalErrorCalculationPercentage * len(originalTimeSeries):
-            self._errorValues = []
-            return False
 
         return True
 
