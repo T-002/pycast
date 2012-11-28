@@ -62,7 +62,7 @@ class BaseOptimizationMethodTest(unittest.TestCase):
             except ValueError:
                 pass
             else:
-                print "precision: %s" % precision    # pragma: no cover
+                #print "precision: %s" % precision    # pragma: no cover
                 assert False                         # pragma: no cover
 
     def optimze_value_error_test(self):

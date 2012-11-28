@@ -269,7 +269,7 @@ class MeanAbsoluteDeviationErrorTest(unittest.TestCase):
             ple = localErrors[idx]
 
             ## compare the strings due to accuracy
-            print le, ple
+            #print le, ple
             assert str(le) == str(ple)
 
     def error_calculation_test(self):
@@ -288,7 +288,7 @@ class MeanAbsoluteDeviationErrorTest(unittest.TestCase):
         mad.initialize(tsOrg, tsCalc)
 
         ## compare the strings due to accuracy
-        print str(mad.get_error())[:6]
+        #print str(mad.get_error())[:6]
         assert "1.5406" == str(mad.get_error())[:6]
 
 class MeanAbsoluteScaledErrorTest(unittest.TestCase):

@@ -300,11 +300,8 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         tsOne   = TimeSeries.from_twodim_list(dataOne)
         tsTwo   = TimeSeries.from_twodim_list(dataTwo)
         
-        print tsOne
         tsOne.normalize("second")
-        print tsOne
         tsOne.normalize("second")
-        print tsOne
         
         if not len(tsOne) == len(tsTwo):  raise AssertionError
         if not tsOne == tsTwo:            raise AssertionError

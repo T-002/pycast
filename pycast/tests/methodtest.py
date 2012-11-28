@@ -575,7 +575,7 @@ class HoltWintersMethodTest(unittest.TestCase):
         hwm = HoltWintersMethod(.7556, 0.0000001, .9837, 4, valuesToForecast = 4)
         res = hwm.execute(tsSrc)
 
-        print res
+        #print res
         assert len(res) == len(tsSrc) + 4
         assert res == TimeSeries.from_twodim_list(expected)
 

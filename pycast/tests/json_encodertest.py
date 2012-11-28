@@ -12,7 +12,7 @@ class PycastEncoderTest(unittest.TestCase):
 		data = [[1.5, 152.0],[2.5, 172.8],[3.5, 195.07200000000003],[4.5, 218.30528000000004]]
 		ts = TimeSeries.from_twodim_list(data)
 		data_json = json.dumps(ts, cls=PycastEncoder)
-		print data_json
+		#print data_json
 		assert data_json == "[[1.5, 152.0], [2.5, 172.8], [3.5, 195.07200000000003], [4.5, 218.30528000000004]]"
 
 	def encode_normal_object_test(self):
