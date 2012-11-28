@@ -19,8 +19,7 @@ def energy_data(request):
 	original = TimeSeries()
 	original.initialize_from_sql_cursor(cur)
 	original.normalize("day", fusionMethod = "sum")
-	result = [entry for entry in original]
-	return Response(json.dumps(result), content_type='application/json')
+	return Response(json.dumps(original, cls=PycastEncoder), content_type='application/json') 
 
 @post('/optimize')
 def optimize(request):
@@ -50,7 +49,8 @@ def optimize(request):
 	smoothed.set_timeformat("%d.%m")
 	result = {	'params': optimal_params,
 				'original': original,
-				'smoothed': smoothed
+				'smoothed': smoothed,
+				'error': round(error.get_error(), 3)
 				}
 	return Response(json.dumps(result, cls=PycastEncoder), content_type='application/json') 
 	
@@ -85,10 +85,15 @@ def holtWinters(request):
 	original.set_timeformat("%d.%m")
 	smoothed = hwm.execute(original)
 	smoothed.set_timeformat("%d.%m")
+
+	error = SMAPE()
+	error.initialize(original, smoothed)
 	
 	#process the result	
 	result = {	'original': original,
-				'smoothed': smoothed}
+				'smoothed': smoothed,
+				'error': round(error.get_error(), 3)
+			}
 	return Response(json.dumps(result, cls=PycastEncoder), content_type='application/json')
 
 @get('/')
