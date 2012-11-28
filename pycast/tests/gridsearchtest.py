@@ -59,8 +59,8 @@ class GridSearchTest(unittest.TestCase):
         values_one = [i * precision for i in xrange(1,100)]
         values_two = [i * precision for i in xrange(201)]
 
-        generator_one = GridSearch(SMAPE, -2)._generate_next_parameter_value("parameter_one", self.bfm)
-        generator_two = GridSearch(SMAPE, -2)._generate_next_parameter_value("parameter_two", self.bfm)
+        generator_one = GridSearch(SMAPE, precision=-2)._generate_next_parameter_value("parameter_one", self.bfm)
+        generator_two = GridSearch(SMAPE, precision=-2)._generate_next_parameter_value("parameter_two", self.bfm)
 
         generated_one = [val for val in generator_one]
         generated_two = [val for val in generator_two]
@@ -144,7 +144,7 @@ class GridSearchTest(unittest.TestCase):
         #print ""
 
         ## automatically determine the best alpha using GridSearch
-        gridSearch = GridSearch(SMAPE, -2)
+        gridSearch = GridSearch(SMAPE, precision=-2)
         ## used, because we test a submethod here
         gridSearch._startingPercentage = startingPercentage
         gridSearch._endPercentage      = endPercentage
@@ -186,7 +186,7 @@ class GridSearchTest(unittest.TestCase):
         bestManualResult = min(results, key=lambda item: item[0].get_error(startingPercentage, endPercentage))
 
         ## automatically determine the best alpha using GridSearch
-        gridSearch = GridSearch(SMAPE, -4)
+        gridSearch = GridSearch(SMAPE, precision=-4)
        
         ## used, because we test a submethod here
         gridSearch._startingPercentage = startingPercentage
@@ -211,12 +211,12 @@ class GridSearchTest(unittest.TestCase):
         self.timeSeries.normalize("second")
 
         ## automatically determine the best alpha using GridSearch
-        gridSearch = GridSearch(SMAPE, -2)
+        gridSearch = GridSearch(SMAPE, precision=-2)
         result     = gridSearch.optimize(self.timeSeries, [fm1, fm2])
 
     def optimization_loop_test(self):
         """Testing the optimozation loop."""
-        gridSearch = GridSearch(SMAPE, -2)
+        gridSearch = GridSearch(SMAPE, precision=-2)
 
         def crap_execute(ignoreMe):
             ts = self.timeSeries.to_twodim_list()

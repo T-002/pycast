@@ -45,7 +45,7 @@ class MeanAbsoluteDeviationError(BaseErrorMeasure):
         ## get the defined subset of error values
         errorValues = self._get_error_values(startingPercentage, endPercentage)
 
-        return float(sum(errorValues)) / float(len(errorValues))
+        return sum(errorValues) / float(len(errorValues))
 
     def local_error(self, originalValue, calculatedValue):
         """Calculates the error between the two given values.

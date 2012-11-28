@@ -155,7 +155,7 @@ class GridSearch(BaseOptimizationMethod):
             forecast = timeSeries.apply(forecastingMethod)
 
             ## create and initialize the ErrorMeasure
-            error = self._errorClass()
+            error = self._errorClass(**self._errorMeasureKWArgs)
 
             ## when the error could not be calculated, return an empty result
             if not error.initialize(timeSeries, forecast):
