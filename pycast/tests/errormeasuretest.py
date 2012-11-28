@@ -381,7 +381,13 @@ class MeanAbsoluteScaledErrorTest(unittest.TestCase):
         em.initialize(tsOrg, tsFor)
 
         assert len(em._errorValues) == len(em._historicMeans), "For each error value an historic mean has to exsist."
-        assert em._historyLength == 5
+        assert em._historyLength == 4, "The history is %s entries long. 4 were expected." % em._historyLength
+
+        em = MeanAbsoluteScaledError(historyLength=40.0)
+        em.initialize(tsOrg, tsFor)
+
+        assert len(em._errorValues) == len(em._historicMeans), "For each error value an historic mean has to exsist."
+        assert em._historyLength == 8, "The history is %s entries long. 8 were expected." % em._historyLength
 
     def error_calculation_test(self):
         """Testing for the correct MASE calculation.

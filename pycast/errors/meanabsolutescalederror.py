@@ -102,7 +102,7 @@ class MeanAbsoluteScaledError(BaseErrorMeasure):
 
         ## calculating the number of datapoints used within the history
         if isinstance(self._historyLength, float):
-            self._historyLength = int((self._historyLength * len(originalTimeSeries)) / 100.0) + 1
+            self._historyLength = int((self._historyLength * len(originalTimeSeries)) / 100.0)
         
         ## sort the TimeSeries to reduce the required comparison operations
         originalTimeSeries.sort_timeseries()
