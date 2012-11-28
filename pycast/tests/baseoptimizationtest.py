@@ -54,11 +54,11 @@ class BaseOptimizationMethodTest(unittest.TestCase):
     def initialization_precision_test(self):
         """Test the parameter range durign the initialization."""
         for precision in xrange(-7, 1, 1):
-            bom = BaseOptimizationMethod(BaseErrorMeasure, precision)
+            bom = BaseOptimizationMethod(BaseErrorMeasure, precision=precision)
 
         for precision in [-1020, -324, -11, 1, 42, 123, 2341]:
             try:
-                bom = BaseOptimizationMethod(BaseErrorMeasure, precision)
+                bom = BaseOptimizationMethod(BaseErrorMeasure, precision=precision)
             except ValueError:
                 pass
             else:
@@ -67,7 +67,7 @@ class BaseOptimizationMethodTest(unittest.TestCase):
 
     def optimze_value_error_test(self):
         """Test the optimize call."""
-        bom = BaseOptimizationMethod(BaseErrorMeasure, -3)
+        bom = BaseOptimizationMethod(BaseErrorMeasure, precision=-3)
         bm  = BaseMethod()
 
         bom.optimize(TimeSeries(), [bm])

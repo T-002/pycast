@@ -29,10 +29,12 @@ from pycast.errors import BaseErrorMeasure
 class BaseOptimizationMethod(object):
     """Baseclass for all optimization methods."""
 
-    def __init__(self, errorMeasureClass, precision=-1):
+    def __init__(self, errorMeasureClass, errorMeasureInitializationParameters={}, precision=-1):
         """Initializes the optimization method.
 
         :param BaseErrorMeasure errorMeasureClass:    Error measure class from :py:mod:`pycast.errors`
+        :param Dictionary errorMeasureInitializationParameters:    Parameters used to initialize the
+            errorMeasureClass. This dictionary will be passed to the errorMeasureClass as **kwargs.
         :param Integer precision:    Defines the accuracy for parameter tuning in 10^precision.
             This parameter has to be an integer in [-7, 0].
 
@@ -51,6 +53,7 @@ class BaseOptimizationMethod(object):
 
         self._precison   = int(precision)
         self._errorClass = errorMeasureClass
+        self._errorMeasureKWArgs = errorMeasureInitializationParameters
 
     def optimize(self, timeSeries, forecastingMethods=[]):
         """Runs the optimization on the given TimeSeries.
