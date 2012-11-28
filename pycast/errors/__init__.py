@@ -29,3 +29,5 @@ from symmetricmeanabsolutepercentageerror import SymmetricMeanAbsolutePercentage
 from meanabsolutedeviationerror           import MeanAbsoluteDeviationError, MAD
 
 from meanabsolutepercentageerror import MeanAbsolutePercentageError, MAPE, GeometricMeanAbsolutePercentageError, GMAPE
+
+from meanabsolutescalederror     import MeanAbsoluteScaledError, MASE

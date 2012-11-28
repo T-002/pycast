@@ -30,6 +30,7 @@ from pycast.errors import BaseErrorMeasure
 from pycast.errors import MeanSquaredError
 from pycast.errors import SymmetricMeanAbsolutePercentageError
 from pycast.errors import MeanAbsoluteDeviationError
+from pycast.errors import MeanAbsoluteScaledError
 from pycast.common.timeseries import TimeSeries
 
 class BaseErrorMeasureTest(unittest.TestCase):
@@ -289,3 +290,30 @@ class MeanAbsoluteDeviationErrorTest(unittest.TestCase):
         ## compare the strings due to accuracy
         print str(mad.get_error())[:6]
         assert "1.5406" == str(mad.get_error())[:6]
+
+class MeanAbsoluteScaledErrorTest(unittest.TestCase):
+
+    def initialization_error_test(self):
+        """Test for the exceptions raised during initialization."""
+        MeanAbsoluteScaledError(minimalErrorCalculationPercentage=60.0, historyLength=20.0)
+
+        try:
+            MeanAbsoluteScaledError(60.0, 0.0)
+        except ValueError:
+            pass
+        else:
+            assert False    # pragma: no cover
+
+        try:
+            MeanAbsoluteScaledError(60.0, -12.0)
+        except ValueError:
+            pass
+        else:
+            assert False    # pragma: no cover
+
+        try:
+            mase = MeanAbsoluteScaledError(60.0, 60.0)
+        except ValueError:
+            pass
+        else:
+            assert False    # pragma: no cover
