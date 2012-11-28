@@ -10,6 +10,7 @@ Documentation
    methods/index
    errors/index
    optimization/index
+   misc/pycast-conventions
    
 Useful Links
 ------------

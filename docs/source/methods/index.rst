@@ -1,5 +1,8 @@
 .. index
 
+pycast Smoothing and Forecasting Methods
+========================================
+
 .. toctree::
    :maxdepth: 2
 
