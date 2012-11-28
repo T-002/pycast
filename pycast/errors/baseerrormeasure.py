@@ -109,8 +109,9 @@ class BaseErrorMeasure(object):
         :return:    Returns a list with the defined error values.
         :rtype:     List
         """
-        startIdx = int(startingPercentage * len(self._errorValues))
-        endIdx   = int(endPercentage      * len(self._errorValues))
+        startIdx = int((startingPercentage * len(self._errorValues)) / 100.0)
+        endIdx   = int((endPercentage      * len(self._errorValues)) / 100.0)
+
         return self._errorValues[startIdx:endIdx]
 
     def get_error(self, startingPercentage=0.0, endPercentage=100.0):
