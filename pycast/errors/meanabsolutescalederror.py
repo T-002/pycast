@@ -58,6 +58,81 @@ class MeanAbsoluteScaledError(BaseErrorMeasure):
         super(MeanAbsoluteScaledError, self).__init__(minimalErrorCalculationPercentage)
         self._historyLength = historyLength
 
+    def _get_historic_means(self, timeSeries):
+        """Calculates the mean value for the history of the MeanAbsoluteScaledError.
+
+        :param TimeSeries timeSeries:    Original TimeSeries used to calculate the mean historic values.
+
+        :return:    Returns a list containing the historic means.
+        :rtype:     List
+        """
+        ## calculate the history values
+        historyLength = self._historyLength
+        historicMeans = []
+        append        = historicMeans.append
+
+        ## not most optimized loop in case of calculation operations
+        for startIdx in xrange(len(timeSeries) - historyLength - 1):
+            value = 0
+            for idx in xrange(startIdx, startIdx + historyLength):
+                value += abs(timeSeries[idx+1][1] - timeSeries[idx][1])
+
+            append(value / float(historyLength))
+
+        return historicMeans
+
+    def initialize(self, originalTimeSeries, calculatedTimeSeries):
+        """Initializes the ErrorMeasure.
+
+        During initialization, all :py:meth:`BaseErrorMeasure.local_error()` are calculated.
+
+        :param TimeSeries originalTimeSeries:    TimeSeries containing the original data.
+        :param TimeSeries calculatedTimeSeries:    TimeSeries containing calculated data.
+            Calculated data is smoothed or forecasted data.
+
+        :return:    Return :py:const:`True` if the error could be calculated, :py:const:`False`
+            otherwise based on the minimalErrorCalculationPercentage.
+        :rtype:     Boolean
+
+        :raise:    Raises a :py:exc:`StandardError` if the error measure is initialized multiple times.
+        """
+        ## ErrorMeasure was already initialized.
+        if 0 < len(self._errorValues):
+            raise StandardError("An ErrorMeasure can only be initialized once.")
+
+        ## calculating the number of datapoints used within the history
+        if isinstance(self._historyLength, float):
+            self._historyLength = int(self._historyLength * len(originalTimeSeries))
+        
+        ## sort the TimeSeries to reduce the required comparison operations
+        originalTimeSeries.sort_timeseries()
+        calculatedTimeSeries.sort_timeseries()
+
+        self._historicMeans = self._get_historic_means(originalTimeSeries)
+
+        ## Performance optimization
+        append      = self._errorValues.append
+        local_error = self.local_error
+        minCalcIdx  = self._historyLength + 1
+
+        ## calculate all valid local errors
+        for orgPair in originalTimeSeries[minCalcIdx:]:
+            for calcIdx in xrange(minCalcIdx, len(calculatedTimeSeries)):
+                calcPair = calculatedTimeSeries[calcIdx]
+
+                ## Skip values that can not be compared
+                if calcPair[0] != orgPair[0]:
+                    continue
+
+                append(local_error(orgPair[1], calcPair[1]))
+
+        ## return False, if the error cannot be calculated
+        if len(filter(lambda item: item != None, self._errorValues)) < self._minimalErrorCalculationPercentage * len(originalTimeSeries):
+            self._errorValues = []
+            return False
+
+        return True
+
     def _calculate(self, startingPercentage, endPercentage):
         """This is the error calculation function that gets called by :py:meth:`BaseErrorMeasure.get_error`.
 
@@ -76,9 +151,13 @@ class MeanAbsoluteScaledError(BaseErrorMeasure):
         :raise:    Raises a :py:exc:`NotImplementedError` if the child class does not overwrite this method.
         """
         ## get the defined subset of error values
-        errorValues = self._get_error_values(startingPercentage, endPercentage)
+        errorValues   = self._get_error_values(startingPercentage, endPercentage)
 
-        ## Implement the error calculation here!
+        ## get the historic mean
+        historicMean = self._historicMeans[int((startingPercentage * len(self._errorValues)) / 100.0)]
+        mad = sum(errorValues) / float(len(errorValues))
+        
+        return mad / historicMean
 
     def local_error(self, originalValue, calculatedValue):
         """Calculates the error between the two given values.
@@ -92,6 +171,6 @@ class MeanAbsoluteScaledError(BaseErrorMeasure):
 
         :raise:    Raises a :py:exc:`NotImplementedError` if the child class does not overwrite this method.
         """
-        ## Implement the local error calculation here!
+        return abs(originalValue - calculatedValue)
 
 MASE = MeanAbsoluteScaledError
