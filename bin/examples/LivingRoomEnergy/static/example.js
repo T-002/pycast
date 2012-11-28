@@ -24,11 +24,11 @@ optimize = function() {
             'valuesToForecast': $('#valuesToForecast').val(),
             'data': $('#data').val()
         }, function(data) {
-            $('#smoothingFactor').val(round(data['params']['smoothingFactor'], 3));
+            $('#smoothingFactor').val(data['params']['smoothingFactor'].toString().substring(0,4));
             $('#smoothingFactor_control-group').effect("highlight", {color: '#5BB75B'}, 2000);
-            $('#trendSmoothingFactor').val(round(data['params']['trendSmoothingFactor'], 3));
+            $('#trendSmoothingFactor').val(data['params']['trendSmoothingFactor'].toString().substring(0,4));
             $('#trendSmoothingFactor_control-group').effect("highlight", {color: '#5BB75B'}, 2000);
-            $('#seasonSmoothingFactor').val(round(data['params']['seasonSmoothingFactor'], 3));
+            $('#seasonSmoothingFactor').val(data['params']['seasonSmoothingFactor'].toString().substring(0,4));
             $('#seasonSmoothingFactor_control-group').effect("highlight", {color: '#5BB75B'}, 2000);
             replot(data);
         });
@@ -48,6 +48,7 @@ smooth = function () {
 }
 
 replot = function(data) {
+    $('#error').html("Error: " + data['error'])
     chart = new Highcharts.Chart({
         chart: {
             renderTo: 'container',
