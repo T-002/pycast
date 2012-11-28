@@ -25,6 +25,7 @@
 ## TimeSeries related tests
 from timeseriesdatabasetest import DatabaseConnectorTest
 from timeseriesmiscellaneoustest import TimeSeriesMiscellaneousTest
+from json_encodertest import PycastEncoderTest
 
 ## profileMe decorator related tests
 from profilemetest import ProfileMeDecoratorTest
