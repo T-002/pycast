@@ -1,3 +1,4 @@
+v0.0.10-prealpha, 2012-11-29 -- MASE, Examples
 v0.0.9-prealpha, 2012-11-18 -- GridSearch Optimization
 v0.0.8-prealpha, 2012-11-18 -- Error Values, Sphinx documentation
 v0.0.7-prealpha, 2012-11-11 -- First Error measures implemented
