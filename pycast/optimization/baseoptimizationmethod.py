@@ -32,9 +32,9 @@ class BaseOptimizationMethod(object):
     def __init__(self, errorMeasureClass, errorMeasureInitializationParameters={}, precision=-1):
         """Initializes the optimization method.
 
-        :param BaseErrorMeasure errorMeasureClass:    Error measure class from :py:mod:`pycast.errors`
-        :param Dictionary errorMeasureInitializationParameters:    Parameters used to initialize the
-            errorMeasureClass. This dictionary will be passed to the errorMeasureClass as **kwargs.
+        :param BaseErrorMeasure errorMeasureClass:    Error measure class from :py:mod:`pycast.errors`.
+        :param Dictionary errorMeasureInitializationParameters:    Parameters used to initialize
+            the errorMeasureClass. This dictionary will be passed to the errorMeasureClass as \*\*kwargs.
         :param Integer precision:    Defines the accuracy for parameter tuning in 10^precision.
             This parameter has to be an integer in [-7, 0].
 
