@@ -13,6 +13,7 @@ Error Measures
    
    meanabsolutepercentageerror
    geometricmeanabsolutepercentageerror
+   medianabsolutepercentageerror
    symmetricmeanabsolutepercentageerror
 
    customerrormeasure

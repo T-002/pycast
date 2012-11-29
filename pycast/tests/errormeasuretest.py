@@ -31,6 +31,7 @@ from pycast.errors import MeanSquaredError
 from pycast.errors import SymmetricMeanAbsolutePercentageError
 from pycast.errors import MeanAbsoluteDeviationError
 from pycast.errors import MeanAbsoluteScaledError
+from pycast.errors import MedianAbsolutePercentageError
 from pycast.common.timeseries import TimeSeries
 
 class BaseErrorMeasureTest(unittest.TestCase):
@@ -290,6 +291,22 @@ class MeanAbsoluteDeviationErrorTest(unittest.TestCase):
         ## compare the strings due to accuracy
         #print str(mad.get_error())[:6]
         assert "1.5406" == str(mad.get_error())[:6]
+
+class MedianAbsolutePercentageErrorTest(unittest.TestCase):
+
+    def error_calculation_test(self):
+        """Test the MdAPE error calculation."""
+        dataOrg         = [[1,1], [2,2], [3,3], [4,4], [5,5], [6,6], [7,8], [7.3, 5], [8, 0], [9,10]]
+        dataCalc        = [[1,3], [2,5], [3,0], [4,3], [5,5], [6.1,6], [7,3], [7.3, 5], [8, 0], [9,9]]
+                
+        tsOrg  = TimeSeries.from_twodim_list(dataOrg)
+        tsCalc = TimeSeries.from_twodim_list(dataCalc)
+
+        em = MedianAbsolutePercentageError()
+        em.initialize(tsOrg, tsCalc)
+
+        assert em.get_error() == 62.5
+        assert em.get_error(20.0, 50.0) == 100.0
 
 class MeanAbsoluteScaledErrorTest(unittest.TestCase):
 
