@@ -67,7 +67,7 @@ class MeanAbsolutePercentageError(BaseErrorMeasure):
 
 MAPE = MeanAbsolutePercentageError
 
-class GeometricMeanAbsolutePercentageError(BaseErrorMeasure):
+class GeometricMeanAbsolutePercentageError(MeanAbsolutePercentageError):
     """Calculates the geometric MAPE."""
 
     def _calculate(self, startingPercentage, endPercentage):
@@ -102,20 +102,5 @@ class GeometricMeanAbsolutePercentageError(BaseErrorMeasure):
             product *= errorValue**share
         
         return product
-    
-    def local_error(self, originalValue, calculatedValue):
-        """Calculates the error between the two given values.
-
-        :param Numeric originalValue:    Value of the original data.
-        :param Numeric calculatedValue:    Value of the calculated TimeSeries that
-            corresponds to originalValue.
-
-        :return:    Returns the error measure of the two given values.
-        :rtype:     Numeric
-        """
-        if 0 == originalValue:
-            return None
-        
-        return ((math.fabs(calculatedValue - originalValue))/float(originalValue)) * 100.0
 
 GMAPE = GeometricMeanAbsolutePercentageError
