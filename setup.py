@@ -10,5 +10,6 @@ setup(
     url              = "https://github.com/T-002/pycast",
     license          = "LICENSE.txt",
     description      = "A Python Forecasting and Smoothing Library",
-    long_description = open("README.rst").read()
+    long_description = open("README.rst").read(),
+    download_url     = "git://github.com/T-002/pycast.git"
 )
