@@ -564,8 +564,11 @@ class HoltWintersMethodTest(unittest.TestCase):
         assert initialTrend == 9.75, "Initial Trend should be 9.75 but is %d" % initialTrend
 
         #correctness is not proven, but will be enough for regression testing
-        res = tsSrc.apply(hwm)
-        assert res == TimeSeries.from_twodim_list(expected), "Smoothing result not correct."
+        resTS       = tsSrc.apply(hwm)
+        expectedTS  = TimeSeries.from_twodim_list(expected)
+        
+        assert len(resTS) == len(expectedTS)
+        assert resTS == expectedTS, "Smoothing result not correct."
 
     def forecasting_test(self):
         data = [362.0, 385.0, 432.0, 341.0, 382.0, 409.0, 498.0, 387.0, 473.0, 513.0, 582.0, 474.0, 544.0, 582.0, 681.0, 557.0, 628.0, 707.0, 773.0, 592.0, 627.0, 725.0, 854.0, 661.0]
