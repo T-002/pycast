@@ -16,6 +16,12 @@ I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) docs/source
 
 .PHONY: help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest gettext
 
+release:
+#	python setup.py sdist bdist bdist_egg upload
+	python setup.py bdist_egg upload
+	python setup.py build_sphinx
+	python setup.py upload_sphinx
+
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
 	@echo "  html       to make standalone HTML files"

@@ -1,3 +1,4 @@
+v0.1.2-alpha, 2012-11-29 -- unifying information for package release
 v0.1.1-alpha, 2012-11-29 -- setup script finalized
 v0.0.10-prealpha, 2012-11-29 -- MASE, Examples
 v0.0.9-prealpha, 2012-11-18 -- GridSearch Optimization
