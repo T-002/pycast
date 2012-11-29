@@ -283,18 +283,17 @@ class HoltWintersMethod(BaseForecastingMethod):
         http://en.wikipedia.org/wiki/Exponential_smoothing#Triple_exponential_smoothing
     """
 
-    def __init__(self, smoothingFactor=0.1, trendSmoothingFactor=0.5, seasonSmoothingFactor=0.5, seasonLength=0, valuesToForecast=0):
+    def __init__(self, smoothingFactor=0.1, trendSmoothingFactor=0.5, seasonSmoothingFactor=0.5, seasonLength=0, valuesToForecast=1):
         """Initializes the HoltWintersMethod.
 
-        @param smoothingFactor Defines the alpha for the Holt-Winters algorithm.
-                               Valid values are (0.0, 1.0).
-        @param trendSmoothingFactor Defines the beta for the Holt-Winters algorithm..
-                                    Valid values are (0.0, 1.0).
-        @param seasonSmoothingFactor Defines the gamma for the Holt-Winters algorithm.
-                                     Valid values are (0.0, 1.0). 
-        @param seasonLength The expected length for the seasons. Please use a good estimate here!
-        @param valuesToForecast Defines the number of forecasted values that will
-               be part of the result.
+        :param Float smoothingFactor:    Defines the alpha for the Holt-Winters algorithm.
+            Valid values are (0.0, 1.0).
+        :param Float trendSmoothingFactor:    Defines the beta for the Holt-Winters algorithm..
+            Valid values are (0.0, 1.0).
+        :param Float seasonSmoothingFactor:    Defines the gamma for the Holt-Winters algorithm.
+            Valid values are (0.0, 1.0). 
+        :param Integer seasonLength:    The expected length for the seasons. Please use a good estimate here!
+        :param Integer valuesToForecast:    Defines the number of forecasted values that will be part of the result.
         """
         super(HoltWintersMethod, self).__init__(["smoothingFactor",
                                           "trendSmoothingFactor",
@@ -343,13 +342,11 @@ class HoltWintersMethod(BaseForecastingMethod):
     def execute(self, timeSeries):
         """Creates a new TimeSeries containing the smoothed values.
 
-        @return TimeSeries object containing the exponentially smoothed TimeSeries,
-                including the forecasted values.
+        :return:    TimeSeries object containing the exponentially smoothed TimeSeries,
+            including the forecasted values.
+        :rtype:     TimeSeries
         
-        @todo Double check if it is correct not to add the first original value to the result.
-        @todo Currently the first normalized value is simply chosen as the starting point.
-
-        @throw Throws a NotImplementedError if the child class does not overwrite this function.
+        :note: Currently the first normalized value is simply chosen as the starting point.
         """
         ## determine the number of values to forecast, if necessary
         self._calculate_values_to_forecast(timeSeries)
@@ -401,7 +398,8 @@ class HoltWintersMethod(BaseForecastingMethod):
     def initSeasonFactors(self, timeSeries):
         """ Computes the initial season smoothing factors.
 
-        @return a list of season vectors of length "seasonLength"
+        :return:    Returns a list of season vectors of length "seasonLength".
+        :rtype:     List
         """
 
         seasonLength = self.get_parameter("seasonLength")
@@ -427,10 +425,12 @@ class HoltWintersMethod(BaseForecastingMethod):
         return seasonValues
 
     def initialTrendSmoothingFactors(self, timeSeries):
-        """ Calculate the initial Trend smoothing Factor b0 according to:
-        http://en.wikipedia.org/wiki/Exponential_smoothing#Triple_exponential_smoothing
+        """ Calculate the initial Trend smoothing Factor b0.
+        
+        Explanation:
+            http://en.wikipedia.org/wiki/Exponential_smoothing#Triple_exponential_smoothing
 
-        @return initial Trend smoothing Factor b0
+        :return:   Returns the initial trend smoothing factor b0
         """
 
         result = 0.0
@@ -444,10 +444,13 @@ class HoltWintersMethod(BaseForecastingMethod):
     def computeA(self, j, timeSeries):
         """ Calculates A_j. Aj is the average value of x in the jth cycle of your data
 
-        @return A_j
+        :return:    A_j
+        :rtype:     Numeric
         """
         seasonLength = self.get_parameter("seasonLength")
         A_j = 0
         for i in range(seasonLength):
             A_j += timeSeries[(seasonLength * (j)) + i][1]
         return A_j / seasonLength
+        ## :todo:
+        #return A_j / float(seasonLength)
