@@ -10,7 +10,7 @@ Examples of pycast can be found in ``bin/examples``
 Requirements
 ------------
 
-pycast
+pycast Tests
     - nose     >= 1.2.1
     - coverage >= 3.5.3
 

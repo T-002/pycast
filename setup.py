@@ -1,15 +1,14 @@
 from distutils.core import setup
+from setuptools     import find_packages
 
 setup(
     name             = "pycast",
-    version          = "v0.0.10-prealpha",
+    version          = "v0.1.1-alpha",
     author           = "Christian Schwarz",
     author_email     = "pixeldreck@gmail.com",
-    packages         = ["pycast"],
-    scripts          = ["bin"],
-    url              = "http://code.google.com/p/py-cast/",
+    packages         = find_packages(exclude=["tests"]),
+    url              = "https://github.com/T-002/pycast",
     license          = "LICENSE.txt",
     description      = "A Python Forecasting and Smoothing Library",
-    long_description = open("README.txt").read(),
-    install_requires = ["nose >= 1.2.1", "coverage >= 3.5.3"]
+    long_description = open("README.rst").read()
 )

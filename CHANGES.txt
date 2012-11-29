@@ -1,3 +1,4 @@
+v0.1.1-alpha, 2012-11-29 -- setup script finalized
 v0.0.10-prealpha, 2012-11-29 -- MASE, Examples
 v0.0.9-prealpha, 2012-11-18 -- GridSearch Optimization
 v0.0.8-prealpha, 2012-11-18 -- Error Values, Sphinx documentation
