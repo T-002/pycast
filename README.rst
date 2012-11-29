@@ -1,24 +1,9 @@
 pycast
 ======
 
-pycast aims to provide a python module supporting the basics as 
-well as advanced smoothing and forecasting methods that can be used
+pycast aims to provide a python module supporting basic and 
+advanced smoothing and forecasting methods that can be used
 on time series data.
-
-Examples of pycast can be found in ``bin/examples``
-
-Requirements
-------------
-
-pycast Tests
-    - nose     >= 1.2.1
-    - coverage >= 3.5.3
-
-Documentation
-    - sphinx >= 1.1.3
-
-Examples
-    - itty >= 0.8.1
 
 License
 -------
