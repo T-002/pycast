@@ -19,8 +19,8 @@ I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) docs/source
 release:
 #	python setup.py sdist bdist bdist_egg upload
 	python setup.py bdist_egg upload
-	python setup.py build_sphinx
-	python setup.py upload_sphinx
+#	python setup.py build_sphinx
+#	python setup.py upload_sphinx
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
@@ -46,6 +46,9 @@ help:
 
 clean:
 	-rm -rf $(BUILDDIR)/*
+	-rm -rf pycast.egg-info
+	-rm -rf build
+	-rm -rf dist
 
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
