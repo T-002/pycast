@@ -42,8 +42,7 @@ class BaseErrorMeasure(object):
             raise ValueError("minimalErrorCalculationPercentage has to be in [0.0, 100.0].")
 
         self._minimalErrorCalculationPercentage = minimalErrorCalculationPercentage / 100.0
-
-        self._error = None
+        
         self._errorValues = []
     
     def initialize(self, originalTimeSeries, calculatedTimeSeries):
