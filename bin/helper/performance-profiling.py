@@ -37,4 +37,4 @@ run_nose()
 
 import pstats
 p = pstats.Stats(filename)
-p.sort_stats("cumulative").print_stats("pycast", "^((?!test).)*$")
+p.sort_stats("time").print_stats("pycast", "^((?!test).)*$")
