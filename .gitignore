@@ -9,3 +9,5 @@
 *.o
 /pycastC.c
 /libpycast.so
+/libpycastC.so
+/pycastC.so
