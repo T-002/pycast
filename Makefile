@@ -1,6 +1,3 @@
-# Makefile for Sphinx documentation
-#
-
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
@@ -15,12 +12,6 @@ ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) doc
 I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) docs/source
 
 .PHONY: help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest gettext
-
-release:
-#	python setup.py sdist bdist bdist_egg upload
-	python setup.py bdist_egg upload
-#	python setup.py build_sphinx
-#	python setup.py upload_sphinx
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
@@ -43,6 +34,9 @@ help:
 	@echo "  changes    to make an overview of all changed/added/deprecated items"
 	@echo "  linkcheck  to check all external links for integrity"
 	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
+	
+	@echo "  test       run all pycast tests"
+	@echo "  release    create an python egg that can be used for distribution"
 
 clean:
 	-rm -rf $(BUILDDIR)/*
@@ -160,3 +154,18 @@ doctest:
 	$(SPHINXBUILD) -b doctest $(ALLSPHINXOPTS) $(BUILDDIR)/doctest
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
+
+test:
+	nosetests -c nose.cfg
+
+release: test
+	# only build a release, if all tests were sucessfull
+	if [ $$? -eq 0 ] ; then                        \
+		python setup.py bdist_egg upload          ;\
+	else                                           \
+		@echo "tests not successfull. exiting"    ;\
+		exit 70                                   ;\
+	fi
+#	python setup.py sdist bdist bdist_egg upload  ;\
+#	python setup.py build_sphinx                  ;\
+#	python setup.py upload_sphinx                 ;\
