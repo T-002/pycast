@@ -182,3 +182,13 @@ class BaseErrorMeasure(object):
         :raise:    Raises a :py:exc:`NotImplementedError` if the child class does not overwrite this method.
         """
         raise NotImplementedError
+
+## Usage of optimized C methods
+try:
+    import pycastC
+except ImportError:    # pragma: no cover
+    pass               # pragma: no cover
+else:
+    ## __init__ of BaseErrorMeasure                                              
+    _PyBaseErrorMeasure___init__ = BaseErrorMeasure.__init__                    # pragma: no cover
+    BaseErrorMeasure.__init__    = pycasstC.errors.BaseErrorMeasure.__init__    # pragma: no cover

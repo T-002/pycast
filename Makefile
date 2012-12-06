@@ -11,7 +11,7 @@ ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) doc
 # the i18n builder cannot share the environment and doctrees with the others
 I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) docs/source
 
-.PHONY: help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest gettext
+.PHONY: help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest gettext test release cbindings
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
@@ -37,12 +37,16 @@ help:
 	
 	@echo "  test       run all pycast tests"
 	@echo "  release    create an python egg that can be used for distribution"
+	@echo "  cbindings  to build the optimized version of some things in pycast"
 
 clean:
 	-rm -rf $(BUILDDIR)/*
 	-rm -rf pycast.egg-info
 	-rm -rf build
 	-rm -rf dist
+	-rm -rf pycastC.c
+	-rm -rf libpycast.so
+	-rm -rf pycastC.so
 
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
@@ -169,3 +173,16 @@ release: test
 #	python setup.py sdist bdist bdist_egg upload  ;\
 #	python setup.py build_sphinx                  ;\
 #	python setup.py upload_sphinx                 ;\
+
+cbindings:
+	@echo "\nGenerating Python Bindings"
+	python bin/helper/generate-bindings.py > pycastC.c
+
+	@echo "\nBuilding C++ library"
+	g++ -Wall -fPIC -c -o pycast.o pycast/main.cpp
+	g++ -Wall -shared -o libpycast.so pycast.o
+
+	@echo "\nBuilding Python bindings"
+	g++ -Wall -fPIC -I/usr/include/python2.7 -c -o pycastC.o pycastC.c
+	@echo ""
+	g++ -Wall -shared -I/usr/include/python2.7 -o pycastC.so -L. -lpycast -lpython pycastC.o

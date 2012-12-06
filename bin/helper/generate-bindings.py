@@ -21,3 +21,33 @@
 #LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+import pybindgen, sys
+
+pycastC = pybindgen.Module("pycastC")
+
+## create the submodules of pycast
+pycastC_errors       = pycastC.add_cpp_namespace("errors")
+pycastC_common       = pycastC.add_cpp_namespace("common")
+pycastC_methods      = pycastC.add_cpp_namespace("methods")
+pycastC_optimization = pycastC.add_cpp_namespace("optimization")
+
+## pycast.errors
+pycastC_errors.add_include('"pycast/errors/baseerrormeasure.h"')
+pycastC_errors_baseerrormeasure = pycastC_errors.add_class("BaseErrorMeasure")
+
+pycastC_errors_baseerrormeasure.add_constructor(
+	[
+	    pybindgen.param("int", "minimalErrorCalculationPercentage")
+	]
+)
+
+#pycastC_errors_baseerrormeasure.add_method(
+#	"local_error", pybindgen.retval("float"),
+#	[
+#	    pybindgen.param("float", "originalValue"),
+#	    pybindgen.param("float", "calculatedValue")
+#	]
+#)
+
+pycastC.generate(sys.stdout)
