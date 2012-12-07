@@ -23,7 +23,7 @@
 
 namespace errors {
 
-    BaseErrorMeasure::BaseErrorMeasure(int minimalErrorCalculationPercentage) :
+    BaseErrorMeasure::BaseErrorMeasure(int minimalErrorCalculationPercentage)
     {
         
     	this->_minimalErrorCalculationPercentage = minimalErrorCalculationPercentage;
@@ -32,6 +32,14 @@ namespace errors {
     
     BaseErrorMeasure::~BaseErrorMeasure() {
     
+    }
+
+    bool BaseErrorMeasure::initialize(PyObject *originalTimeSeries, PyObject *calculatedTimesSeries)
+    {
+    	PyObject *methodName = PyString_FromString("sort_timeseries");
+    	PyObject *result = PyObject_CallMethodObjArgs(originalTimeSeries, methodName, NULL);
+
+    	return true;
     }
 
 }

@@ -190,5 +190,5 @@ except ImportError:    # pragma: no cover
     pass               # pragma: no cover
 else:
     ## __init__ of BaseErrorMeasure                                              
-    _PyBaseErrorMeasure___init__ = BaseErrorMeasure.__init__                    # pragma: no cover
-    BaseErrorMeasure.__init__    = pycasstC.errors.BaseErrorMeasure.__init__    # pragma: no cover
+    _PyBaseErrorMeasure_initialize = BaseErrorMeasure.initialize                    # pragma: no cover
+    BaseErrorMeasure.initialize    = pycastC.errors.BaseErrorMeasure.initialize    # pragma: no cover

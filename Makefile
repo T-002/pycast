@@ -179,10 +179,9 @@ cbindings:
 	python bin/helper/generate-bindings.py > pycastC.c
 
 	@echo "\nBuilding C++ library"
-	g++ -Wall -fPIC -c -o pycast.o pycast/main.cpp
-	g++ -Wall -shared -o libpycast.so pycast.o
+	g++ -Wall -fPIC -I/usr/include/python2.7 -c -o pycast.o pycast/main.cpp
+	g++ -Wall -shared -o libpycast.so -lpython pycast.o
 
 	@echo "\nBuilding Python bindings"
 	g++ -Wall -fPIC -I/usr/include/python2.7 -c -o pycastC.o pycastC.c
-	@echo ""
 	g++ -Wall -shared -I/usr/include/python2.7 -o pycastC.so -L. -lpycast -lpython pycastC.o

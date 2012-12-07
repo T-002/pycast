@@ -43,3 +43,6 @@ from mapetest import MeanAbsolutePercentageErrorTest, GeometricMeanAbsolutePerce
 ## optimization method
 from baseoptimizationtest import BaseOptimizationMethodTest
 from gridsearchtest       import GridSearchTest
+
+#cpython test
+from cpythontest import CPythonErrorMeasureTest

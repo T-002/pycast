@@ -23,6 +23,9 @@
 #ifndef PYCAST_ERRORS_BASEERRORMEASUREC_H
 #define PYCAST_ERRORS_BASEERRORMEASUREC_H
 
+#include <Python.h>
+#include <stddef.h>
+
 namespace errors {
     class BaseErrorMeasure {
         
@@ -31,6 +34,11 @@ namespace errors {
             virtual ~BaseErrorMeasure();
         
             float local_error(float originalValue, float calculatedValue);
+
+	        static bool initialize(PyObject *originalTimeSeries, PyObject *calculatedTimesSeries);
+
+	    private:
+	    	int _minimalErrorCalculationPercentage;    
     };
 }
 

@@ -41,6 +41,11 @@ pycastC_errors_baseerrormeasure.add_constructor(
 	    pybindgen.param("int", "minimalErrorCalculationPercentage")
 	]
 )
+pycastC_errors_baseerrormeasure.add_method("initialize", pybindgen.retval('bool'), 
+	[
+		pybindgen.param("PyObject*", "originalTimeSeries", transfer_ownership=False),
+		pybindgen.param("PyObject*", "calculatedTimesSeries", transfer_ownership=False)
+	])
 
 #pycastC_errors_baseerrormeasure.add_method(
 #	"local_error", pybindgen.retval("float"),
