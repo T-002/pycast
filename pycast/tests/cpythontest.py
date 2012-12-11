@@ -38,5 +38,5 @@ class CPythonErrorMeasureTest(unittest.TestCase):
 
 	def initialize_test(self):
 		errorMeasure = BaseErrorMeasure()
-		result = BaseErrorMeasure.initialize(aTimesSerie, anotherTimeSeries)
+		result = BaseErrorMeasure.initialize(self.aTimesSerie, self.anotherTimeSeries)
 		assert not result
