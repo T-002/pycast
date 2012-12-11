@@ -24,7 +24,7 @@
 
 import pybindgen, sys
 
-pycastC = pybindgen.Module("pycast")
+pycastC = pybindgen.Module("pycastC")
 
 ## create the submodules of pycast
 pycastC_errors       = pycastC.add_cpp_namespace("errors")

@@ -186,8 +186,8 @@ class BaseErrorMeasure(object):
 ## Usage of optimized C methods
 try:
     import pycastC
-except ImportError:    # pragma: no cover
-    pass               # pragma: no cover
+except ImportError:                     # pragma: no cover
+    print "No valid C extensions..."    # pragma: no cover
 else:
     ## initialize of BaseErrorMeasure
     _PyBaseErrorMeasure_initialize = BaseErrorMeasure.initialize                    # pragma: no cover
