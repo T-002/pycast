@@ -24,7 +24,7 @@
 
 import pybindgen, sys
 
-pycastC = pybindgen.Module("pycastC")
+pycastC = pybindgen.Module("pycast")
 
 ## create the submodules of pycast
 pycastC_errors       = pycastC.add_cpp_namespace("errors")
@@ -43,7 +43,7 @@ pycastC_errors_baseerrormeasure.add_constructor(
 )
 pycastC_errors_baseerrormeasure.add_method("initialize", pybindgen.retval('bool'), 
 	[
-		pybindgen.param("PyObject*", "originalTimeSeries", transfer_ownership=False),
+		pybindgen.param("PyObject*", "originalTimeSeries",    transfer_ownership=False),
 		pybindgen.param("PyObject*", "calculatedTimesSeries", transfer_ownership=False)
 	])
 

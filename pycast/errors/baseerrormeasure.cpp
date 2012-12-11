@@ -23,11 +23,10 @@
 
 namespace errors {
 
-    BaseErrorMeasure::BaseErrorMeasure(int minimalErrorCalculationPercentage)
+    BaseErrorMeasure::BaseErrorMeasure(int minimalErrorCalculationPercentage):
+        _minimalErrorCalculationPercentage(minimalErrorCalculationPercentage)
     {
         
-    	this->_minimalErrorCalculationPercentage = minimalErrorCalculationPercentage;
-    
     }
     
     BaseErrorMeasure::~BaseErrorMeasure() {
