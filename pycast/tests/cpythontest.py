@@ -31,17 +31,23 @@ from pycast.common import PyCastObject
 from pycast.errors import BaseErrorMeasure
 
 class CPythonErrorMeasureTest(unittest.TestCase):
-	""" Test the part of error measures that is implemented as a C extension"""
-	def setUp(self):
-		data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
-		self.aTimesSerie = TimeSeries.from_twodim_list(data)
-		self.anotherTimeSeries = TimeSeries.from_twodim_list(data)
+    """ Test the part of error measures that is implemented as a C extension"""
+    def setUp(self):
+        data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
+        self.aTimesSerie = TimeSeries.from_twodim_list(data)
+        self.anotherTimeSeries = TimeSeries.from_twodim_list(data)
 
-		PyCastObject.enable_global_optimization()
+        PyCastObject.enable_global_optimization()
 
-	def tearDown(self):
-		PyCastObject.disable_global_optimization()
+    def tearDown(self):
+        PyCastObject.disable_global_optimization()
 
-	def initialize_test(self):
-		errorMeasure = BaseErrorMeasure()
-		print errorMeasure.initialize(self.aTimesSerie, self.anotherTimeSeries)
+    def optimization_enablement_test(self):
+        """Test for optimization enablement."""
+        em = BaseErrorMeasure()
+        em._enable_instance_optimization()
+        em._disable_instance_optimization()
+
+    def initialize_test(self):
+        errorMeasure = BaseErrorMeasure()
+        print errorMeasure.initialize(self.aTimesSerie, self.anotherTimeSeries)
