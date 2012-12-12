@@ -52,8 +52,9 @@ class BaseErrorMeasure(PyCastObject):
 
         try:
             from pycastC.errors.BaseErrorMeasure import initialize
-        except ImportError:
-            pass
+        except ImportError:                                                                      # pragma: no cover
+            print "[WARNING] Could not enable optimization for %s." % self.__class__.__name__    # pragma: no cover
+            pass                                                                                 # pragma: no cover
         else:
             self._methodOptimizationDictionary["initialize"] = [BaseErrorMeasure.initialize, initialize]
     
