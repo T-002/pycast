@@ -48,7 +48,7 @@ class BaseErrorMeasure(PyCastObject):
 
     def _build_optimization_dictionary(self):
         """Creates a dictionary that maps optimized to not optimized methods."""
-        self._methodOptimizationDictionary = {}
+        super(BaseErrorMeasure, self)._build_optimization_dictionary()
 
         try:
             from pycastC.errors.BaseErrorMeasure import initialize

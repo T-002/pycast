@@ -41,7 +41,7 @@ class PyCastObject(object):
         self._build_optimization_dictionary()
 
         if PyCastObject._globalOptimize:
-            self._enable_optimization()
+            self._enable_instance_optimization()
 
     def _build_optimization_dictionary(self):
         """Creates a dictionary that maps optimized to not optimized methods."""
@@ -77,7 +77,7 @@ class PyCastObject(object):
         setattr(self, methodname, self._methodOptimizationDictionary[methodname][0])
 
     @classmethod
-    def _enable_global_optimization(cls):
+    def enable_global_optimization(cls):
         """Enables the global optimization of pycast methods, if possible.
 
         By default, optimization is turned off.
@@ -87,7 +87,7 @@ class PyCastObject(object):
         cls._globalOptimize = True
 
     @classmethod
-    def _disable_global_optimization(cls):
+    def disable_global_optimization(cls):
         """Disables the global optimization of pycast methods.
 
         :note:    Only new created instances will be affected.

@@ -27,19 +27,20 @@
 #include <stddef.h>
 
 namespace errors {
-    class BaseErrorMeasure {
+    //class BaseErrorMeasure {
+	namespace BaseErrorMeasure {
         
-        public:
-            BaseErrorMeasure(int minimalErrorCalculationPercentage = 60);
-            virtual ~BaseErrorMeasure();
+        //public:
+        //    BaseErrorMeasure(int minimalErrorCalculationPercentage = 60);
+        //    virtual ~BaseErrorMeasure();
         
-            float local_error(float originalValue, float calculatedValue);
+            // float local_error(float originalValue, float calculatedValue);
 
-	        static bool initialize(PyObject *originalTimeSeries, PyObject *calculatedTimesSeries);
+	        bool initialize(PyObject* self, PyObject *originalTimeSeries, PyObject *calculatedTimesSeries);
 
-	    private:
-	    	int _minimalErrorCalculationPercentage;    
-    };
+	    //private:
+	    //	int _minimalErrorCalculationPercentage;    
+    }
 }
 
 

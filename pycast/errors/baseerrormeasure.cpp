@@ -22,23 +22,22 @@
 #include "baseerrormeasure.h"
 
 namespace errors {
+    namespace BaseErrorMeasure {
 
-    BaseErrorMeasure::BaseErrorMeasure(int minimalErrorCalculationPercentage):
-        _minimalErrorCalculationPercentage(minimalErrorCalculationPercentage)
-    {
-        
-    }
-    
-    BaseErrorMeasure::~BaseErrorMeasure() {
-    
+        bool initialize(PyObject* self, PyObject *originalTimeSeries, PyObject *calculatedTimesSeries)
+        {
+            return true;
+        }
+
     }
 
-    bool BaseErrorMeasure::initialize(PyObject *originalTimeSeries, PyObject *calculatedTimesSeries)
-    {
-    	PyObject *methodName = PyString_FromString("sort_timeseries");
-    	PyObject *result = PyObject_CallMethodObjArgs(originalTimeSeries, methodName, NULL);
-
-    	return true;
-    }
-
+    //BaseErrorMeasure::BaseErrorMeasure(int minimalErrorCalculationPercentage):
+    //    _minimalErrorCalculationPercentage(minimalErrorCalculationPercentage)
+    //{
+    //    
+    //}
+    //
+    //BaseErrorMeasure::~BaseErrorMeasure() {
+    //
+    //}
 }

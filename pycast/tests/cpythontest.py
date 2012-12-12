@@ -27,6 +27,7 @@ import unittest
 
 ## required modules from pycast
 from pycast.common.timeseries import TimeSeries
+from pycast.common import PyCastObject
 from pycast.errors import BaseErrorMeasure
 
 class CPythonErrorMeasureTest(unittest.TestCase):
@@ -36,11 +37,11 @@ class CPythonErrorMeasureTest(unittest.TestCase):
 		self.aTimesSerie = TimeSeries.from_twodim_list(data)
 		self.anotherTimeSeries = TimeSeries.from_twodim_list(data)
 
+		PyCastObject.enable_global_optimization()
+
+	def tearDown(self):
+		PyCastObject.disable_global_optimization()
+
 	def initialize_test(self):
 		errorMeasure = BaseErrorMeasure()
-		## not sure of your intentions here....
-		try:
-		    result = BaseErrorMeasure.initialize(errorMeasure, self.aTimesSerie, self.anotherTimeSeries)
-		    # assert not result
-		except NotImplementedError:
-			pass
+		print errorMeasure.initialize(self.aTimesSerie, self.anotherTimeSeries)
