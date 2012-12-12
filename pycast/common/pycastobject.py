@@ -74,7 +74,8 @@ class PyCastObject(object):
         Within this method, optimized C++ functions will be replaced by 
         the original python implementations.
         """
-        setattr(self, methodname, self._methodOptimizationDictionary[methodname][0])
+        for methodname in self._methodOptimizationDictionary:
+            setattr(self, methodname, self._methodOptimizationDictionary[methodname][0])
 
     @classmethod
     def enable_global_optimization(cls):
