@@ -10,8 +10,6 @@ When using pycast variables, objects, methods and functions, the following namin
   - variables, functions, methods, classes and modules starting with an underscore (_) should be seen as private, inheritable attributes of any entity
   - functions and methods use underscores (_) to delimit words while variables and classes use CamelCase
 
-For performance reasons, some functions, methods and classes are implemented in C(++) or OpenCL. If that is the case, the corresponding Python implementation is available under the name _Py<function|method|class>.
-
 Documentation Conventions
 -------------------------
 pycast variables, objects, methods and functions are documented using Sphinx. When writting documentation, the following docstring can be used as starting point.
