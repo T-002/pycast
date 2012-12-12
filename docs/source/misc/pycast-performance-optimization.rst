@@ -21,7 +21,7 @@ Code Example
 Based on existing C++ Functions, you can enable optimization for your instances.
 Therefore you need to:
 
-  * inherit from pycast.common.PyCastObject
+  * inherit from `pycast.common.PyCastObject`
   * implement :py:meth:`_build_optimization_dictionary`
 
 An example implementation looks like the following::
