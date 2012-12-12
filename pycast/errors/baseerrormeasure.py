@@ -45,6 +45,17 @@ class BaseErrorMeasure(PyCastObject):
         self._minimalErrorCalculationPercentage = minimalErrorCalculationPercentage / 100.0
         
         self._errorValues = []
+
+    def _build_optimization_dictionary(self):
+        """Creates a dictionary that maps optimized to not optimized methods."""
+        self._methodOptimizationDictionary = {}
+
+        try:
+            from pycastC.errors.BaseErrorMeasure import initialize
+        except ImportError:
+            pass
+        else:
+            self._methodOptimizationDictionary["initialize"] = [BaseErrorMeasure.initialize, initialize]
     
     def initialize(self, originalTimeSeries, calculatedTimeSeries):
         """Initializes the ErrorMeasure.

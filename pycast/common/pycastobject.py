@@ -48,7 +48,12 @@ class PyCastObject(object):
         self._methodOptimizationDictionary = {}
 
         ## example code
-        # self._methodOptimizationDictionary["methodname"] = [pythonmethod, optimizedmethod]
+        #try:
+        #    from pycastC.errors.BaseErrorMeasure import initialize
+        #except ImportError:
+        #    pass
+        #else:
+        #    self._methodOptimizationDictionary["initialize"] = [BaseErrorMeasure.initialize, initialize]
 
 
     def _enable_instance_optimization(self):
