@@ -3,12 +3,12 @@
 Performance Optimization
 ========================
 Based on the complexity of smoothing and forecasting algorithms, pycast implements performance critical methods in C++ or OpenCL.
-To enable those optimized functions, you need to execute the following:
+To enable those optimized functions, you need to execute the following::
 
     import pycast.common.PyCastObject
     PyCastObject.enable_global_optimization()
 
-To disable the optimized functions:
+To disable the optimized functions::
 
     import pycast.common.PyCastObject
     PyCastObject.disable_global_optimization()
