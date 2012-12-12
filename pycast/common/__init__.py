@@ -25,4 +25,5 @@
 import timeseries
 
 from timeseries import TimeSeries
-from   profileme import profileMe
+from profileme import profileMe
+from pycastobject import PyCastObject

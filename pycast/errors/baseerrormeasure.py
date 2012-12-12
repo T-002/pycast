@@ -22,7 +22,8 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-class BaseErrorMeasure(object):
+from pycast.common import PyCastObject
+class BaseErrorMeasure(PyCastObject):
     """Baseclass for all error measures."""
 
     def __init__(self, minimalErrorCalculationPercentage=60):
@@ -182,13 +183,3 @@ class BaseErrorMeasure(object):
         :raise:    Raises a :py:exc:`NotImplementedError` if the child class does not overwrite this method.
         """
         raise NotImplementedError
-
-## Usage of optimized C methods
-try:
-    import pycastC
-except ImportError:                     # pragma: no cover
-    print "No valid C extensions..."    # pragma: no cover
-else:
-    ## initialize of BaseErrorMeasure
-    _PyBaseErrorMeasure_initialize = BaseErrorMeasure.initialize                    # pragma: no cover
-    BaseErrorMeasure.initialize    = pycastC.errors.BaseErrorMeasure.initialize     # pragma: no cover

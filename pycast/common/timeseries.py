@@ -52,7 +52,8 @@ InterpolationMethods = {
     "linear": linear_interpolation
 }
 
-class TimeSeries(object):
+from pycastobject import PyCastObject
+class TimeSeries(PyCastObject):
     """A TimeSeries instance stores all relevant data for a real world time series.
 
     :warning: TimeSeries instances are NOT threadsafe.
