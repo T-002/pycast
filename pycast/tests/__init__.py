@@ -46,3 +46,6 @@ from gridsearchtest       import GridSearchTest
 
 #cpython test
 from cpythontest import CPythonErrorMeasureTest
+
+#decorators test
+from decoratorstest import OptimizedDecoratorTest

@@ -37,45 +37,23 @@ class PyCastObject(object):
     def __init__(self):
         """Initializes the PyCastObject."""
         super(PyCastObject, self).__init__()
-
-        self._build_optimization_dictionary()
-
+        self.optimization_enabled = False
+        
         if PyCastObject._globalOptimize:
             self._enable_instance_optimization()
-
-    def _build_optimization_dictionary(self):
-        """Creates a dictionary that maps optimized to not optimized methods."""
-        self._methodOptimizationDictionary = {}
-
-        ## example code
-        #try:
-        #    from pycastC.errors.BaseErrorMeasure import initialize
-        #except ImportError:
-        #    pass
-        #else:
-        #    self._methodOptimizationDictionary["initialize"] = [BaseErrorMeasure.initialize, initialize]
-
 
     def _enable_instance_optimization(self):
         """Enables the optimization for the PyCastObject instance.
 
-        Within this method, python methods can be replaces with C++
-        functions.
-
         :warning:    Do not forget to implement the disable_instance_optimization()
             as well.
         """
-        for methodname in self._methodOptimizationDictionary:
-            setattr(self, methodname, self._methodOptimizationDictionary[methodname][1])
+        self.optimization_enabled = True
 
     def _disable_instance_optimization(self):
         """Disables the optimization for the PyCastObject instance.
-
-        Within this method, optimized C++ functions will be replaced by 
-        the original python implementations.
         """
-        for methodname in self._methodOptimizationDictionary:
-            setattr(self, methodname, self._methodOptimizationDictionary[methodname][0])
+        self.optimization_enabled = False
 
     @classmethod
     def enable_global_optimization(cls):

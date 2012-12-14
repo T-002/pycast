@@ -34,9 +34,10 @@ pycastC_optimization = pycastC.add_cpp_namespace("optimization")
 
 ## pycast.errors
 pycastC_errors.add_include('"pycast/errors/baseerrormeasure.h"')
-pycastC_errors_baseerrormeasure = pycastC_errors.add_cpp_namespace("BaseErrorMeasure")
+pycastC_errors_baseerrormeasure = pycastC_errors.add_cpp_namespace("baseerrormeasure")
+pycastC_errors_baseerrormeasure_BaseErrorMeasure = pycastC_errors_baseerrormeasure.add_cpp_namespace("BaseErrorMeasure")
 
-pycastC_errors_baseerrormeasure.add_function("initialize", pybindgen.retval("bool"), 
+pycastC_errors_baseerrormeasure_BaseErrorMeasure.add_function("initialize", pybindgen.retval("bool"), 
 	[
 	    pybindgen.param("PyObject*", "self",                  transfer_ownership=False),
 		pybindgen.param("PyObject*", "originalTimeSeries",    transfer_ownership=False),
