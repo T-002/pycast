@@ -25,6 +25,7 @@
 from pycastobject import PyCastObject
 
 def optimized(fn):
+    
     def _optimized(self, *args, **kwargs):
         if self.optimization_enabled:
             class_name = self.__class__.__name__
@@ -38,4 +39,10 @@ def optimized(fn):
                 return fn(self, *args, **kwargs)
         else:
             return fn(self, *args, **kwargs)
+
+    setattr(_optimized, "__name__", fn.__name__)
+    setattr(_optimized, "__repr__", fn.__repr__)
+    setattr(_optimized, "__str__",  fn.__str__)
+    setattr(_optimized, "__doc__",  fn.__doc__)
+
     return _optimized
