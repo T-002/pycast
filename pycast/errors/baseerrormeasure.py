@@ -23,6 +23,8 @@
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from pycast.common import PyCastObject
+from pycast.common.decorators import optimized
+
 class BaseErrorMeasure(PyCastObject):
     """Baseclass for all error measures."""
 
@@ -46,18 +48,7 @@ class BaseErrorMeasure(PyCastObject):
         
         self._errorValues = []
 
-    def _build_optimization_dictionary(self):
-        """Creates a dictionary that maps optimized to not optimized methods."""
-        super(BaseErrorMeasure, self)._build_optimization_dictionary()
-
-        try:
-            from pycastC.errors.BaseErrorMeasure import initialize
-        except ImportError:                                                                      # pragma: no cover
-            print "[WARNING] Could not enable optimization for %s." % self.__class__.__name__    # pragma: no cover
-            pass                                                                                 # pragma: no cover
-        else:
-            self._methodOptimizationDictionary["initialize"] = [BaseErrorMeasure.initialize, initialize]
-    
+    @optimized
     def initialize(self, originalTimeSeries, calculatedTimeSeries):
         """Initializes the ErrorMeasure.
 
