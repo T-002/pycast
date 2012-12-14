@@ -19,6 +19,7 @@ Requirements
 pycast Tests
     - nose     >= 1.2.1
     - coverage >= 3.5.3
+    - mock     >= 1.0.1
 
 Examples
     - itty >= 0.8.1
