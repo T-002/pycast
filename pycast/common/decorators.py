@@ -25,8 +25,27 @@
 from pycastobject import PyCastObject
 
 def optimized(fn):
-    
+    """Decorater that will call the optimized c++ version
+    of a pycast function if available rather than theo
+    original pycast function
+
+    :param Function fn: original pycast function
+
+    :return: return the wrapped function
+    :rtype: Function
+    """
     def _optimized(self, *args, **kwargs):
+        """ This method calls the pycastC function ff
+        otimization is enabled and the pycastC function
+        is available
+
+        :param: PyCastObject self: reference to the calling object. Needs to be passed to the pycastC function, so that all uts members are available.
+        :param: list *args: list of arguments the function is called with.
+        :param: dict **kwargs: dictionary of parameter  names and values the function has been called with.
+
+        :return result of the function call either from pycast or pycastC module.
+        :rtype: Function
+        """
         if self.optimization_enabled:
             class_name = self.__class__.__name__
             module = self.__module__.replace('pycast', 'pycastC')

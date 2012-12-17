@@ -22,26 +22,16 @@ Based on existing C++ Functions, you can enable optimization for your instances.
 Therefore you need to:
 
   * inherit from `pycast.common.PyCastObject`
-  * implement :py:meth:`_build_optimization_dictionary`
+  * decorate the original method with the 'optimized' decorator
 
 An example implementation looks like the following::
 
     from pycast.common import PyCastObject
+    from pycast.common.decorators import optimized
     class CustomObject(PyCastObject):
         """Your custom class."""
 
-        def _build_optimization_dictionary(self):
-        """Creates a dictionary that maps optimized to not optimized methods."""
-        super(CustomObject, self)._build_optimization_dictionary()
-
-        try:
-            from pycastC.<submodule>.CustomObject import optimized_method
-        except ImportError:                                                                      # pragma: no cover
-            print "[WARNING] Could not enable optimization for %s." % self.__class__.__name__    # pragma: no cover
-            pass                                                                                 # pragma: no cover
-        else:
-            self._methodOptimizationDictionary["methodname"] = [CustomObject.method, optimized_method]
-
+        @optimized
         def method(self):
             """This is the python implementation of the method that should be replaced with an optimized version."""
 
