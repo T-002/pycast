@@ -57,13 +57,15 @@ class OptimizedDecoratorTest(unittest.TestCase):
         With and without optimization the method
         should be called with the same parameters.
         """
-        error = BaseErrorMeasure()
-        error.local_error = Mock()
+        old_error = BaseErrorMeasure.local_error
+        BaseErrorMeasure.local_error = Mock()
         ts = TimeSeries.from_twodim_list([[1,1]])
 
+        error = BaseErrorMeasure()
         error._enable_instance_optimization()
         error.initialize(ts, ts)
 
+        error = BaseErrorMeasure()
         error._disable_instance_optimization()
         error.initialize(ts, ts)
 

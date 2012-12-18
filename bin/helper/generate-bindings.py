@@ -37,7 +37,7 @@ pycastC_errors.add_include('"pycast/errors/baseerrormeasure.h"')
 pycastC_errors_baseerrormeasure = pycastC_errors.add_cpp_namespace("baseerrormeasure")
 pycastC_errors_baseerrormeasure_BaseErrorMeasure = pycastC_errors_baseerrormeasure.add_cpp_namespace("BaseErrorMeasure")
 
-pycastC_errors_baseerrormeasure_BaseErrorMeasure.add_function("initialize", pybindgen.retval("bool"), 
+pycastC_errors_baseerrormeasure_BaseErrorMeasure.add_function("initialize", pybindgen.retval("PyObject*", caller_owns_return=False), # return value can't be bool because bool function cannot indicate exceptions by returning NULL (interpreted as False)
 	[
 	    pybindgen.param("PyObject*", "self",                  transfer_ownership=False),
 		pybindgen.param("PyObject*", "originalTimeSeries",    transfer_ownership=False),

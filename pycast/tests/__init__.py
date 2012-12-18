@@ -44,8 +44,5 @@ from mapetest import MeanAbsolutePercentageErrorTest, GeometricMeanAbsolutePerce
 from baseoptimizationtest import BaseOptimizationMethodTest
 from gridsearchtest       import GridSearchTest
 
-#cpython test
-from cpythontest import CPythonErrorMeasureTest
-
 #decorators test
 from decoratorstest import OptimizedDecoratorTest

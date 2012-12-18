@@ -33,6 +33,7 @@ from pycast.errors import MeanAbsoluteDeviationError
 from pycast.errors import MeanAbsoluteScaledError
 from pycast.errors import MedianAbsolutePercentageError
 from pycast.common.timeseries import TimeSeries
+from pycast.common.pycastobject import PyCastObject
 
 class BaseErrorMeasureTest(unittest.TestCase):
     """Test class for the BaseErrorMeasure interface."""
@@ -106,6 +107,7 @@ class BaseErrorMeasureTest(unittest.TestCase):
         bem = BaseErrorMeasure()
 
         try:
+            print "go"
             bem.initialize(tsOrg, tsCalc)
         except NotImplementedError:
             pass
@@ -152,6 +154,7 @@ class BaseErrorMeasureTest(unittest.TestCase):
                 else:
                     assert False    # pragma: no cover
 
+
     def local_error_test(self):
         """Test local_error of BaseErrorMeasure."""
         data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
@@ -167,6 +170,16 @@ class BaseErrorMeasureTest(unittest.TestCase):
                 pass
             else:
                 assert False    # pragma: no cover
+
+    def optimized_test(self):
+        PyCastObject.enable_global_optimization()
+        self.get_error_initialization_test()
+        self.initialization_test()
+        self.initialize_test()
+        self.double_initialize_test()
+        PyCastObject.disable_global_optimization()
+
+
 
 class MeanSquaredErrorTest(unittest.TestCase):
     """Testing MeanSquaredError."""

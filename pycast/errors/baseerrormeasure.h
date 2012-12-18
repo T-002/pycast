@@ -37,7 +37,7 @@ namespace errors {
             
                 // float local_error(float originalValue, float calculatedValue);
 
-    	        bool initialize(PyObject* self, PyObject *originalTimeSeries, PyObject *calculatedTimesSeries);
+    	        PyObject* initialize(PyObject* self, PyObject *originalTimeSeries, PyObject *calculatedTimesSeries);
 
     	    //private:
     	    //	int _minimalErrorCalculationPercentage;    

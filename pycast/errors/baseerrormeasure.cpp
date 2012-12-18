@@ -25,9 +25,52 @@ namespace errors {
     namespace baseerrormeasure {
         namespace BaseErrorMeasure {
 
-            bool initialize(PyObject* self, PyObject *originalTimeSeries, PyObject *calculatedTimesSeries)
+            PyObject* initialize(PyObject* self, PyObject *originalTimeSeries, PyObject *calculatedTimesSeries)
             {
-                return true;
+                if (0 < PySequence_Size(PyObject_GetAttrString(self, "_errorValues"))) {
+                    PyErr_SetString(PyExc_StandardError, "An ErrorMeasure can only be initialized once.");
+                    return NULL;
+                }
+                PyObject_CallMethodObjArgs(originalTimeSeries, PyString_FromString("sort_timeseries"), NULL);
+                PyObject_CallMethodObjArgs(calculatedTimesSeries, PyString_FromString("sort_timeseries"), NULL);
+
+                int index = 0;
+                PyObject *orgPair, *calcPair, *local_error;
+                PyObject *_errorValues = PyList_New(PyObject_Length(originalTimeSeries));
+                PyObject *iterator1 = PyObject_GetIter(originalTimeSeries);
+
+                while ((orgPair = PyIter_Next(iterator1))) {   
+                    PyObject *iterator2 = PyObject_GetIter(calculatedTimesSeries);
+                    while ((calcPair = PyIter_Next(iterator2))) {
+                        if (PyFloat_AsDouble(PySequence_GetItem(orgPair, 0)) != PyFloat_AsDouble(PySequence_GetItem(calcPair, 0))) {
+                            continue;
+                        }
+                        
+                        local_error = PyObject_CallMethodObjArgs(self, PyString_FromString("local_error"), PySequence_GetItem(orgPair, 1), PySequence_GetItem(calcPair, 1), NULL);
+                        if(!local_error) {
+                            //NotImplemented Exception
+                            return NULL;
+                        }
+
+                        PyList_SetItem(_errorValues, index, local_error);
+                        index++;
+
+                        Py_DECREF(calcPair);
+                    }
+                    Py_DECREF(iterator2);
+                    Py_DECREF(orgPair);
+                }
+                Py_DECREF(iterator1);
+
+                _errorValues = PyList_GetSlice(_errorValues, 0, index); //Cut off trailing zeroes
+                //return False, if the error cannot be calculated
+                double _minimalErrorCalculationPercentage = PyFloat_AsDouble(PyObject_GetAttrString(self, "_minimalErrorCalculationPercentage"));
+                if(PyList_Size(_errorValues) < (_minimalErrorCalculationPercentage * PyObject_Length(originalTimeSeries))) {
+                    Py_RETURN_FALSE;
+                }
+
+                PyObject_SetAttrString(self, "_errorValues", _errorValues);
+                Py_RETURN_TRUE;
             }
 
         }
