@@ -53,7 +53,7 @@ namespace errors {
                         }
 
                         PyList_SetItem(_errorValues, index, local_error);
-                        index++;
+                        ++index;
 
                         Py_DECREF(calcPair);
                     }
