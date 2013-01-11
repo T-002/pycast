@@ -103,5 +103,5 @@ class GeometricMeanAbsolutePercentageError(MeanAbsolutePercentageError):
         
         return product
 
-GMAPE = GeometricMeanAbsolutePercentageErrorGMAPE = GeometricMeanAbsolutePercentageError
+GMAPE = GeometricMeanAbsolutePercentageError
 
