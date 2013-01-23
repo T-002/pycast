@@ -98,36 +98,36 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         
         assert (None != matchres)
 
-    def json_serialization_formatfree_test(self):
-        """Test the json serialialization without predefined format."""
-        tsOrg = TimeSeries()
-        tsOrg.add_entry(0.0, 0.0)
-        tsOrg.add_entry(0.1, 0.1)
-        tsOrg.add_entry(0.2, 0.2)
-        tsOrg.add_entry(0.3, 0.3)
-        tsOrg.add_entry(0.4, 0.4)
-        json = tsOrg.to_json()
+#   def json_serialization_formatfree_test(self):
+#       """Test the json serialialization without predefined format."""
+#       tsOrg = TimeSeries()
+#       tsOrg.add_entry(0.0, 0.0)
+#       tsOrg.add_entry(0.1, 0.1)
+#       tsOrg.add_entry(0.2, 0.2)
+#       tsOrg.add_entry(0.3, 0.3)
+#       tsOrg.add_entry(0.4, 0.4)
+#       json = tsOrg.to_json()
 
-        tsNew = TimeSeries.from_json(json)
+#       tsNew = TimeSeries.from_json(json)
 
-        if not (len(tsOrg) == len(tsNew)): raise AssertionError
-        if not (tsOrg == tsNew):           raise AssertionError
+#       if not (len(tsOrg) == len(tsNew)): raise AssertionError
+#       if not (tsOrg == tsNew):           raise AssertionError
 
-    def json_serialization_format_test(self):
-        """Test the json serialialization with predefined format."""
-        tsOrg = TimeSeries()
-        tsOrg.add_entry(0.0, 0.0)
-        tsOrg.add_entry(1.0, 0.1)
-        tsOrg.add_entry(2.0, 0.2)
-        tsOrg.add_entry(3.0, 0.3)
-        tsOrg.add_entry(4.0, 0.4)
-        tsOrg.set_timeformat("%Y-%m-%d_%H:%M:%S")
-        json = tsOrg.to_json()
+#   def json_serialization_format_test(self):
+#       """Test the json serialialization with predefined format."""
+#       tsOrg = TimeSeries()
+#       tsOrg.add_entry(0.0, 0.0)
+#       tsOrg.add_entry(1.0, 0.1)
+#       tsOrg.add_entry(2.0, 0.2)
+#       tsOrg.add_entry(3.0, 0.3)
+#       tsOrg.add_entry(4.0, 0.4)
+#       tsOrg.set_timeformat("%Y-%m-%d_%H:%M:%S")
+#       json = tsOrg.to_json()
 
-        tsNew = TimeSeries.from_json(json, format="%Y-%m-%d_%H:%M:%S")
+#       tsNew = TimeSeries.from_json(json, format="%Y-%m-%d_%H:%M:%S")
 
-        if not (len(tsOrg) == len(tsNew)): raise AssertionError
-        if not (tsOrg == tsNew):          raise AssertionError
+#       if not (len(tsOrg) == len(tsNew)): raise AssertionError
+#       if not (tsOrg == tsNew):          raise AssertionError
 
     def list_initialization_test(self):
         """Test TimeSeries initialization from a given list."""
