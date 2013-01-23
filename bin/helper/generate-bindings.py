@@ -44,12 +44,6 @@ pycastC_errors_baseerrormeasure_BaseErrorMeasure.add_function("initialize", pybi
 		pybindgen.param("PyObject*", "calculatedTimesSeries", transfer_ownership=False)
 	])
 
-#pycastC_errors_baseerrormeasure.add_method(
-#	"local_error", pybindgen.retval("float"),
-#	[
-#	    pybindgen.param("float", "originalValue"),
-#	    pybindgen.param("float", "calculatedValue")
-#	]
-#)
 
+## generate :)
 pycastC.generate(sys.stdout)
