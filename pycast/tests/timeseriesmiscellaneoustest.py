@@ -23,7 +23,6 @@
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## required external modules
-from nose import with_setup
 import unittest, re, os
 from copy import copy
 
@@ -164,7 +163,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
 
         assert tsOne == tsTwo
 
-    def equal_test(self):
+    def equality_test(self):
         """Test the == operator for TimeSeries instances."""
         data  = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
         
@@ -177,14 +176,14 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         tsFour[1][0] = 1.3
         tsFive[1][1] = 1.3
 
-        if not (tsOne == tsTwo): raise AssertionError
-        if (tsOne == tsThree):   raise AssertionError
-        if (tsTwo == tsThree):   raise AssertionError
-        if (tsOne == tsFour):    raise AssertionError
-        if (tsOne == tsFive):    raise AssertionError
-        if (tsThree == tsFour):  raise AssertionError
-        if (tsThree == tsFive):  raise AssertionError
-        if (tsFour == tsFive):   raise AssertionError
+        assert (tsOne == tsTwo)
+        assert (tsOne != tsThree)
+        assert (tsTwo != tsThree) 
+        assert (tsOne != tsFour)  
+        assert (tsOne != tsFive)  
+        assert (tsThree != tsFour)
+        assert (tsThree != tsFive)
+        assert (tsFour != tsFive) 
 
     def gnuplot_serialization_without_format_test(self):
         """Test serialization of timeSeries into gnuplot file."""

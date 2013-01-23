@@ -47,6 +47,7 @@ class BaseErrorMeasure(PyCastObject):
         self._minimalErrorCalculationPercentage = minimalErrorCalculationPercentage / 100.0
         
         self._errorValues = []
+        self._errorDates  = []
 
     @optimized
     def initialize(self, originalTimeSeries, calculatedTimeSeries):
@@ -74,6 +75,7 @@ class BaseErrorMeasure(PyCastObject):
         
         ## Performance optimization
         append      = self._errorValues.append
+        appendDate  = self._errorDates.append
         local_error = self.local_error
 
         minCalcIdx  = 0
@@ -87,17 +89,18 @@ class BaseErrorMeasure(PyCastObject):
                 if calcPair[0] != orgPair[0]:
                     continue
 
-                append(local_error(orgPair[1], calcPair[1]))
+                append(local_error(orgPair[1:], calcPair[1:]))
+                appendDate(orgPair[0])
 
         ## return False, if the error cannot be calculated
-
         if len(filter(lambda item: item != None, self._errorValues)) < self._minimalErrorCalculationPercentage * len(originalTimeSeries):
             self._errorValues = []
+            self._errorDates = []
             return False
 
         return True
 
-    def _get_error_values(self, startingPercentage, endPercentage):
+    def _get_error_values(self, startingPercentage, endPercentage, startDate, endDate):
         """Gets the defined subset of self._errorValues.
 
         Both parameters will be correct at this time.
@@ -108,16 +111,35 @@ class BaseErrorMeasure(PyCastObject):
         :param Float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
             It represents the vlaue, after which all error values will be ignored. 90.0 for example means that
             the last 10% of all local errors will be ignored.
+        :param Float startDate: Epoch representing the start date used for error calculation.
+        :param Float endDate: Epoch representing the end date used in the error calculation.
 
         :return:    Returns a list with the defined error values.
         :rtype:     List
+
+        :raise:    Raises a ValueError if startDate or endDate do not represent correct boundaries for error calculation.
         """
-        startIdx = int((startingPercentage * len(self._errorValues)) / 100.0)
-        endIdx   = int((endPercentage      * len(self._errorValues)) / 100.0)
+        if None != startDate:
+            possibleDates = filter(lambda date: date >= startDate, self._errorDates)
+            if 0 == len(possibleDates):
+                raise ValueError("%s does not represent a valid startDate." % startDate)
+            
+            startIdx = self._errorDates.index(min(possibleDates))
+        else:
+            startIdx = int((startingPercentage * len(self._errorValues)) / 100.0)
+
+        if None != endDate:
+            possibleDates = filter(lambda date: date <= endDate, self._errorDates)
+            if 0 == len(possibleDates):
+                raise ValueError("%s does not represent a valid endDate." % endDate)
+
+            endIdx = self._errorDates.index(max(possibleDates)) + 1
+        else:
+            endIdx = int((endPercentage * len(self._errorValues)) / 100.0)
 
         return self._errorValues[startIdx:endIdx]
 
-    def get_error(self, startingPercentage=0.0, endPercentage=100.0):
+    def get_error(self, startingPercentage=0.0, endPercentage=100.0, startDate=None, endDate=None):
         """Calculates the error for the given interval (startingPercentage, endPercentage) between the TimeSeries 
         given during :py:meth:`BaseErrorMeasure.initialize`.
 
@@ -127,6 +149,8 @@ class BaseErrorMeasure(PyCastObject):
         :param Float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
             It represents the vlaue, after which all error values will be ignored. 90.0 for example means that
             the last 10% of all local errors will be ignored.
+        :param Float startDate: Epoch representing the start date used for error calculation.
+        :param Float endDate: Epoch representing the end date used in the error calculation.
 
         :return:    Returns a float representing the error.
         :rtype:     Float
@@ -151,9 +175,9 @@ class BaseErrorMeasure(PyCastObject):
         if endPercentage < startingPercentage:
             raise ValueError("endPercentage has to be greater or equal than startingPercentage.")
 
-        return self._calculate(startingPercentage, endPercentage)
+        return self._calculate(startingPercentage, endPercentage, startDate, endDate)
     
-    def _calculate(self, startingPercentage, endPercentage):
+    def _calculate(self, startingPercentage, endPercentage, startDate, endDate):
         """This is the error calculation function that gets called by :py:meth:`BaseErrorMeasure.get_error`.
 
         Both parameters will be correct at this time.
@@ -164,6 +188,8 @@ class BaseErrorMeasure(PyCastObject):
         :param Float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
             It represents the vlaue, after which all error values will be ignored. 90.0 for example means that
             the last 10% of all local errors will be ignored.
+        :param Float startDate: Epoch representing the start date used for error calculation.
+        :param Float endDate: Epoch representing the end date used in the error calculation.
 
         :return:    Returns a float representing the error.
         :rtype:     Float
@@ -176,8 +202,8 @@ class BaseErrorMeasure(PyCastObject):
     def local_error(self, originalValue, calculatedValue):
         """Calculates the error between the two given values.
 
-        :param Numeric originalValue:    Value of the original data.
-        :param Numeric calculatedValue:    Value of the calculated TimeSeries that
+        :param List originalValue:    List containing the values of the original data.
+        :param List calculatedValue:    List containing the values of the calculated TimeSeries that
             corresponds to originalValue.
 
         :return:    Returns the error measure of the two given values.

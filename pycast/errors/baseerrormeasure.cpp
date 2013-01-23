@@ -41,6 +41,7 @@ namespace errors {
                 PyObject* local_error;
 
                 PyObject* _errorValues = PyList_New(PyObject_Length(originalTimeSeries));
+                PyObject* _errorDates = PyList_New(PyObject_Length(originalTimeSeries));
                 PyObject* iterator1 = PyObject_GetIter(originalTimeSeries);
 
                 while ((orgPair = PyIter_Next(iterator1))) {   
@@ -51,7 +52,11 @@ namespace errors {
                         if (PyFloat_AsDouble(PySequence_GetItem(orgPair, 0)) != PyFloat_AsDouble(PySequence_GetItem(calcPair, 0)))
                             continue;
                         
-                        local_error = PyObject_CallMethodObjArgs(self, PyString_FromString("local_error"), PySequence_GetItem(orgPair, 1), PySequence_GetItem(calcPair, 1), NULL);
+                        local_error = PyObject_CallMethodObjArgs(self, PyString_FromString("local_error"), 
+                                                                       PyList_GetSlice(orgPair, 1, PyList_Size(orgPair)),
+                                                                       PyList_GetSlice(calcPair, 1, PyList_Size(calcPair)),
+                                                                       NULL
+                                                                );
                         
                         //NotImplemented Exception
                         if(!local_error) {
@@ -60,6 +65,7 @@ namespace errors {
                         }
 
                         PyList_SetItem(_errorValues, index, local_error);
+                        PyList_SetItem(_errorDates, index, PySequence_GetItem(orgPair, 0));
                         ++index;
 
                         Py_DECREF(calcPair);
@@ -73,7 +79,8 @@ namespace errors {
 
                 //Cut off trailing zeroes
                 _errorValues = PyList_GetSlice(_errorValues, 0, index);
-                
+                _errorDates = PyList_GetSlice(_errorDates, 0, index);
+                                
                 //return False, if the error cannot be calculated
                 double _minimalErrorCalculationPercentage = PyFloat_AsDouble(PyObject_GetAttrString(self, "_minimalErrorCalculationPercentage"));
                 
@@ -81,6 +88,7 @@ namespace errors {
                     Py_RETURN_FALSE;
 
                 PyObject_SetAttrString(self, "_errorValues", _errorValues);
+                PyObject_SetAttrString(self, "_errorDates", _errorDates);
                 Py_RETURN_TRUE;
             }
 

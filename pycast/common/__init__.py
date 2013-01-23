@@ -24,6 +24,6 @@
 
 import timeseries
 
-from timeseries import TimeSeries
+from timeseries import TimeSeries, MultiDimensionalTimeSeries
 from profileme import profileMe
 from pycastobject import PyCastObject

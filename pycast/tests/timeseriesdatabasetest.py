@@ -26,11 +26,10 @@
 ## SQLite is used for connector tests
 
 ## required external modules
-from nose import with_setup
 import unittest, random, sqlite3
 
 ## required modules from pycast
-from pycast.common.timeseries import TimeSeries
+from pycast.common.timeseries import TimeSeries, MultiDimensionalTimeSeries
 
 class DatabaseConnectorTest(unittest.TestCase):
     """Testclass for all database connection related tests."""
@@ -134,6 +133,20 @@ class DatabaseConnectorTest(unittest.TestCase):
         ## check if all values of the database got inserted into the TimeSeries
         assert len(ts) == nbrOfTuples
 
+    def multidimensionaltimeseries_test(self):
+        """Test the initialization of the MultiDimensionalTimeSeries."""
+        ## read the number of rows from the database
+        cur = self._db.cursor().execute("""SELECT COUNT(*) from TestTable""")
+        nbrOfTuples = cur.fetchall()[0][0]
+
+        ## initialize a TimeSeries instance from a database cursor
+        cur = self._db.cursor().execute("""SELECT timestamp, value, junk_one FROM TestTable""")
+        ts = MultiDimensionalTimeSeries(dimensions=2)
+        ts.initialize_from_sql_cursor(cur)
+
+        ## check if all values of the database got inserted into the TimeSeries
+        assert len(ts) == nbrOfTuples
+
     def check_for_consistency_test(self):
         """Tests if database initialization and manual initialization create equal TimeSeries instances."""
         ## read the number of rows from the database
@@ -147,14 +160,14 @@ class DatabaseConnectorTest(unittest.TestCase):
         tsManual = TimeSeries()
         data     = self._db.cursor().execute(sqlstmt).fetchall()
         for entry in data:
-            tsManual.add_entry(*entry)
+            tsManual.add_entry(str(entry[0]), entry[1])
 
         ## Initialize one TimeSeries from SQL cursor
         tsAuto = TimeSeries()
         tsAuto.initialize_from_sql_cursor(self._db.cursor().execute(sqlstmt))
 
         ## check if those TimeSeries are equal
-        if not (nbrOfTuples   == len(tsManual)): raise AssertionError
-        if not (nbrOfTuples   == len(tsAuto)):   raise AssertionError
-        if not (len(tsManual) == len(tsAuto)):   raise AssertionError
-        if not (tsManual      == tsAuto):        raise AssertionError
+        assert (nbrOfTuples   == len(tsManual))
+        assert (nbrOfTuples   == len(tsAuto))
+        assert (len(tsManual) == len(tsAuto))
+        assert (tsManual      == tsAuto)

@@ -39,7 +39,7 @@ class MeanAbsolutePercentageErrorTest(unittest.TestCase):
         mape = MeanAbsolutePercentageError()
         for idx in xrange(len(orgValues)):
             res = ((math.fabs(calValues[idx] - orgValues[idx]))/orgValues[idx])*100
-            assert  str(res)[:6] == str(mape.local_error(orgValues[idx], calValues[idx]))[:6]
+            assert  str(res)[:6] == str(mape.local_error([orgValues[idx]], [calValues[idx]]))[:6]
 
     def error_calculation_test(self):
         """Test the calculation of the MeanAbsolutePercentageError."""        
@@ -65,7 +65,7 @@ class GeometricMeanAbsolutePercentageErrorTest(unittest.TestCase):
         gmape = GeometricMeanAbsolutePercentageError()
         for idx in xrange(len(orgValues)):
             res = ((math.fabs(calValues[idx] - orgValues[idx]))/orgValues[idx])*100
-            assert  str(res)[:6] == str(gmape.local_error(orgValues[idx], calValues[idx]))[:6]
+            assert  str(res)[:6] == str(gmape.local_error([orgValues[idx]], [calValues[idx]]))[:6]
 
     def error_calculation_test(self):
         """Test the calculation of the GeometricMeanAbsolutePercentageError."""      
@@ -81,3 +81,6 @@ class GeometricMeanAbsolutePercentageErrorTest(unittest.TestCase):
         gmape = GeometricMeanAbsolutePercentageError()
         gmape.initialize(tsOrg, tsCalc)
         assert str(gmape.get_error())[:6] == "31.368"
+
+        error = gmape.get_error(startDate=1, endDate=9)
+        assert str(error)[:6] == "31.368", "%s != 31.368" % error

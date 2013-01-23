@@ -1,5 +1,4 @@
 import json
-from timeseries import TimeSeries
 
 from pycastobject import PyCastObject
 class PycastEncoder(json.JSONEncoder, PyCastObject):
