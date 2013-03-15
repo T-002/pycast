@@ -26,16 +26,4 @@ from basemethod import BaseMethod, BaseForecastingMethod
 
 from simplemovingaverage  import SimpleMovingAverage
 from exponentialsmoothing import ExponentialSmoothing, HoltMethod, HoltWintersMethod
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 #from regression import Regression, LinearRegression
-=======
-from regression import Regression, LinearRegression
->>>>>>> Stashed changes
-=======
-from regression import Regression, LinearRegression
->>>>>>> Stashed changes
-=======
-from regression import Regression, LinearRegression
->>>>>>> Stashed changes

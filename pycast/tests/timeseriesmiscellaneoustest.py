@@ -23,31 +23,13 @@
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## required external modules
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-import unittest, re, os
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 import unittest, re, os, random
->>>>>>> Stashed changes
 from copy import copy
 
 ## required modules from pycast
 from pycast.common.timeseries import TimeSeries, FusionMethods
 from pycast.methods.basemethod import BaseMethod
+from pycast.common.pycastobject import PyCastObject
 
 class TimeSeriesMiscellaneousTest(unittest.TestCase):
     """Test class containing tests for miscallaneous TimeSeries functions."""
@@ -117,55 +99,6 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         
         assert (None != matchres)
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-#   def json_serialization_formatfree_test(self):
-#       """Test the json serialialization without predefined format."""
-#       tsOrg = TimeSeries()
-#       tsOrg.add_entry(0.0, 0.0)
-#       tsOrg.add_entry(0.1, 0.1)
-#       tsOrg.add_entry(0.2, 0.2)
-#       tsOrg.add_entry(0.3, 0.3)
-#       tsOrg.add_entry(0.4, 0.4)
-#       json = tsOrg.to_json()
-
-#       tsNew = TimeSeries.from_json(json)
-
-#       if not (len(tsOrg) == len(tsNew)): raise AssertionError
-#       if not (tsOrg == tsNew):           raise AssertionError
-
-#   def json_serialization_format_test(self):
-#       """Test the json serialialization with predefined format."""
-#       tsOrg = TimeSeries()
-#       tsOrg.add_entry(0.0, 0.0)
-#       tsOrg.add_entry(1.0, 0.1)
-#       tsOrg.add_entry(2.0, 0.2)
-#       tsOrg.add_entry(3.0, 0.3)
-#       tsOrg.add_entry(4.0, 0.4)
-#       tsOrg.set_timeformat("%Y-%m-%d_%H:%M:%S")
-#       json = tsOrg.to_json()
-
-#       tsNew = TimeSeries.from_json(json, format="%Y-%m-%d_%H:%M:%S")
-
-#       if not (len(tsOrg) == len(tsNew)): raise AssertionError
-#       if not (tsOrg == tsNew):          raise AssertionError
-
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
     def list_initialization_test(self):
         """Test TimeSeries initialization from a given list."""
         data = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
@@ -445,7 +378,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         tsOK = TimeSeries.from_twodim_list(dataOK)
         tsNotOK = TimeSeries.from_twodim_list(dataNotOK)
 
-        assert tsOK._check_normalization()
+        assert     tsOK._check_normalization()
         assert not tsNotOK._check_normalization()
 
     def optimized_test(self):

@@ -186,7 +186,7 @@ class TimeSeries(PyCastObject):
             ts.add_entry(*entry[:2])
 
         ## set the normalization level
-        ts._normalized = ts.check_normalization()
+        ts._normalized = ts._check_normalization()
         ts.sort_timeseries()  
 
         return ts
@@ -215,7 +215,7 @@ class TimeSeries(PyCastObject):
             data = sqlcursor.fetchmany()
 
         ## set the normalization level
-        self._normalized = self.check_normalization
+        self._normalized = self._check_normalization
         
         ## return the number of tuples added to the timeseries.
         return tuples
@@ -535,7 +535,7 @@ class TimeSeries(PyCastObject):
         """
         return self._normalized
 
-    def check_normalization(self):
+    def _check_normalization(self):
         """Checks, if the TimeSeries is normalized.
 
         :return:    Returns :py:const:`True` if all data entries of the TimeSeries have an equal temporal
@@ -836,19 +836,7 @@ class MultiDimensionalTimeSeries(TimeSeries):
             data = sqlcursor.fetchmany()
 
         ## set the normalization level
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
         self._normalized = self._check_normalization()
-=======
-        self._normalized = self._check_normalization
->>>>>>> Stashed changes
-=======
-        self._normalized = self._check_normalization
->>>>>>> Stashed changes
-=======
-        self._normalized = self._check_normalization
->>>>>>> Stashed changes
         
         ## return the number of tuples added to the timeseries.
         return tuples
