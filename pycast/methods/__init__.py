@@ -26,3 +26,4 @@ from basemethod import BaseMethod, BaseForecastingMethod
 
 from simplemovingaverage  import SimpleMovingAverage
 from exponentialsmoothing import ExponentialSmoothing, HoltMethod, HoltWintersMethod
+from regression import Regression, LinearRegression

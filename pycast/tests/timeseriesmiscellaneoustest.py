@@ -24,8 +24,11 @@
 
 ## required external modules
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import unittest, re, os
 =======
+=======
+>>>>>>> Stashed changes
 import unittest, re, os, random
 >>>>>>> Stashed changes
 from copy import copy
@@ -103,6 +106,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         assert (None != matchres)
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 #   def json_serialization_formatfree_test(self):
 #       """Test the json serialialization without predefined format."""
 #       tsOrg = TimeSeries()
@@ -134,6 +138,8 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
 #       if not (len(tsOrg) == len(tsNew)): raise AssertionError
 #       if not (tsOrg == tsNew):          raise AssertionError
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     def list_initialization_test(self):

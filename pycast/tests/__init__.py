@@ -36,10 +36,13 @@ from helpertest import HelperTest
 
 ## method tests
 from methodtest import BaseMethodTest, BaseForecastingMethodTest, SimpleMovingAverageTest, ExponentialSmoothingTest, HoltMethodTest, HoltWintersMethodTest
+from regressiontest import RegressionTest, LinearRegressionTest
 
 ## error measure tests
-from errormeasuretest import BaseErrorMeasureTest, MeanSquaredErrorTest, SymmetricMeanAbsolutePercentageErrorTest, MeanAbsoluteDeviationErrorTest, MeanAbsoluteScaledErrorTest, MedianAbsolutePercentageErrorTest
+from errormeasuretest import BaseErrorMeasureTest, MeanSquaredErrorTest, SymmetricMeanAbsolutePercentageErrorTest, MeanAbsoluteDeviationErrorTest, MeanAbsoluteScaledErrorTest, MedianAbsolutePercentageErrorTest, MeanSignedDifferenceErrorTest
 from mapetest import MeanAbsolutePercentageErrorTest, GeometricMeanAbsolutePercentageErrorTest
+from weightedmapetest import WeightedMeanAbsolutePercentageErrorTest
+from meetest import MeanEconomicErrorTest
 
 ## optimization method
 from baseoptimizationtest import BaseOptimizationMethodTest
@@ -47,3 +50,6 @@ from gridsearchtest       import GridSearchTest
 
 #decorators test
 from decoratorstest import OptimizedDecoratorTest
+
+# matrix test
+from matrixtest import MatrixTest, VectorTest, MatrixHelperTest

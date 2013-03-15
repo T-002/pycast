@@ -27,8 +27,12 @@ from baseerrormeasure import BaseErrorMeasure
 from meansquarederror                     import MeanSquaredError, MSE
 from symmetricmeanabsolutepercentageerror import SymmetricMeanAbsolutePercentageError, SMAPE
 from meanabsolutedeviationerror           import MeanAbsoluteDeviationError, MAD
+from meaneconomicerror           import MeanEconomicError, MEE, MeanSignedEconomicError, MSEE
 
-from meanabsolutepercentageerror import MeanAbsolutePercentageError, MAPE, GeometricMeanAbsolutePercentageError, GMAPE
+from meanabsolutepercentageerror import MeanAbsolutePercentageError, MAPE, GeometricMeanAbsolutePercentageError, GMAPE, MeanSignedPercentageError, MSPE
+from weightedmeanabsolutepercentageerror import WeightedMeanAbsolutePercentageError, WMAPE
 from medianabsolutepercentageerror import MedianAbsolutePercentageError, MdAPE
 
 from meanabsolutescalederror     import MeanAbsoluteScaledError, MASE
+
+from meansigneddifferenceerror import MeanSignedDifferenceError, MSD

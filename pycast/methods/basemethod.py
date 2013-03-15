@@ -30,13 +30,17 @@ class BaseMethod(PyCastObject):
 
     _interval_definitions = { True: ["[", "]"], False: ["(", ")"]}
 
-    def __init__(self, requiredParameters=[], hasToBeSorted=True, hasToBeNormalized=True):
+    def __init__(self, requiredParameters=None, hasToBeSorted=True, hasToBeNormalized=True):
         """Initializes the BaseMethod.
 
         :param List requiredParameters:    List of parameternames that have to be defined.
         :param Boolean hasToBeSorted:    Defines if the TimeSeries has to be sorted or not.
         :param Boolean hasToBeNormalized:    Defines if the TimeSeries has to be normalized or not.
         """
+
+        if requiredParameters == None:
+            requiredParameters = []
+
         super(BaseMethod, self).__init__()
         self._parameters = {}
         self._parameterIntervals = self._get_parameter_intervals()
@@ -220,7 +224,7 @@ class BaseMethod(PyCastObject):
 class BaseForecastingMethod(BaseMethod):
     """Basemethod for all forecasting methods."""
 
-    def __init__(self, requiredParameters=[], valuesToForecast=1, hasToBeSorted=True, hasToBeNormalized=True):
+    def __init__(self, requiredParameters=None, valuesToForecast=1, hasToBeSorted=True, hasToBeNormalized=True):
         """Initializes the BaseForecastingMethod.
 
         :param List requiredParameters:    List of parameternames that have to be defined.
@@ -231,6 +235,10 @@ class BaseForecastingMethod(BaseMethod):
 
         :raise: Raises a :py:exc:`ValueError` when valuesToForecast is smaller than zero.
         """
+
+        if requiredParameters == None:
+            requiredParameters = []
+
         if not "valuesToForecast" in requiredParameters:
             requiredParameters.append("valuesToForecast")
         if valuesToForecast < 0:
