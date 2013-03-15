@@ -212,3 +212,54 @@ class BaseErrorMeasure(PyCastObject):
         :raise:    Raises a :py:exc:`NotImplementedError` if the child class does not overwrite this method.
         """
         raise NotImplementedError
+
+    def confidence_interval(self, confidenceLevel):
+        """Calculates for which value confidenceLevel% of the errors are closer to 0.
+
+        :param float confidenceLevel: percentage of the errors that should be
+            smaller than the returned value for overestimations and larger than
+            the returned value for underestimations.
+            confidenceLevel has to be in [0.0, 1.0]
+
+        :return:    return a tuple containing the underestimation and overestimation for
+            the given confidenceLevel
+        :rtype:     tuple
+
+        :warning:    Index is still not calculated correctly
+        """
+
+        if not (confidenceLevel >= 0 and confidenceLevel <= 1):
+            raise ValueError("Parameter percentage has to be in [0,1]")
+
+        underestimations = []
+        overestimations = []
+        for error in self._errorValues:
+            if error is None:
+                # None was in the lists causing some confidenceLevels not be calculated, not sure if that was intended, I suggested ignoring None values
+                continue
+            #Want 0 errors in both lists!
+            if error >= 0:
+                overestimations.append(error)
+            if error <= 0:
+                underestimations.append(error)
+
+        #sort and cut off at confidence level.
+        overestimations.sort()
+        underestimations.sort(reverse=True)
+
+        overIdx  = int(len(overestimations) * confidenceLevel) - 1
+        underIdx = int(len(underestimations) * confidenceLevel) - 1
+        
+        overestimation  = 0.0
+        underestimation = 0.0
+
+        raise Exception
+        if overIdx >= 0:
+            overestimation = overestimations[overIdx]
+        else:
+            print len(overestimations), confidenceLevel
+
+        if underIdx >= 0:
+            underestimation = underestimations[underIdx]
+
+        return underestimation, overestimation
