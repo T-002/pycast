@@ -23,7 +23,11 @@
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## required external modules
+<<<<<<< Updated upstream
 import unittest, re, os
+=======
+import unittest, re, os, random
+>>>>>>> Stashed changes
 from copy import copy
 
 ## required modules from pycast
@@ -98,6 +102,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         
         assert (None != matchres)
 
+<<<<<<< Updated upstream
 #   def json_serialization_formatfree_test(self):
 #       """Test the json serialialization without predefined format."""
 #       tsOrg = TimeSeries()
@@ -129,6 +134,8 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
 #       if not (len(tsOrg) == len(tsNew)): raise AssertionError
 #       if not (tsOrg == tsNew):          raise AssertionError
 
+=======
+>>>>>>> Stashed changes
     def list_initialization_test(self):
         """Test TimeSeries initialization from a given list."""
         data = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
@@ -398,8 +405,31 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         ts.apply(mOne)
 
 
+    def check_normalization_test(self):
+        """Check for check_normalization."""
+        dataOK    = zip(xrange(10), [random.random() for i in xrange(10)])
+        dataNotOK = dataOK[:]
+        del dataNotOK[2]
+        del dataNotOK[7]
 
+        tsOK = TimeSeries.from_twodim_list(dataOK)
+        tsNotOK = TimeSeries.from_twodim_list(dataNotOK)
 
+        assert tsOK._check_normalization()
+        assert not tsNotOK._check_normalization()
 
+    def optimized_test(self):
+        """Check if all tests are passed, using optimized implementations."""
+        PyCastObject.enable_global_optimization()
+        self.check_normalization_test()
+        PyCastObject.disable_global_optimization()
 
+    def sampling_test(self):
+        """Test if the two parts of a sampled timeSeries
+        add up to the entire timeSeries"""
+        data = [[0.0, 0.0], [1.0, 0.1], [2.0, 0.2], [3.0, 0.3], [4.0, 0.4]]
+        ts = TimeSeries.from_twodim_list(data)
+        sample, rest = ts.sample(.4)
+        self.assertEquals(len(sample), 2)
+        self.assertEquals(sample + rest, ts)
 

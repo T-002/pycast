@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012 Christian Schwarz
+#Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -26,6 +26,8 @@ import time
 
 ## some string constants
 _STR_EPOCHS = "UNIX-epochs"
+
+os.environ['TZ'] = 'GMT'
 
 ## Time series levels that can be used for normalization.
 NormalizationLevels = {
@@ -142,60 +144,6 @@ class TimeSeries(PyCastObject):
         ts._timestampFormat      = self._timestampFormat
 
         return ts
-
-#    def to_json(self):
-#        """Returns a JSON representation of the TimeSeries data.
-#
-#        :return:    Returns a basestring, containing the JSON representation of the current
-#            data stored within the TimeSeries.
-#        :rtype:     String
-#        """
-#        ## return the simple way if no timestamp format was requested
-#        format = self._timestampFormat
-#        if None == self._timestampFormat:
-#            return "[%s]"% ",".join([str(entry) for entry in self._timeseriesData])
-#
-#        ## initialize the result
-#        valuepairs = []
-#        append     = valuepairs.append
-#        convert    = TimeSeries.convert_epoch_to_timestamp
-#        
-#        for entry in self._timeseriesData:
-#            append('["%s",%s]' % (convert(entry[0], format), entry[1]))
-#
-#        ## return the result
-#        return "[%s]" % ",".join(valuepairs)
-#
-#    @classmethod
-#    def from_json(cls, json, format=None):
-#        """Creates a new TimeSeries instance from the given json string.
-#
-#        :param String json:    JSON string, containing the time series data. This
-#            should be a string created by :py:meth:`TimeSeries.to_json`.
-#        :param String format:    Format of the given timestamps. This is used to convert the
-#            timestamps into UNIX epochs, if set. For valid examples take a look into
-#            the :py:func:`time.strptime` documentation.
-#
-#        :return:    Returns a TimeSeries instance containing the data.
-#        :rtype:     TimeSeries
-#
-#        :warning:    This is probably an unsafe version! Only use it with JSON strings created by 
-#            :py:meth:`TimeSeries.to_json`.
-#            All assumtions regarding normalization and sort order will be ignored and 
-#            set to default.
-#        """
-#        ## create and fill the given TimeSeries
-#        ts = TimeSeries()
-#        ts.set_timeformat(format)
-#
-#        for entry in eval(json):
-#            ts.add_entry(*entry)
-#
-#        ## set the normalization level
-#        ts._normalized = ts.check_normalization()
-#        ts.sort_timeseries()
-#
-#        return ts
 
     def to_twodim_list(self):
         """Serializes the TimeSeries data into a two dimensional list of [timestamp, value] pairs.
@@ -396,7 +344,7 @@ class TimeSeries(PyCastObject):
         :return:    Returns the timestamp as defined in format.
         :rtype:     String
         """
-        return time.strftime(format, time.localtime(timestamp))
+        return time.strftime(format, time.gmtime(timestamp))
 
     def add_entry(self, timestamp, data):
         """Adds a new data entry to the TimeSeries.
@@ -655,7 +603,7 @@ class MultiDimensionalTimeSeries(TimeSeries):
         :param Boolean isSorted:    If all data points added to the time series are added
             in their ascending temporal order, this should set to :py:const:`True`.
 
-        :raise:    Raises a :py:exec:`ValueError` if the number of dimensions is smaller than 1.
+        :raise:    Raises a :py:exc:`ValueError` if the number of dimensions is smaller than 1.
         """
         super(MultiDimensionalTimeSeries, self).__init__(isNormalized, isSorted)
         
@@ -688,7 +636,7 @@ class MultiDimensionalTimeSeries(TimeSeries):
             data = [data]
 
         if len(data) != self._dimensionCount:
-            raise ValueError("data does contain %s instead of %s dimensions." % (len(data), self._dimensionCount))
+            raise ValueError("data does contain %s instead of %s dimensions.\n   %s" % (len(data), self._dimensionCount, data))
 
         self._normalized = self._predefinedNormalized
         self._sorted     = self._predefinedSorted
@@ -763,10 +711,10 @@ class MultiDimensionalTimeSeries(TimeSeries):
         ts.set_timeformat(format)
 
         for entry in datalist:
-            ts.add_entry(*entry)
+            ts.add_entry(entry[0], entry[1])
 
         ## set the normalization level
-        ts._normalized = ts.check_normalization()
+        ts._normalized = ts._check_normalization()
         ts.sort_timeseries()  
 
         return ts
@@ -778,8 +726,7 @@ class MultiDimensionalTimeSeries(TimeSeries):
 
         :return:    Returns a new TimeSeries instance containing the data entries of :py:obj:`self` and otherTimeSeries.
         :rtype:     MultiDimensionalTimeSeries
-
-        :raise:    Raises a :py:exec:`ValueError` if the number of dimensions of both MutliDimensionalTimeSeries are not equal.
+        :raise:    Raises a :py:exc:`ValueError` if the number of dimensions of both MutliDimensionalTimeSeries are not equal.
         """
         if not self._dimensionCount == otherTimeSeries.dimension_count():
             raise ValueError("otherMutliDimensionalTimeSeries has to have the same number of dimensions.")
@@ -864,7 +811,7 @@ class MultiDimensionalTimeSeries(TimeSeries):
             data = sqlcursor.fetchmany()
 
         ## set the normalization level
-        self._normalized = self.check_normalization
+        self._normalized = self._check_normalization()
         
         ## return the number of tuples added to the timeseries.
         return tuples
@@ -906,7 +853,7 @@ class MultiDimensionalTimeSeries(TimeSeries):
     def normalize(self, normalizationLevel="minute", fusionMethod="mean", interpolationMethod="linear"):
         """This is a dummy function, doing nothing.
          
-        :raise: Raises a :py:exec:`NotImplementedError`.
+        :raise: Raises a :py:exc:`NotImplementedError`.
 
         :note: MutliDimensionalTimeSeries cannot be normalized currently.
         """

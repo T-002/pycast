@@ -32,6 +32,7 @@ from pycast.errors import SymmetricMeanAbsolutePercentageError
 from pycast.errors import MeanAbsoluteDeviationError
 from pycast.errors import MeanAbsoluteScaledError
 from pycast.errors import MedianAbsolutePercentageError
+from pycast.errors import MeanSignedDifferenceError
 from pycast.common.timeseries import TimeSeries
 from pycast.common.pycastobject import PyCastObject
 
@@ -173,14 +174,13 @@ class BaseErrorMeasureTest(unittest.TestCase):
                 assert False    # pragma: no cover
 
     def optimized_test(self):
+        """Check if all tests are passed, using optimized implementations."""
         PyCastObject.enable_global_optimization()
         self.get_error_initialization_test()
         self.initialization_test()
         self.initialize_test()
         self.double_initialize_test()
         PyCastObject.disable_global_optimization()
-
-
 
 class MeanSquaredErrorTest(unittest.TestCase):
     """Testing MeanSquaredError."""
@@ -502,3 +502,22 @@ class MeanAbsoluteScaledErrorTest(unittest.TestCase):
             pass
         else:
             assert False    # pragma: no cover
+
+class MeanSignedDifferenceErrorTest(unittest.TestCase):
+    def setUp(self):
+        self.ts1 = TimeSeries.from_twodim_list([[1,1],[2,20],[3,3]])
+        self.ts2 = TimeSeries.from_twodim_list([[1,10],[2,2],[3,30]])
+        self.msd = MeanSignedDifferenceError()
+        self.msd.initialize(self.ts1, self.ts2)
+
+    def local_error_test(self):
+        self.assertEquals(-10, self.msd.local_error(10, 20))
+        self.assertEquals(10, self.msd.local_error(20, 10))
+
+    def error_calculation_test(self):
+        self.assertEquals(self.msd.get_error(), -6)
+
+    def confidence_interval_test(self):
+        with self.assertRaises(ValueError) as _:
+            self.msd.confidence_interval(2)
+        self.assertEquals((-9, 18), self.msd.confidence_interval(.5))
