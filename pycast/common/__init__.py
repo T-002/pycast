@@ -29,7 +29,11 @@ from profileme import profileMe
 from pycastobject import PyCastObject
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 #from matrix import Matrix, Vector
+=======
+from matrix import Matrix, Vector
+>>>>>>> Stashed changes
 =======
 from matrix import Matrix, Vector
 >>>>>>> Stashed changes

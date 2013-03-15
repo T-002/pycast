@@ -838,7 +838,11 @@ class MultiDimensionalTimeSeries(TimeSeries):
         ## set the normalization level
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         self._normalized = self._check_normalization()
+=======
+        self._normalized = self._check_normalization
+>>>>>>> Stashed changes
 =======
         self._normalized = self._check_normalization
 >>>>>>> Stashed changes
