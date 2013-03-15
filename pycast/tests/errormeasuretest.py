@@ -504,6 +504,8 @@ class MeanAbsoluteScaledErrorTest(unittest.TestCase):
             assert False    # pragma: no cover
 
 class MeanSignedDifferenceErrorTest(unittest.TestCase):
+    """Test for the MeanSignedDifferenceError."""
+    
     def setUp(self):
         self.ts1 = TimeSeries.from_twodim_list([[1.0, 1.0], [2.0,20.0], [3.0, 3.0]])
         self.ts2 = TimeSeries.from_twodim_list([[1.0,10.0], [2.0, 2.0], [3.0,30.0]])

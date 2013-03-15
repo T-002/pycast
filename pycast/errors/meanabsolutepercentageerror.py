@@ -70,29 +70,6 @@ class MeanAbsolutePercentageError(BaseErrorMeasure):
 
 MAPE = MeanAbsolutePercentageError
 
-class MeanSignedPercentageError(MeanAbsolutePercentageError):
-    """Calculates the mean percentage error."""
-
-    def local_error(self, originalValue, calculatedValue):
-        """Calculates the error between the two given values.
-
-        :param List originalValue:    List containing the values of the original data.
-        :param List calculatedValue:    List containing the values of the calculated TimeSeries that
-            corresponds to originalValue.
-
-        :return:    Returns the error measure of the two given values.
-        :rtype:     Numeric
-        """
-        originalValue = originalValue[0]
-        calculatedValue = calculatedValue[0]
-        
-        if 0 == originalValue:
-            return None
-
-        return ((calculatedValue - originalValue)/float(originalValue)) * 100.0
-
-MSPE = MeanSignedPercentageError
-
 class GeometricMeanAbsolutePercentageError(MeanAbsolutePercentageError):
     """Calculates the geometric MAPE."""
 
@@ -134,8 +111,18 @@ GMAPE = GeometricMeanAbsolutePercentageError
 
 
 class MeanSignedPercentageError(MeanAbsolutePercentageError):
+    """An over/under estimation aware percentage error."""
 
     def local_error(self, originalValue, calculatedValue):
+        """Calculates the error between the two given values.
+
+        :param List originalValue:    List containing the values of the original data.
+        :param List calculatedValue:    List containing the values of the calculated TimeSeries that
+            corresponds to originalValue.
+
+        :return:    Returns the error measure of the two given values.
+        :rtype:     Numeric
+        """
         if calculatedValue[0] - originalValue[0] > 0:
             # over estimation
             return super(MeanSignedPercentageError, self).local_error(originalValue, calculatedValue)

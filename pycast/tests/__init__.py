@@ -23,9 +23,9 @@
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## TimeSeries related tests
-from timeseriesdatabasetest import DatabaseConnectorTest
-from timeseriesmiscellaneoustest import TimeSeriesMiscellaneousTest
-from json_encodertest import PycastEncoderTest
+from timeseriesdatabasetest         import DatabaseConnectorTest
+from timeseriesmiscellaneoustest    import TimeSeriesMiscellaneousTest
+from json_encodertest               import PycastEncoderTest
 from multidimensionaltimeseriestest import MultiDimensionalTimeSeriesTest
 
 ## profileMe decorator related tests
@@ -40,7 +40,7 @@ from methodtest import BaseMethodTest, BaseForecastingMethodTest, SimpleMovingAv
 
 ## error measure tests
 from errormeasuretest import BaseErrorMeasureTest, MeanSquaredErrorTest, SymmetricMeanAbsolutePercentageErrorTest, MeanAbsoluteDeviationErrorTest, MedianAbsolutePercentageErrorTest, MeanAbsoluteScaledErrorTest, MeanSignedDifferenceErrorTest
-from mapetest import MeanAbsolutePercentageErrorTest, GeometricMeanAbsolutePercentageErrorTest
+from mapetest         import MeanAbsolutePercentageErrorTest, GeometricMeanAbsolutePercentageErrorTest
 from weightedmapetest import WeightedMeanAbsolutePercentageErrorTest
 #from meetest import MeanEconomicErrorTest
 
