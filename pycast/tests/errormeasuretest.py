@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012 Christian Schwarz
+#Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -520,9 +520,5 @@ class MeanSignedDifferenceErrorTest(unittest.TestCase):
     def confidence_interval_test(self):
         with self.assertRaises(ValueError) as _:
             self.msd.confidence_interval(2)
-<<<<<<< Updated upstream
-        self.assertEquals((-9, 18), self.msd.confidence_interval(.5))
-=======
-        self.assertEquals((-9, 18), self.msd.confidence_interval(.5))
 
->>>>>>> Stashed changes
+        self.assertEquals((-9, 18), self.msd.confidence_interval(.5))
