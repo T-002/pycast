@@ -391,8 +391,17 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         """Test if the two parts of a sampled timeSeries
         add up to the entire timeSeries"""
         data = [[0.0, 0.0], [1.0, 0.1], [2.0, 0.2], [3.0, 0.3], [4.0, 0.4]]
-        ts = TimeSeries.from_twodim_list(data)
-        sample, rest = ts.sample(.4)
+        ts   = TimeSeries.from_twodim_list(data)
+        
+        for illegalValue in (-3.1, 0.0, 1.0, 1.3, 4.2):
+            try:
+                ts.sample(illegalValue)
+            except ValueError:
+                pass
+            else:
+                assert False, "ValueError not raised. Percentage was %s." % illegalValue    # pragma: no cover
+
+        sample, rest = ts.sample(0.4)
+        
         self.assertEquals(len(sample), 2)
         self.assertEquals(sample + rest, ts)
-
