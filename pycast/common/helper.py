@@ -24,8 +24,6 @@
 
 ## This module contains helper functions that will be moved later
 
-import time
-
 def linear_interpolation(first, last, steps):
     """Interpolates all missing values using linear interpolation.
 
