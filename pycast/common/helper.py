@@ -26,7 +26,6 @@
 
 import time
 
-## @todo define a more general interface!
 def linear_interpolation(first, last, steps):
     """Interpolates all missing values using linear interpolation.
 
@@ -36,6 +35,8 @@ def linear_interpolation(first, last, steps):
 
     :return:    Returns a list of floats containing only the missing values.
     :rtype:     List
+
+    :todo:     Define a more general interface!
     """
     result = []
 
