@@ -836,7 +836,11 @@ class MultiDimensionalTimeSeries(TimeSeries):
             data = sqlcursor.fetchmany()
 
         ## set the normalization level
+<<<<<<< Updated upstream
         self._normalized = self._check_normalization()
+=======
+        self._normalized = self._check_normalization
+>>>>>>> Stashed changes
         
         ## return the number of tuples added to the timeseries.
         return tuples
