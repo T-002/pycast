@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012 Christian Schwarz
+#Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -22,24 +22,32 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## the mother of all errors
-from baseerrormeasure import BaseErrorMeasure
+import math
+from pycast.errors import MeanAbsolutePercentageError
 
-## absolute errors
-from meansquarederror                     import MeanSquaredError, MSE
+class WeightedMeanAbsolutePercentageError(MeanAbsolutePercentageError):
+    """Implements a weighted alternative of the MeanAbsolutePercentageError."""
 
+    def local_error(self, originalValue, calculatedValue):
+        """Calculates the error between the two given values.
 
-## scaled errors that can be used to compare prediction accuracy on different TimeSeries
-from meanabsolutedeviationerror           import MeanAbsoluteDeviationError, MAD
+        :param List originalValue:    List containing the values of the original data.
+        :param List calculatedValue:    List containing the values of the calculated TimeSeries that
+            corresponds to originalValue.
 
-from meanabsolutepercentageerror          import MeanAbsolutePercentageError, MAPE, GeometricMeanAbsolutePercentageError, GMAPE, MeanSignedPercentageError, MSPE
-from symmetricmeanabsolutepercentageerror import SymmetricMeanAbsolutePercentageError, SMAPE
-from medianabsolutepercentageerror        import MedianAbsolutePercentageError, MdAPE
-from weightedmeanabsolutepercentageerror  import WeightedMeanAbsolutePercentageError, WMAPE
+        :return:    Returns the error measure of the two given values.
+        :rtype:     Numeric
+        """
+        originalValue = originalValue[0]
+        calculatedValue = calculatedValue[0]
+        
+        if 0 == originalValue:
+            return None
 
+        signed_mape = (calculatedValue - originalValue) / float(originalValue) * 100.0
+        if signed_mape < 0:
+            signed_mape *= 2
 
-#from meaneconomicerror           import MeanEconomicError, MEE, MeanSignedEconomicError, MSEE
+        return math.fabs(signed_mape)
 
-#from meanabsolutescalederror     import MeanAbsoluteScaledError, MASE
-
-#from meansigneddifferenceerror import MeanSignedDifferenceError, MSD
+WMAPE = WeightedMeanAbsolutePercentageError
