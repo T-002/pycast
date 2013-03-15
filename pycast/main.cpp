@@ -1,4 +1,4 @@
-//Copyright (c) 2012 Christian Schwarz
+//Copyright (c) 2012-2013 Christian Schwarz
 //
 //Permission is hereby granted, free of charge, to any person obtaining
 //a copy of this software and associated documentation files (the
@@ -19,7 +19,7 @@
 //OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 //WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#include "errors/baseerrormeasure.cpp"
+#include "errors/opt/baseerrormeasure.cpp"
 
 int main() {
 	return 0;
