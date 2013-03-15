@@ -585,8 +585,6 @@ class TimeSeries(PyCastObject):
 
         return method.execute(self)
 
-<<<<<<< Updated upstream
-=======
     def sample(self, percentage):
         """Samples with replacement from the TimeSeries. Returns the sample and the remaining timeseries.
         The original timeseries is not changed
@@ -611,7 +609,6 @@ class TimeSeries(PyCastObject):
         rest = cls.from_twodim_list(rest_values)
         return sample, rest
 
->>>>>>> Stashed changes
 class MultiDimensionalTimeSeries(TimeSeries):
     """Implements a multi dimensional TimeSeries."""
 
@@ -753,10 +750,7 @@ class MultiDimensionalTimeSeries(TimeSeries):
 
         :return:    Returns a new TimeSeries instance containing the data entries of :py:obj:`self` and otherTimeSeries.
         :rtype:     MultiDimensionalTimeSeries
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
         :raise:    Raises a :py:exc:`ValueError` if the number of dimensions of both MutliDimensionalTimeSeries are not equal.
         """
         if not self._dimensionCount == otherTimeSeries.dimension_count():
