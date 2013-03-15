@@ -520,10 +520,5 @@ class MeanSignedDifferenceErrorTest(unittest.TestCase):
     def confidence_interval_test(self):
         with self.assertRaises(ValueError) as _:
             self.msd.confidence_interval(2)
-<<<<<<< Updated upstream
-
-        self.assertEquals((-9, 18), self.msd.confidence_interval(.5))
-=======
         self.assertEquals((-9, 18), self.msd.confidence_interval(.5))
 
->>>>>>> Stashed changes
