@@ -33,7 +33,7 @@ pycastC_methods      = pycastC.add_cpp_namespace("methods")
 pycastC_optimization = pycastC.add_cpp_namespace("optimization")
 
 ## pycast.errors
-pycastC_errors.add_include('"pycast/errors/baseerrormeasure.h"')
+pycastC_errors.add_include('"pycast/errors/opt/baseerrormeasure.h"')
 pycastC_errors_baseerrormeasure = pycastC_errors.add_cpp_namespace("baseerrormeasure")
 pycastC_errors_baseerrormeasure_BaseErrorMeasure = pycastC_errors_baseerrormeasure.add_cpp_namespace("BaseErrorMeasure")
 

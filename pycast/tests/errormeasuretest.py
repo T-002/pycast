@@ -527,4 +527,5 @@ class MeanSignedDifferenceErrorTest(unittest.TestCase):
         else:
             assert False, "ValueError not raised."    # pragma: no cover
 
-        assert (-9.0, 18.0) == self.msd.confidence_interval(.5)
+        res = self.msd.confidence_interval(0.5)
+        assert (-9.0, 0.0) == res, res

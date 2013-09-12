@@ -253,7 +253,6 @@ class BaseErrorMeasure(PyCastObject):
         overestimation  = 0.0
         underestimation = 0.0
 
-        raise Exception
         if overIdx >= 0:
             overestimation = overestimations[overIdx]
         else:
