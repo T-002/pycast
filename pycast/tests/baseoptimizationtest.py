@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012 Christian Schwarz
+#Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -35,17 +35,17 @@ class BaseOptimizationMethodTest(unittest.TestCase):
 
     def initialization_errormeasure_test(self):
         """Test optimization methods error measure initialization."""
-        bom = BaseOptimizationMethod(BaseErrorMeasure, -1)
+        BaseOptimizationMethod(BaseErrorMeasure, -1)
 
         try:
-            bom = BaseOptimizationMethod(None, -1)
+            BaseOptimizationMethod(None, -1)
         except TypeError:
             pass
         else:
             assert False    # pragma: no cover
 
         try:
-            bom = BaseOptimizationMethod(BaseOptimizationMethodTest, -1)
+            BaseOptimizationMethod(BaseOptimizationMethodTest, -1)
         except TypeError:
             pass
         else:
@@ -54,18 +54,18 @@ class BaseOptimizationMethodTest(unittest.TestCase):
     def initialization_precision_test(self):
         """Test the parameter range durign the initialization."""
         for precision in xrange(-7, 1, 1):
-            bom = BaseOptimizationMethod(BaseErrorMeasure, precision=precision)
+            BaseOptimizationMethod(BaseErrorMeasure, precision=precision)
 
         for precision in [-1020, -324, -11, 1, 42, 123, 2341]:
             try:
-                bom = BaseOptimizationMethod(BaseErrorMeasure, precision=precision)
+                BaseOptimizationMethod(BaseErrorMeasure, precision=precision)
             except ValueError:
                 pass
             else:
                 #print "precision: %s" % precision    # pragma: no cover
                 assert False                         # pragma: no cover
 
-    def optimze_value_error_test(self):
+    def optimize_value_error_test(self):
         """Test the optimize call."""
         bom = BaseOptimizationMethod(BaseErrorMeasure, precision=-3)
         bm  = BaseMethod()

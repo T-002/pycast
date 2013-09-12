@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012 Christian Schwarz
+#Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -26,7 +26,7 @@ from setuptools     import find_packages
 
 setup(
     name             = "pycast",
-    version          = "v0.1.3-alpha",
+    version          = "v0.1.4-alpha",
     author           = "Christian Schwarz",
     author_email     = "pixeldreck@gmail.com",
     packages         = find_packages(exclude=["tests"]),

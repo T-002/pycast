@@ -22,6 +22,32 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from baseoptimizationmethod import BaseOptimizationMethod
+import math
+from pycast.errors import MeanAbsolutePercentageError
 
-from gridsearch import GridSearch
+class WeightedMeanAbsolutePercentageError(MeanAbsolutePercentageError):
+    """Implements a weighted alternative of the MeanAbsolutePercentageError."""
+
+    def local_error(self, originalValue, calculatedValue):
+        """Calculates the error between the two given values.
+
+        :param List originalValue:    List containing the values of the original data.
+        :param List calculatedValue:    List containing the values of the calculated TimeSeries that
+            corresponds to originalValue.
+
+        :return:    Returns the error measure of the two given values.
+        :rtype:     Numeric
+        """
+        originalValue = originalValue[0]
+        calculatedValue = calculatedValue[0]
+        
+        if 0 == originalValue:
+            return None
+
+        signed_mape = (calculatedValue - originalValue) / float(originalValue) * 100.0
+        if signed_mape < 0:
+            signed_mape *= 2
+
+        return math.fabs(signed_mape)
+
+WMAPE = WeightedMeanAbsolutePercentageError

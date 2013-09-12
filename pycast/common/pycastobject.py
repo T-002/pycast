@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012 Christian Schwarz
+#Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -37,7 +37,7 @@ class PyCastObject(object):
     def __init__(self):
         """Initializes the PyCastObject."""
         super(PyCastObject, self).__init__()
-        self.optimization_enabled = False
+        self.optimizationEnabled = False
         
         if PyCastObject._globalOptimize:
             self._enable_instance_optimization()
@@ -48,12 +48,12 @@ class PyCastObject(object):
         :warning:    Do not forget to implement the disable_instance_optimization()
             as well.
         """
-        self.optimization_enabled = True
+        self.optimizationEnabled = True
 
     def _disable_instance_optimization(self):
         """Disables the optimization for the PyCastObject instance.
         """
-        self.optimization_enabled = False
+        self.optimizationEnabled = False
 
     @classmethod
     def enable_global_optimization(cls):

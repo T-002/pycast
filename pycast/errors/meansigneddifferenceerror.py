@@ -24,14 +24,8 @@
 
 from pycast.errors import BaseErrorMeasure
 
-class SymmetricMeanAbsolutePercentageError(BaseErrorMeasure):
-    """Implements the symmetric mean absolute percentage error with a boarder of 200%.
-
-    Explanation:
-        http://monashforecasting.com/index.php?title=SMAPE (Formula (3))
-
-    If the calculated value and the original value are equal, the error is 0.
-    """
+class MeanSignedDifferenceError(BaseErrorMeasure):
+    """Implements the mean signed difference error measure."""
 
     def _calculate(self, startingPercentage, endPercentage, startDate, endDate):
         """This is the error calculation function that gets called by :py:meth:`BaseErrorMeasure.get_error`.
@@ -53,7 +47,7 @@ class SymmetricMeanAbsolutePercentageError(BaseErrorMeasure):
         ## get the defined subset of error values
         errorValues = self._get_error_values(startingPercentage, endPercentage, startDate, endDate)
 
-        return float(sum(errorValues)) / float(len(errorValues))
+        return sum(errorValues) / float(len(errorValues))
 
     def local_error(self, originalValue, calculatedValue):
         """Calculates the error between the two given values.
@@ -65,13 +59,11 @@ class SymmetricMeanAbsolutePercentageError(BaseErrorMeasure):
         :return:    Returns the error measure of the two given values.
         :rtype:     Numeric
         """
-        originalValue = originalValue[0]
-        calculatedValue = calculatedValue[0]
-        
-        ## error is zero
-        if originalValue == calculatedValue:
-            return 0.0
+        if type(originalValue) == list:
+            originalValue = originalValue[0]
+        if type(calculatedValue) == list:
+            calculatedValue = calculatedValue[0]
 
-        return abs(originalValue - calculatedValue) / ((abs(originalValue) + abs(calculatedValue)) / 2)
+        return originalValue - calculatedValue
 
-SMAPE = SymmetricMeanAbsolutePercentageError
+MSD = MeanSignedDifferenceError

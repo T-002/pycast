@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012 Christian Schwarz
+#Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -30,7 +30,7 @@ class GridSearch(BaseOptimizationMethod):
     GridSearch is the brute force method.
     """
 
-    def optimize(self, timeSeries, forecastingMethods=[], startingPercentage=0.0, endPercentage=100.0):
+    def optimize(self, timeSeries, forecastingMethods=None, startingPercentage=0.0, endPercentage=100.0):
         """Runs the optimization of the given TimeSeries.
 
         :param TimeSeries timeSeries:    TimeSeries instance that requires an optimized forecast.
@@ -48,8 +48,8 @@ class GridSearch(BaseOptimizationMethod):
 
         :raise:    Raises a :py:exc:`ValueError` ValueError if no forecastingMethods is empty.
         """
-        ## no forecasting methods provided
-        if 0 == len(forecastingMethods):
+
+        if forecastingMethods == None or len(forecastingMethods) == 0:
             raise ValueError("forecastingMethods cannot be empty.")
 
         self._startingPercentage = startingPercentage
@@ -129,7 +129,7 @@ class GridSearch(BaseOptimizationMethod):
         ## return the determined parameters
         return bestForecastingResult
 
-    def optimization_loop(self, timeSeries, forecastingMethod, remainingParameters, currentParameterValues={}):
+    def optimization_loop(self, timeSeries, forecastingMethod, remainingParameters, currentParameterValues=None):
         """The optimization loop.
 
         This function is called recursively, until all parameter values were evaluated.
@@ -145,6 +145,10 @@ class GridSearch(BaseOptimizationMethod):
             :py:meth:`BaseOptimizationMethod.__init__` and the forecastingMethods parameter.
         :rtype: List
         """
+
+        if currentParameterValues == None:
+            currentParameterValues = {}
+
         ## The most inner loop is reached
         if 0 == len(remainingParameters):
             ## set the forecasting parameters

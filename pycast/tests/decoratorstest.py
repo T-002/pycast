@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012 Christian Schwarz
+#Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -42,7 +42,7 @@ class OptimizedDecoratorTest(unittest.TestCase):
 
     def test_optimization_disabled(self):
         error = BaseErrorMeasure()
-        error._disable_instance_optimization
+        error._disable_instance_optimization()
 
         cerror.initialize = Mock()
         
@@ -57,7 +57,7 @@ class OptimizedDecoratorTest(unittest.TestCase):
         With and without optimization the method
         should be called with the same parameters.
         """
-        old_error = BaseErrorMeasure.local_error
+        oldError = BaseErrorMeasure.local_error
         BaseErrorMeasure.local_error = Mock()
         ts = TimeSeries.from_twodim_list([[1,1]])
 
@@ -68,6 +68,7 @@ class OptimizedDecoratorTest(unittest.TestCase):
         error = BaseErrorMeasure()
         error._disable_instance_optimization()
         error.initialize(ts, ts)
+        BaseErrorMeasure.local_error = oldError
 
     def test_import_fail(self):
         """
@@ -76,7 +77,7 @@ class OptimizedDecoratorTest(unittest.TestCase):
         """
         class Foo:
             def __init__(self):
-                self.optimization_enabled = True
+                self.optimizationEnabled = True
                 self.called = False
             @optimized
             def foo(self):

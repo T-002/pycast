@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012 Christian Schwarz
+#Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -31,7 +31,7 @@ class MeanSquaredError(BaseErrorMeasure):
         http://en.wikipedia.org/wiki/Mean_squared_error
     """
 
-    def _calculate(self, startingPercentage, endPercentage):
+    def _calculate(self, startingPercentage, endPercentage, startDate, endDate):
         """This is the error calculation function that gets called by :py:meth:`BaseErrorMeasure.get_error`.
 
         Both parameters will be correct at this time.
@@ -42,26 +42,30 @@ class MeanSquaredError(BaseErrorMeasure):
         :param Float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
             It represents the vlaue, after which all error values will be ignored. 90.0 for example means that
             the last 10% of all local errors will be ignored.
+        :param Float startDate: Epoch representing the start date used for error calculation.
+        :param Float endDate: Epoch representing the end date used in the error calculation.
 
         :return:    Returns a float representing the error.
         :rtype:     Float
-
-        :raise:    Raises a :py:exc:`NotImplementedError` if the child class does not overwrite this method.
         """
-        errorValues = self._get_error_values(startingPercentage, endPercentage)
+        ## get the defined subset of error values
+        errorValues = self._get_error_values(startingPercentage, endPercentage, startDate, endDate)
         return float(sum(errorValues)) / float(len(errorValues))
 
 
     def local_error(self, originalValue, calculatedValue):
         """Calculates the error between the two given values.
 
-        :param Numeric originalValue:    Value of the original data.
-        :param Numeric calculatedValue:    Value of the calculated TimeSeries that
+        :param List originalValue:    List containing the values of the original data.
+        :param List calculatedValue:    List containing the values of the calculated TimeSeries that
             corresponds to originalValue.
 
         :return:    Returns the error measure of the two given values.
-        :rtype:     Float
+        :rtype:     Numeric
         """
+        originalValue = originalValue[0]
+        calculatedValue = calculatedValue[0]
+        
         return (calculatedValue - originalValue)**2.0
 
 MSE = MeanSquaredError

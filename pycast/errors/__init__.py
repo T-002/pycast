@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012 Christian Schwarz
+#Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -22,13 +22,20 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+## the mother of all errors
 from baseerrormeasure import BaseErrorMeasure
 
+## absolute errors
 from meansquarederror                     import MeanSquaredError, MSE
-from symmetricmeanabsolutepercentageerror import SymmetricMeanAbsolutePercentageError, SMAPE
 from meanabsolutedeviationerror           import MeanAbsoluteDeviationError, MAD
+from meansigneddifferenceerror            import MeanSignedDifferenceError, MSD
 
-from meanabsolutepercentageerror import MeanAbsolutePercentageError, MAPE, GeometricMeanAbsolutePercentageError, GMAPE
-from medianabsolutepercentageerror import MedianAbsolutePercentageError, MdAPE
+## scaled errors that can be used to compare prediction accuracy on different TimeSeries
+from meanabsolutepercentageerror          import MeanAbsolutePercentageError, MAPE, GeometricMeanAbsolutePercentageError, GMAPE, MeanSignedPercentageError, MSPE
+from symmetricmeanabsolutepercentageerror import SymmetricMeanAbsolutePercentageError, SMAPE
+from medianabsolutepercentageerror        import MedianAbsolutePercentageError, MdAPE
+from weightedmeanabsolutepercentageerror  import WeightedMeanAbsolutePercentageError, WMAPE
+from meanabsolutescalederror              import MeanAbsoluteScaledError, MASE
 
-from meanabsolutescalederror     import MeanAbsoluteScaledError, MASE
+
+#from meaneconomicerror           import MeanEconomicError, MEE, MeanSignedEconomicError, MSEE

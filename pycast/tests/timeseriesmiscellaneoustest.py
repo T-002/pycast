@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012 Christian Schwarz
+#Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -23,13 +23,13 @@
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## required external modules
-from nose import with_setup
-import unittest, re, os
+import unittest, re, os, random
 from copy import copy
 
 ## required modules from pycast
 from pycast.common.timeseries import TimeSeries, FusionMethods
 from pycast.methods.basemethod import BaseMethod
+from pycast.common.pycastobject import PyCastObject
 
 class TimeSeriesMiscellaneousTest(unittest.TestCase):
     """Test class containing tests for miscallaneous TimeSeries functions."""
@@ -99,37 +99,6 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         
         assert (None != matchres)
 
-    def json_serialization_formatfree_test(self):
-        """Test the json serialialization without predefined format."""
-        tsOrg = TimeSeries()
-        tsOrg.add_entry(0.0, 0.0)
-        tsOrg.add_entry(0.1, 0.1)
-        tsOrg.add_entry(0.2, 0.2)
-        tsOrg.add_entry(0.3, 0.3)
-        tsOrg.add_entry(0.4, 0.4)
-        json = tsOrg.to_json()
-
-        tsNew = TimeSeries.from_json(json)
-
-        if not (len(tsOrg) == len(tsNew)): raise AssertionError
-        if not (tsOrg == tsNew):           raise AssertionError
-
-    def json_serialization_format_test(self):
-        """Test the json serialialization with predefined format."""
-        tsOrg = TimeSeries()
-        tsOrg.add_entry(0.0, 0.0)
-        tsOrg.add_entry(1.0, 0.1)
-        tsOrg.add_entry(2.0, 0.2)
-        tsOrg.add_entry(3.0, 0.3)
-        tsOrg.add_entry(4.0, 0.4)
-        tsOrg.set_timeformat("%Y-%m-%d_%H:%M:%S")
-        json = tsOrg.to_json()
-
-        tsNew = TimeSeries.from_json(json, format="%Y-%m-%d_%H:%M:%S")
-
-        if not (len(tsOrg) == len(tsNew)): raise AssertionError
-        if not (tsOrg == tsNew):          raise AssertionError
-
     def list_initialization_test(self):
         """Test TimeSeries initialization from a given list."""
         data = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
@@ -164,7 +133,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
 
         assert tsOne == tsTwo
 
-    def equal_test(self):
+    def equality_test(self):
         """Test the == operator for TimeSeries instances."""
         data  = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
         
@@ -177,14 +146,14 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         tsFour[1][0] = 1.3
         tsFive[1][1] = 1.3
 
-        if not (tsOne == tsTwo): raise AssertionError
-        if (tsOne == tsThree):   raise AssertionError
-        if (tsTwo == tsThree):   raise AssertionError
-        if (tsOne == tsFour):    raise AssertionError
-        if (tsOne == tsFive):    raise AssertionError
-        if (tsThree == tsFour):  raise AssertionError
-        if (tsThree == tsFive):  raise AssertionError
-        if (tsFour == tsFive):   raise AssertionError
+        assert (tsOne == tsTwo)
+        assert (tsOne != tsThree)
+        assert (tsTwo != tsThree) 
+        assert (tsOne != tsFour)  
+        assert (tsOne != tsFive)  
+        assert (tsThree != tsFour)
+        assert (tsThree != tsFive)
+        assert (tsFour != tsFive) 
 
     def gnuplot_serialization_without_format_test(self):
         """Test serialization of timeSeries into gnuplot file."""
@@ -399,8 +368,40 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         ts.apply(mOne)
 
 
+    def check_normalization_test(self):
+        """Check for check_normalization."""
+        dataOK    = zip(xrange(10), [random.random() for i in xrange(10)])
+        dataNotOK = dataOK[:]
+        del dataNotOK[2]
+        del dataNotOK[7]
 
+        tsOK = TimeSeries.from_twodim_list(dataOK)
+        tsNotOK = TimeSeries.from_twodim_list(dataNotOK)
 
+        assert     tsOK._check_normalization()
+        assert not tsNotOK._check_normalization()
 
+    def optimized_test(self):
+        """Check if all tests are passed, using optimized implementations."""
+        PyCastObject.enable_global_optimization()
+        self.check_normalization_test()
+        PyCastObject.disable_global_optimization()
 
+    def sampling_test(self):
+        """Test if the two parts of a sampled timeSeries
+        add up to the entire timeSeries"""
+        data = [[0.0, 0.0], [1.0, 0.1], [2.0, 0.2], [3.0, 0.3], [4.0, 0.4]]
+        ts   = TimeSeries.from_twodim_list(data)
+        
+        for illegalValue in (-3.1, 0.0, 1.0, 1.3, 4.2):
+            try:
+                ts.sample(illegalValue)
+            except ValueError:
+                pass
+            else:
+                assert False, "ValueError not raised. Percentage was %s." % illegalValue    # pragma: no cover
 
+        sample, rest = ts.sample(0.4)
+        
+        self.assertEquals(len(sample), 2)
+        self.assertEquals(sample + rest, ts)

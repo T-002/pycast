@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012 Christian Schwarz
+#Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -24,9 +24,6 @@
 
 ## This module contains helper functions that will be moved later
 
-import time
-
-## @todo define a more general interface!
 def linear_interpolation(first, last, steps):
     """Interpolates all missing values using linear interpolation.
 
@@ -36,6 +33,8 @@ def linear_interpolation(first, last, steps):
 
     :return:    Returns a list of floats containing only the missing values.
     :rtype:     List
+
+    :todo:     Define a more general interface!
     """
     result = []
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012 Christian Schwarz
+#Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -21,9 +21,6 @@
 #LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-from pycastobject import PyCastObject
-
 def optimized(fn):
     """Decorater that will call the optimized c++ version
     of a pycast function if available rather than theo
@@ -46,15 +43,15 @@ def optimized(fn):
         :return result of the function call either from pycast or pycastC module.
         :rtype: Function
         """
-        if self.optimization_enabled:
+        if self.optimizationEnabled:
             class_name = self.__class__.__name__
-            module = self.__module__.replace('pycast', 'pycastC')
+            module     = self.__module__.replace("pycast", "pycastC")
             try:
-                imported = __import__(module+"."+class_name, globals(), locals(), [fn.__name__])
+                imported = __import__("%s.%s" % (module, class_name), globals(), locals(), [fn.__name__])
                 function = getattr(imported, fn.__name__)
                 return function(self, *args, **kwargs)
             except ImportError:
-                print "[WARNING] Could not enable optimization for %s, %s" % (fn.__name__, self)
+                print  "[WARNING] Could not enable optimization for %s, %s" % (fn.__name__, self)
                 return fn(self, *args, **kwargs)
         else:
             return fn(self, *args, **kwargs)

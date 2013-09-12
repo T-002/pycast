@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012 Christian Schwarz
+#Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -22,10 +22,12 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import time
+import time, random, os
 
 ## some string constants
 _STR_EPOCHS = "UNIX-epochs"
+
+os.environ['TZ'] = 'GMT'
 
 ## Time series levels that can be used for normalization.
 NormalizationLevels = {
@@ -113,7 +115,7 @@ class TimeSeries(PyCastObject):
         if None == format:
             formatval = _STR_EPOCHS
 
-        datafile.write("## time_as_<%s> value" % formatval)
+        datafile.write("## time_as_<%s> value\n" % formatval)
 
         convert = TimeSeries.convert_epoch_to_timestamp
         for datapoint in self._timeseriesData:
@@ -121,7 +123,7 @@ class TimeSeries(PyCastObject):
             if None != format:
                 timestamp = convert(timestamp, format)
 
-            datafile.write("%s %s" % (timestamp, value))
+            datafile.write("%s %s\n" % (timestamp, value))
 
         datafile.close()
         return True
@@ -140,60 +142,6 @@ class TimeSeries(PyCastObject):
         ts._predefinedSorted     = self._predefinedSorted
         ts._predefinedNormalized = self._predefinedNormalized
         ts._timestampFormat      = self._timestampFormat
-
-        return ts
-
-    def to_json(self):
-        """Returns a JSON representation of the TimeSeries data.
-
-        :return:    Returns a basestring, containing the JSON representation of the current
-            data stored within the TimeSeries.
-        :rtype:     String
-        """
-        ## return the simple way if no timestamp format was requested
-        format = self._timestampFormat
-        if None == self._timestampFormat:
-            return "[%s]"% ",".join([str(entry) for entry in self._timeseriesData])
-
-        ## initialize the result
-        valuepairs = []
-        append     = valuepairs.append
-        convert    = TimeSeries.convert_epoch_to_timestamp
-        
-        for entry in self._timeseriesData:
-            append('["%s",%s]' % (convert(entry[0], format), entry[1]))
-
-        ## return the result
-        return "[%s]" % ",".join(valuepairs)
-
-    @classmethod
-    def from_json(cls, json, format=None):
-        """Creates a new TimeSeries instance from the given json string.
-
-        :param String json:    JSON string, containing the time series data. This
-            should be a string created by :py:meth:`TimeSeries.to_json`.
-        :param String format:    Format of the given timestamps. This is used to convert the
-            timestamps into UNIX epochs, if set. For valid examples take a look into
-            the :py:func:`time.strptime` documentation.
-
-        :return:    Returns a TimeSeries instance containing the data.
-        :rtype:     TimeSeries
-
-        :warning:    This is probably an unsafe version! Only use it with JSON strings created by 
-            :py:meth:`TimeSeries.to_json`.
-            All assumtions regarding normalization and sort order will be ignored and 
-            set to default.
-        """
-        ## create and fill the given TimeSeries
-        ts = TimeSeries()
-        ts.set_timeformat(format)
-
-        for entry in eval(json):
-            ts.add_entry(*entry)
-
-        ## set the normalization level
-        ts._normalized = ts.check_normalization()
-        ts.sort_timeseries()
 
         return ts
 
@@ -238,7 +186,7 @@ class TimeSeries(PyCastObject):
             ts.add_entry(*entry[:2])
 
         ## set the normalization level
-        ts._normalized = ts.check_normalization()
+        ts._normalized = ts._check_normalization()
         ts.sort_timeseries()  
 
         return ts
@@ -262,12 +210,12 @@ class TimeSeries(PyCastObject):
         data = sqlcursor.fetchmany()
         while 0 < len(data):
             for entry in data:
-                self.add_entry(*entry[:2])
-
+                self.add_entry(str(entry[0]), entry[1])
+            
             data = sqlcursor.fetchmany()
 
         ## set the normalization level
-        self._normalized = self.check_normalization
+        self._normalized = self._check_normalization
         
         ## return the number of tuples added to the timeseries.
         return tuples
@@ -334,6 +282,10 @@ class TimeSeries(PyCastObject):
         ## everything seams to be ok
         return True
 
+    def __ne__(self, otherTimeSeries):
+        """Returns if :py:obj:`self` and the other MultiDimensionalTimeSeries are equal."""
+        return not self == otherTimeSeries
+
     def __iter__(self):
         """Returns an iterator that can be used to iterate over the data stored within the TimeSeries.
 
@@ -392,7 +344,7 @@ class TimeSeries(PyCastObject):
         :return:    Returns the timestamp as defined in format.
         :rtype:     String
         """
-        return time.strftime(format, time.localtime(timestamp))
+        return time.strftime(format, time.gmtime(timestamp))
 
     def add_entry(self, timestamp, data):
         """Adds a new data entry to the TimeSeries.
@@ -583,7 +535,7 @@ class TimeSeries(PyCastObject):
         """
         return self._normalized
 
-    def check_normalization(self):
+    def _check_normalization(self):
         """Checks, if the TimeSeries is normalized.
 
         :return:    Returns :py:const:`True` if all data entries of the TimeSeries have an equal temporal
@@ -632,3 +584,306 @@ class TimeSeries(PyCastObject):
             self.sort_timeseries()
 
         return method.execute(self)
+
+    def sample(self, percentage):
+        """Samples with replacement from the TimeSeries. Returns the sample and the remaining timeseries.
+        The original timeseries is not changed.
+
+        :param float percentage: How many percent of the original timeseries should be in the sample
+
+        :return:    A tuple containing (sample, rest) as two TimeSeries.
+        :rtype:     Tuple(TimeSeries,TimeSeries)
+
+        :raise:    Raises a ValueError if percentage is not in (0.0, 1.0).
+        """
+        if not (0.0 < percentage < 1.0):
+            raise ValueError("Parameter percentage has to be in (0.0, 1.0).")
+
+        cls         = self.__class__
+        value_count = int(len(self) * percentage)
+        values      = random.sample(self, value_count)
+
+        sample      = cls.from_twodim_list(values)
+        rest_values = self._timeseriesData[:]
+        
+        for value in values:
+            rest_values.remove(value)
+        
+        rest = cls.from_twodim_list(rest_values)
+        
+        return sample, rest
+
+class MultiDimensionalTimeSeries(TimeSeries):
+    """Implements a multi dimensional TimeSeries."""
+
+    def __init__(self, dimensions=1, isNormalized=False, isSorted=False):
+        """Initializes the TimeSeries.
+
+        :param Integer dimensions:    Number of dimensions the MultiDimensionalTimeSeries contains.
+            If dimensions is 1, a normal TimeSeries should be used. The number of dimensions has to
+            be 1 at least.
+        :param Boolean isNormalized:    Within a normalized TimeSeries, all data points
+            have the same temporal distance to each other.
+            When this is :py:const:`True`, the memory consumption of the TimeSeries might be reduced.
+            Also algorithms will probably run faster on normalized TimeSeries.
+            This should only be set to :py:const:`True`, if the TimeSeries is realy normalized!
+            TimeSeries normalization can be forced by executing :py:meth:`TimeSeries.normalize`.
+        :param Boolean isSorted:    If all data points added to the time series are added
+            in their ascending temporal order, this should set to :py:const:`True`.
+
+        :raise:    Raises a :py:exc:`ValueError` if the number of dimensions is smaller than 1.
+        """
+        super(MultiDimensionalTimeSeries, self).__init__(isNormalized, isSorted)
+        
+        dimensions = int(dimensions)
+        if dimensions < 1:
+            raise ValueError("A MultiDimensionalTimeSeries has to have at least one dimension!.")
+
+        self._dimensionCount = dimensions
+
+    def dimension_count(self):
+        """Returns the number of dimensions the MultiDimensionalTimeSeries contains.
+
+        :return:    Number of dimensions contained within the TimeSeries.
+        :rtype:     Integer
+        """
+        return self._dimensionCount
+
+    def add_entry(self, timestamp, data):
+        """Adds a new data entry to the TimeSeries.
+
+        :param timestamp:    Time stamp of the data.
+            This has either to be a float representing the UNIX epochs
+            or a string containing a timestamp in the given format.
+        :param List data:    A list containing the actual dimension values.
+
+        :raise:    Raises a :py:exc:`ValueError` if data does not contain as many dimensions as
+            defined in __init__.
+        """
+        if not isinstance(data, list):
+            data = [data]
+
+        if len(data) != self._dimensionCount:
+            raise ValueError("data does contain %s instead of %s dimensions.\n   %s" % (len(data), self._dimensionCount, data))
+
+        self._normalized = self._predefinedNormalized
+        self._sorted     = self._predefinedSorted
+
+        format = self._timestampFormat
+        if None != format:
+            timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, format)
+
+        self._timeseriesData.append([float(timestamp)] + [float(dimensionValue) for dimensionValue in data])
+
+    def sorted_timeseries(self, ascending=True):
+        """Returns a sorted copy of the TimeSeries, preserving the original one.
+
+        As an assumtion this new TimeSeries is not ordered anymore if a new value is added.
+
+        :param Boolean ascending:    Determines if the TimeSeries will be ordered ascending
+            or decending.
+
+        :return:    Returns a new TimeSeries instance sorted in the requested order.
+        :rtype:     TimeSeries
+        """
+        sortorder = 1
+        if False == ascending:
+            sortorder = -1
+
+        data = sorted(self._timeseriesData, key=lambda i: sortorder * i[0])
+
+        newTS = MultiDimensionalTimeSeries(self._dimensionCount, self._normalized)
+        for entry in data:
+            newTS.add_entry(entry[0], entry[1:])
+
+        newTS._sorted = ascending
+
+        return newTS
+
+    def to_twodim_list(self):
+        """Serializes the MultiDimensionalTimeSeries data into a two dimensional list of [timestamp, [values]] pairs.
+
+        :return:    Returns a two dimensional list containing [timestamp, [values]] pairs.
+        :rtype:     List
+        """
+        format = self._timestampFormat
+
+        if None == format:
+            return self._timeseriesData
+
+        datalist = []
+        append   = datalist.append
+        convert  = TimeSeries.convert_epoch_to_timestamp
+        for entry in self._timeseriesData:
+            append([convert(entry[0], format), entry[1:]])
+
+        return datalist
+
+    @classmethod
+    def from_twodim_list(cls, datalist, format=None, dimensions=1):
+        """Creates a new MultiDimensionalTimeSeries instance from the data stored inside a two dimensional list.
+
+        :param List datalist:    List containing multiple iterables with at least two values.
+            The first item will always be used as timestamp in the predefined format,
+            the second is a list, containing the dimension values.
+        :param String format:    Format of the given timestamp. This is used to convert the
+            timestamp into UNIX epochs, if necessary. For valid examples take a look into
+            the :py:func:`time.strptime` documentation.
+        :param Integer dimensions:    Number of dimensions the MultiDimensionalTimeSeries contains.
+
+        :return:    Returns a MultiDimensionalTimeSeries instance containing the data from datalist.
+        :rtype:     MultiDimensionalTimeSeries
+        """
+        ## create and fill the given TimeSeries
+        ts = MultiDimensionalTimeSeries(dimensions=dimensions)
+        ts.set_timeformat(format)
+
+        for entry in datalist:
+            ts.add_entry(entry[0], entry[1])
+
+        ## set the normalization level
+        ts._normalized = ts._check_normalization()
+        ts.sort_timeseries()  
+
+        return ts
+
+    def __add__(self, otherTimeSeries):
+        """Creates a new MultiDimensionalTimeSeries instance containing the data of :py:obj:`self` and otherMutliDimensionalTimeSeries.
+
+        :param MultiDimensionalTimeSeries otherTimeSeries:    MultiDimensionalTimeSeries instance that will be merged with :py:obj:`self`.
+
+        :return:    Returns a new TimeSeries instance containing the data entries of :py:obj:`self` and otherTimeSeries.
+        :rtype:     MultiDimensionalTimeSeries
+
+        :raise:    Raises a :py:exc:`ValueError` if the number of dimensions of both MutliDimensionalTimeSeries are not equal.
+        """
+        if not self._dimensionCount == otherTimeSeries.dimension_count():
+            raise ValueError("otherMutliDimensionalTimeSeries has to have the same number of dimensions.")
+
+        data = self.to_twodim_list() + otherTimeSeries.to_twodim_list()
+        return MultiDimensionalTimeSeries.from_twodim_list(data)
+
+    def __eq__(self, otherTimeSeries):
+        """Returns if :py:obj:`self` and the other MultiDimensionalTimeSeries are equal.
+
+        MultiDimensionalTimeSeries are equal to each other if:
+            - they contain the same number of entries
+            - each data entry in one MultiDimensionalTimeSeries is also member of the other one.
+            - they have the same number of dimensions
+
+        :param MultiDimensionalTimeSeries otherTimeSeries:    MultiDimensionalTimeSeries instance that is compared with :py:obj:`self`.
+
+        :return:    :py:const:`True` if the MultiDimensionalTimeSeries objects are equal, :py:const:`False` otherwise.
+        :rtype:     Boolean
+        """
+        ## Compare the length of the time series
+        if len(self) != len(otherTimeSeries):
+            return False
+
+        ## compare the number of dimensions:
+        if self._dimensionCount != otherTimeSeries.dimension_count():
+            return False
+
+        ## @todo: This can be realy cost intensive!
+        orgTS  = self.sorted_timeseries()
+        compTS = otherTimeSeries.sorted_timeseries()
+
+        for idx in xrange(len(orgTS)):
+            ## compare the timestamp
+            if orgTS[idx][0] != compTS[idx][0]:
+                return False
+
+            ## compare the data
+            if orgTS[idx][1:] != compTS[idx][1:]:
+                return False
+
+        ## everything seams to be ok
+        return True
+
+    def __copy__(self):
+        """Returns a new clone of the MultiDimensionalTimeSeries.
+
+        :return:    Returns a MultiDimensionalTimeSeries containing the same data and configuration as self.
+        :rtype:     MultiDimensionalTimeSeries
+        """
+        ts = MultiDimensionalTimeSeries.from_twodim_list(self._timeseriesData, dimensions=self._dimensionCount)
+        
+        ts._normalizationLevel   = self._normalizationLevel
+        ts._normalized           = self._normalized
+        ts._sorted               = self._sorted
+        ts._predefinedSorted     = self._predefinedSorted
+        ts._predefinedNormalized = self._predefinedNormalized
+        ts._timestampFormat      = self._timestampFormat
+
+        return ts
+
+    def initialize_from_sql_cursor(self, sqlcursor):
+        """Initializes the MultiDimensionalTimeSeries's data from the given SQL cursor.
+
+        You need to set the time stamp format using :py:meth:`MultiDimensionalTimeSeries.set_timeformat`.
+
+        :param SQLCursor sqlcursor:    Cursor that was holds the SQL result for any given
+            "SELECT timestamp, value, ... FROM ..." SQL query.
+
+        :return:    Returns the number of entries added to the MultiDimensionalTimeSeries.
+        :rtype:     Integer
+        """
+        ## initialize the result
+        tuples = 0
+
+        ## add the SQL result to the timeseries
+        data = sqlcursor.fetchmany()
+        while 0 < len(data):
+            for entry in data:
+                self.add_entry(str(entry[0]), [item for item in entry[1:]])
+            
+            data = sqlcursor.fetchmany()
+
+        ## set the normalization level
+        self._normalized = self._check_normalization()
+        
+        ## return the number of tuples added to the timeseries.
+        return tuples
+
+    def to_gnuplot_datafile(self, datafilepath):
+        """Dumps the TimeSeries into a gnuplot compatible data file.
+
+        :param String datafilepath:    Path used to create the file. If that file already exists,
+            it will be overwritten!
+
+        :return:   Returns :py:const:`True` if the data could be written, :py:const:`False` otherwise.
+        :rtype:    Boolean
+        """
+        try:
+            datafile = file(datafilepath, "wb")
+        except:
+            return False
+
+        format = self._timestampFormat
+        
+        formatval = format
+        if None == format:
+            formatval = _STR_EPOCHS
+
+        datafile.write("## time_as_<%s> value..." % formatval)
+
+        convert = TimeSeries.convert_epoch_to_timestamp
+        for datapoint in self._timeseriesData:
+            timestamp = datapoint[0]
+            values = datapoint[1:]
+            if None != format:
+                timestamp = convert(timestamp, format)
+
+            datafile.write("%s %s" % (timestamp, " ".join([str(entry) for entry in values])))
+
+        datafile.close()
+        return True
+
+    def normalize(self, normalizationLevel="minute", fusionMethod="mean", interpolationMethod="linear"):
+        """This is a dummy function, doing nothing.
+         
+        :raise: Raises a :py:exc:`NotImplementedError`.
+
+        :note: MutliDimensionalTimeSeries cannot be normalized currently.
+        """
+        raise NotImplementedError

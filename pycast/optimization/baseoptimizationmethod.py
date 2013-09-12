@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012 Christian Schwarz
+#Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -30,7 +30,7 @@ from pycast.common import PyCastObject
 class BaseOptimizationMethod(PyCastObject):
     """Baseclass for all optimization methods."""
 
-    def __init__(self, errorMeasureClass, errorMeasureInitializationParameters={}, precision=-1):
+    def __init__(self, errorMeasureClass, errorMeasureInitializationParameters=None, precision=-1):
         """Initializes the optimization method.
 
         :param BaseErrorMeasure errorMeasureClass:    Error measure class from :py:mod:`pycast.errors`.
@@ -43,6 +43,10 @@ class BaseOptimizationMethod(PyCastObject):
             Valid classes are derived from :py:class:`pycast.errors.BaseErrorMeasure`.
         :raise:    Raises a :py:exc:`ValueError` if precision is not in [-7, 0].
         """
+
+        if errorMeasureInitializationParameters == None:
+            errorMeasureInitializationParameters = {}
+
         if not isinstance(errorMeasureClass, (type, types.ClassType)):
             raise TypeError("errorMeasureClass has to be of type pycast.errors.BaseErrorMeasure or of an inherited class.")
         if not issubclass(errorMeasureClass, BaseErrorMeasure):
@@ -56,7 +60,7 @@ class BaseOptimizationMethod(PyCastObject):
         self._errorClass = errorMeasureClass
         self._errorMeasureKWArgs = errorMeasureInitializationParameters
 
-    def optimize(self, timeSeries, forecastingMethods=[]):
+    def optimize(self, timeSeries, forecastingMethods=None):
         """Runs the optimization on the given TimeSeries.
 
         :param TimeSeries timeSeries:    TimeSeries instance that requires an optimized forecast.
@@ -68,5 +72,5 @@ class BaseOptimizationMethod(PyCastObject):
         :raise:    Raises a :py:exc:`ValueError` ValueError if no forecastingMethods is empty.
         """
         ## no forecasting methods provided
-        if 0 == len(forecastingMethods):
+        if forecastingMethods == None or len(forecastingMethods) == 0:
             raise ValueError("forecastingMethods cannot be empty.")

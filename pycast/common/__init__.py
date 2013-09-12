@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012 Christian Schwarz
+#Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -24,6 +24,7 @@
 
 import timeseries
 
-from timeseries import TimeSeries
+from timeseries import TimeSeries, MultiDimensionalTimeSeries
 from profileme import profileMe
 from pycastobject import PyCastObject
+#from matrix import Matrix, Vector
