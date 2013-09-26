@@ -513,19 +513,13 @@ class MeanSignedDifferenceErrorTest(unittest.TestCase):
         self.msd.initialize(self.ts1, self.ts2)
 
     def local_error_test(self):
-        assert -10.0 == self.msd.local_error(10.0, 20.0)
-        assert  10.0 == self.msd.local_error(20.0, 10.0)
+        self.assertEquals(-10, self.msd.local_error(10, 20))
+        self.assertEquals(10, self.msd.local_error(20, 10))
 
     def error_calculation_test(self):
-        assert -6.0 == self.msd.get_error()
+        self.assertEquals(self.msd.get_error(), -6)
 
     def confidence_interval_test(self):
-        try:
-            self.msd.confidence_interval(2)
-        except ValueError:
-            pass
-        else:
-            assert False, "ValueError not raised."    # pragma: no cover
+        self.assertRaises(ValueError, self.msd.confidence_interval, 2)
+        self.assertEquals((-9, 0), self.msd.confidence_interval(.5))
 
-        res = self.msd.confidence_interval(0.5)
-        assert (-9.0, 0.0) == res, res
