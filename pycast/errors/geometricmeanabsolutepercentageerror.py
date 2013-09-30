@@ -22,10 +22,12 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import math
-from pycast.errors import BaseErrorMeasure
 
-class MeanAbsolutePercentageError(BaseErrorMeasure):
+import math
+from pycast.errors import MeanAbsolutePercentageError
+
+class GeometricMeanAbsolutePercentageError(MeanAbsolutePercentageError):
+    """Calculates the geometric MAPE."""
 
     def _calculate(self, startingPercentage, endPercentage, startDate, endDate):
         """This is the error calculation function that gets called by :py:meth:`BaseErrorMeasure.get_error`.
@@ -47,30 +49,18 @@ class MeanAbsolutePercentageError(BaseErrorMeasure):
         ## get the defined subset of error values
         errorValues = self._get_error_values(startingPercentage, endPercentage, startDate, endDate)
         errorValues = filter(lambda item: item != None, errorValues)
-
-        return float(sum(errorValues)) / float(len(errorValues))
-
-    def local_error(self, originalValue, calculatedValue):
-        """Calculates the error between the two given values.
-
-        :param List originalValue:    List containing the values of the original data.
-        :param List calculatedValue:    List containing the values of the calculated TimeSeries that
-            corresponds to originalValue.
-
-        :return:    Returns the error measure of the two given values.
-        :rtype:     Numeric
-        """
-        originalValue = originalValue[0]
-        calculatedValue = calculatedValue[0]
         
-        if 0 == originalValue:
-            return None
+        share = 1.0 / float(len(errorValues))
 
-        return (math.fabs((calculatedValue - originalValue)/float(originalValue))) * 100.0
+        product = 1.0
 
-MAPE = MeanAbsolutePercentageError
+        for errorValue in errorValues:
+            ## never multiply with zero!
+            if 0 == errorValue:
+                continue
+            
+            product *= errorValue**share
+        
+        return product
 
-
-
-
-
+GMAPE = GeometricMeanAbsolutePercentageError

@@ -22,22 +22,21 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## the mother of all errors
-from baseerrormeasure import BaseErrorMeasure
+## required external modules
+import unittest
 
-## absolute errors
-from meansquarederror                     import MeanSquaredError, MSE
-from meanabsolutedeviationerror           import MeanAbsoluteDeviationError, MAD
-from meansigneddifferenceerror            import MeanSignedDifferenceError, MSD
-
-## scaled errors that can be used to compare prediction accuracy on different TimeSeries
-from meanabsolutepercentageerror          import MeanAbsolutePercentageError, MAPE
-from geometricmeanabsolutepercentageerror import GeometricMeanAbsolutePercentageError, GMAPE
-from meansignedpercentageerror            import MeanSignedPercentageError, MSPE
-from symmetricmeanabsolutepercentageerror import SymmetricMeanAbsolutePercentageError, SMAPE
-from medianabsolutepercentageerror        import MedianAbsolutePercentageError, MdAPE
-from weightedmeanabsolutepercentageerror  import WeightedMeanAbsolutePercentageError, WMAPE
-from meanabsolutescalederror              import MeanAbsoluteScaledError, MASE
+## required modules from pycast
+from pycast.errors import MeanSignedPercentageError
+import math
 
 
-#from meaneconomicerror           import MeanEconomicError, MEE, MeanSignedEconomicError, MSEE
+class MeanSignedPercentageErrorTest(unittest.TestCase):
+    """Test class containing all tests for MeanSignedPercentageError."""
+    def local_error_test(self):
+        orgValues = [11, 33.1, 2.3, 6.54, 123.1, 12.54, 12.9, 0, -10]
+        calValues = [24, 1.23, 342, 1.21, 4.112, 9.543, 3.54, -1, -5]
+
+        mspe = MeanSignedPercentageError()
+        for idx in xrange(len(orgValues)):
+            res = (float(calValues[idx] - orgValues[idx])/orgValues[idx])*100 if orgValues[idx] else None
+            self.assertEqual(str(res)[:6], str(mspe.local_error([orgValues[idx]], [calValues[idx]]))[:6])

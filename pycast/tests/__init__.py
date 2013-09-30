@@ -40,7 +40,9 @@ from methodtest import BaseMethodTest, BaseForecastingMethodTest, SimpleMovingAv
 
 ## error measure tests
 from errormeasuretest import BaseErrorMeasureTest, MeanSquaredErrorTest, SymmetricMeanAbsolutePercentageErrorTest, MeanAbsoluteDeviationErrorTest, MedianAbsolutePercentageErrorTest, MeanAbsoluteScaledErrorTest, MeanSignedDifferenceErrorTest
-from mapetest         import MeanAbsolutePercentageErrorTest, GeometricMeanAbsolutePercentageErrorTest
+from meanabsolutepercentageerrortest import MeanAbsolutePercentageErrorTest
+from geometricmeanabsolutepercentageerrortest import GeometricMeanAbsolutePercentageErrorTest
+from meansignedpercentageerrortest import MeanSignedPercentageErrorTest
 from weightedmapetest import WeightedMeanAbsolutePercentageErrorTest
 #from meetest import MeanEconomicErrorTest
 
