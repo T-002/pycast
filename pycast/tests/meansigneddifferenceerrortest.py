@@ -62,7 +62,7 @@ class MeanSignedDifferenceErrorTest(unittest.TestCase):
 
         msd.initialize(tsOrg, tsCalc)
 
-        self.assertEquals(str(msd.get_error())[:6], 0.7272)
+        self.assertEquals(str(msd.get_error())[:6], '0.0727')
 
 #    def setUp(self):
 #        self.ts1 = TimeSeries.from_twodim_list([[1.0, 1.0], [2.0,20.0], [3.0, 3.0], [4.0, 15.0]])

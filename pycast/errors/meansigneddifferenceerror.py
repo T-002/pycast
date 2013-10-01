@@ -64,6 +64,6 @@ class MeanSignedDifferenceError(BaseErrorMeasure):
         if type(calculatedValue) == list:
             calculatedValue = calculatedValue[0]
 
-        return originalValue - calculatedValue
+        return calculatedValue - originalValue
 
 MSD = MeanSignedDifferenceError
