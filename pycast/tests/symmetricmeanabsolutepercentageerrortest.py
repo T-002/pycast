@@ -45,13 +45,13 @@ class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
 
     def local_error_test(self):
         """Test SymmetricMeanAbsolutePercentageError.local_error."""
-        localErrors = [0.1818,  0.1395, 2,  0.2857, 0.4,    2,  2,  2,  2,  2, 0]
+        localErrors = [18.182,  13.953, 200,  28.571, 40,    200,  200,  200,  200,  200, 0]
 
         smape = SymmetricMeanAbsolutePercentageError()
 
         for i in xrange(len(self.dataOrg)):
             calc_local_error = smape.local_error([self.dataOrg[i]], [self.dataCalc[i]])
-            self.assertEquals("%.4f" % calc_local_error,"%.4f" % localErrors[i])
+            self.assertEquals("%.3f" % calc_local_error,"%.3f" % localErrors[i])
 
     def error_calculation_test(self):
         """Test the calculation of the SymmetricMeanAbsolutePercentageError."""
@@ -65,7 +65,7 @@ class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
         smape = SymmetricMeanAbsolutePercentageError()
         smape.initialize(tsOrg, tsCalc)
 
-        self.assertEquals("1.1824", str(smape.get_error())[:6])
+        self.assertEquals("118.24", str(smape.get_error())[:6])
 
     # deprecated
     def confidence_interval_test(self):
@@ -80,7 +80,7 @@ class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
         smape = SymmetricMeanAbsolutePercentageError()
         smape.initialize(tsOrg, tsCalc)
 
-        self.assertEquals((0.0,0.4), smape.confidence_interval(.5))
+        self.assertEquals((0.0,40), smape.confidence_interval(.5))
 
 
 #    def local_error_test(self):
