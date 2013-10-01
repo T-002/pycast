@@ -176,7 +176,16 @@ class BaseErrorMeasureTest(unittest.TestCase):
         self.double_initialize_test()
         PyCastObject.disable_global_optimization()
 
+    def confidence_interval_test(self):
+        bem = BaseErrorMeasure()
 
+        bem._errorValues = [10, -5, 3, -4, None, 0, 2, -3]
+
+        self.assertRaises(ValueError, bem.confidence_interval, -0.5)
+        self.assertRaises(ValueError, bem.confidence_interval, 2)
+
+        self.assertEquals(bem.confidence_interval(0.5), (-3.0, 2.0))
+        self.assertEquals(bem.confidence_interval(0.1), (0.0, 0.0))
 
 
 

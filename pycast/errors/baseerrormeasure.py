@@ -255,8 +255,6 @@ class BaseErrorMeasure(PyCastObject):
 
         if overIdx >= 0:
             overestimation = overestimations[overIdx]
-        else:
-            print len(overestimations), confidenceLevel
 
         if underIdx >= 0:
             underestimation = underestimations[underIdx]

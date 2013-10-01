@@ -32,9 +32,7 @@ from pycast.common.timeseries import TimeSeries
 
 
 class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
-    """Testing symmetric mean absolute percentage error.
-
-    Data extracted from http://monashforecasting.com/index.php?title=SMAPE#Example"""
+    """Testing symmetric mean absolute percentage error."""
 
     def setUp(self):
         self.dataOrg = [1.0,    2.3,    0.1,    -2.0,   -1.0,   0.0,    -0.2,   -0.3,   0.15,   -0.2,   0]
@@ -66,22 +64,6 @@ class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
         smape.initialize(tsOrg, tsCalc)
 
         self.assertEquals("118.24", str(smape.get_error())[:6])
-
-    # deprecated
-    def confidence_interval_test(self):
-        """Test for None values in BaseErrorMeasure.confidence_interval"""
-        tsOrg  = TimeSeries()
-        tsCalc = TimeSeries()
-        
-        for idx in xrange(len(self.dataOrg)):
-            tsOrg.add_entry(float(idx),  self.dataOrg[idx])
-            tsCalc.add_entry(float(idx), self.dataCalc[idx])
-
-        smape = SymmetricMeanAbsolutePercentageError()
-        smape.initialize(tsOrg, tsCalc)
-
-        self.assertEquals((0.0,40), smape.confidence_interval(.5))
-
 
 #    def local_error_test(self):
 #        """Test SymmetricMeanAbsolutePercentageError local error."""
