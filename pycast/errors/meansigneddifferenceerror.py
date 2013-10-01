@@ -59,10 +59,8 @@ class MeanSignedDifferenceError(BaseErrorMeasure):
         :return:    Returns the error measure of the two given values.
         :rtype:     Numeric
         """
-        if type(originalValue) == list:
-            originalValue = originalValue[0]
-        if type(calculatedValue) == list:
-            calculatedValue = calculatedValue[0]
+        originalValue = originalValue[0]
+        calculatedValue = calculatedValue[0]
 
         return calculatedValue - originalValue
 
