@@ -187,8 +187,33 @@ class BaseErrorMeasureTest(unittest.TestCase):
         self.assertEquals(bem.confidence_interval(0.5), (-3.0, 2.0))
         self.assertEquals(bem.confidence_interval(0.1), (0.0, 0.0))
 
+    def get_error_values_test(self):
+        bem = BaseErrorMeasure()
+        bem._errorValues = [1, -1, 3, -5, 8]
+        bem._errorDates = [1,2,3,4,5]
 
+        self.assertEquals(bem._get_error_values(0,100, None, None), [1,-1,3,-5,8])
+        self.assertEquals(bem._get_error_values(0,100, 2, None), [-1,3,-5,8])
+        self.assertEquals(bem._get_error_values(0,100, None, 4), [1,-1,3,-5])
+        self.assertEquals(bem._get_error_values(0,100, 2, 4), [-1,3,-5])
+        self.assertRaises(ValueError, bem._get_error_values, 0, 100, None, 0)
 
+    def number_of_comparisons_test(self):
+        """ Test BaseErrorMeasure.initialize for behaviour if not enough dates match."""
+        dataOrg  = [[0,0],[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9]]
+        dataCalc = [[0,0],[1,1],[2,2],[3,3],[4,4],[5.1,5],[6.1,6],[7.1,7],[8.1,8],[9.1,9]]
+
+        tsOrg  = TimeSeries.from_twodim_list(dataOrg)
+        tsCalc = TimeSeries.from_twodim_list(dataCalc)
+
+        bem = BaseErrorMeasure(60.0)
+
+        #prevent NotImplementedError
+        bem.local_error = lambda a,b: 1
+
+        ## only 50% of the original TimeSeries have a corresponding partner
+        self.assertEquals(bem.initialize(tsOrg, tsCalc), False)
+        
 
 
 

@@ -32,11 +32,33 @@ import math
 
 class MeanSignedPercentageErrorTest(unittest.TestCase):
     """Test class containing all tests for MeanSignedPercentageError."""
-    def local_error_test(self):
-        orgValues = [11, 33.1, 2.3, 6.54, 123.1, 12.54, 12.9, 0, -10]
-        calValues = [24, 1.23, 342, 1.21, 4.112, 9.543, 3.54, -1, -5]
 
-        mspe = MeanSignedPercentageError()
-        for idx in xrange(len(orgValues)):
-            res = (float(calValues[idx] - orgValues[idx])/orgValues[idx])*100 if orgValues[idx] else None
-            self.assertEqual(str(res)[:6], str(mspe.local_error([orgValues[idx]], [calValues[idx]]))[:6])
+
+    def setUp(self):
+        self.dataOrg = [1.0,    2.3,    0.1,    -2.0,   -1.0,   0.0,    -0.2,   -0.3,   0.15,   -0.2,   0]
+        self.dataCalc = [1.2,   2.0,    -0.3,   -1.5,   -1.5,   0.3,    0.0,    0.3,    -0.15,  0.3,   0]
+
+    def tearDown(self):
+        pass
+
+    def local_error_test(self):
+        """Test MeanSignedPercentageError.local_error."""
+        localErrors = [20,  -13.043, -400,  -25, 50,    None,  -100,  -200,  -200,  -250, None]
+
+        mpe = MeanSignedPercentageError()
+
+        for i in xrange(len(self.dataOrg)):
+            calc_local_error = mpe.local_error([self.dataOrg[i]], [self.dataCalc[i]])
+            if calc_local_error:
+                self.assertEquals("%.3f" % calc_local_error,"%.3f" % localErrors[i])
+            else:
+                self.assertEquals(localErrors[i], None)
+
+#    def local_error_test(self):
+#        orgValues = [11, 33.1, 2.3, 6.54, 123.1, 12.54, 12.9, 0, -10]
+#        calValues = [24, 1.23, 342, 1.21, 4.112, 9.543, 3.54, -1, -5]
+
+#        mspe = MeanSignedPercentageError()
+#        for idx in xrange(len(orgValues)):
+#            res = (float(calValues[idx] - orgValues[idx])/orgValues[idx])*100 if orgValues[idx] else None
+#            self.assertEqual(str(res)[:6], str(mspe.local_error([orgValues[idx]], [calValues[idx]]))[:6])

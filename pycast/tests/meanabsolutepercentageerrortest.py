@@ -54,7 +54,7 @@ class MeanAbsolutePercentageErrorTest(unittest.TestCase):
                 self.assertEquals(localErrors[i], None)
 
     def error_calculation_test(self):
-        """Test the calculation of the SymmetricMeanAbsolutePercentageError."""
+        """Test the calculation of the MeanAbsolutePercentageError."""
         tsOrg  = TimeSeries()
         tsCalc = TimeSeries()
         
