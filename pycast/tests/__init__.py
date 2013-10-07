@@ -36,7 +36,7 @@ from helpertest import HelperTest
 
 ## method tests
 from methodtest import BaseMethodTest, BaseForecastingMethodTest, SimpleMovingAverageTest, ExponentialSmoothingTest, HoltMethodTest, HoltWintersMethodTest
-#from regressiontest import RegressionTest, LinearRegressionTest
+from regressiontest import RegressionTest, LinearRegressionTest
 
 ## error measure tests
 from errormeasuretest import BaseErrorMeasureTest
@@ -60,4 +60,4 @@ from gridsearchtest       import GridSearchTest
 from decoratorstest import OptimizedDecoratorTest
 
 # matrix test
-#from matrixtest import MatrixTest, VectorTest, MatrixHelperTest
+from matrixtest import MatrixTest, VectorTest, MatrixHelperTest
