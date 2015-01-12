@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+# Copyright (c) 2012-2013 Christian Schwarz
 #
-#Permission is hereby granted, free of charge, to any person obtaining
+# Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
 #"Software"), to deal in the Software without restriction, including
 #without limitation the rights to use, copy, modify, merge, publish,
@@ -24,6 +24,7 @@
 
 ## This module contains helper functions that will be moved later
 
+
 def linear_interpolation(first, last, steps):
     """Interpolates all missing values using linear interpolation.
 
@@ -40,7 +41,7 @@ def linear_interpolation(first, last, steps):
 
     for step in xrange(0, steps):
         fpart = (steps - step) * first
-        lpart = (step + 1)            * last
+        lpart = (step + 1) * last
         value = (fpart + lpart) / float(steps + 1)
         result.append(value)
 

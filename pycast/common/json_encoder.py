@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+# Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -24,9 +24,10 @@
 import json
 
 from pycastobject import PyCastObject
+
+
 class PycastEncoder(json.JSONEncoder, PyCastObject):
     def default(self, obj):
-
-		# Cannot use the to_json method, because it returns a string rather
-		# than a serializable list.
+        # Cannot use the to_json method, because it returns a string rather
+        # than a serializable list.
         return obj.to_twodim_list()

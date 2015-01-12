@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+# Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -22,6 +22,7 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+
 class PyCastObject(object):
     """The base class for all pycast objects.
 
@@ -38,7 +39,7 @@ class PyCastObject(object):
         """Initializes the PyCastObject."""
         super(PyCastObject, self).__init__()
         self.optimizationEnabled = False
-        
+
         if PyCastObject._globalOptimize:
             self._enable_instance_optimization()
 
