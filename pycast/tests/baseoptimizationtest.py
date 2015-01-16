@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+# Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -26,9 +26,10 @@
 import unittest
 
 from pycast.optimization import BaseOptimizationMethod
-from pycast.errors       import BaseErrorMeasure
-from pycast.methods      import BaseMethod
+from pycast.errors import BaseErrorMeasure
+from pycast.methods import BaseMethod
 from pycast.common.timeseries import TimeSeries
+
 
 class BaseOptimizationMethodTest(unittest.TestCase):
     """Test class containing all tests for pycast.optimization.BaseOptimizationMethod."""
@@ -42,14 +43,14 @@ class BaseOptimizationMethodTest(unittest.TestCase):
         except TypeError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
         try:
             BaseOptimizationMethod(BaseOptimizationMethodTest, -1)
         except TypeError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
     def initialization_precision_test(self):
         """Test the parameter range durign the initialization."""
@@ -63,18 +64,18 @@ class BaseOptimizationMethodTest(unittest.TestCase):
                 pass
             else:
                 #print "precision: %s" % precision    # pragma: no cover
-                assert False                         # pragma: no cover
+                assert False  # pragma: no cover
 
     def optimize_value_error_test(self):
         """Test the optimize call."""
         bom = BaseOptimizationMethod(BaseErrorMeasure, precision=-3)
-        bm  = BaseMethod()
+        bm = BaseMethod()
 
         bom.optimize(TimeSeries(), [bm])
-        
+
         try:
             bom.optimize(TimeSeries(), [])
         except ValueError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover

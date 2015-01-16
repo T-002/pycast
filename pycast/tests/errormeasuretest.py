@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+# Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -36,6 +36,7 @@ from pycast.errors import MeanSignedDifferenceError
 from pycast.common.timeseries import TimeSeries
 from pycast.common.pycastobject import PyCastObject
 
+
 class BaseErrorMeasureTest(unittest.TestCase):
     """Test class for the BaseErrorMeasure interface."""
 
@@ -49,13 +50,13 @@ class BaseErrorMeasureTest(unittest.TestCase):
             except ValueError:
                 pass
             else:
-                assert False    # pragma: no cover
+                assert False  # pragma: no cover
 
         for percentage in [0.0, 12.3, 53.4, 100.0]:
             try:
                 BaseErrorMeasure(percentage)
-            except ValueError:    # pragma: no cover
-                assert False      # pragma: no cover
+            except ValueError:  # pragma: no cover
+                assert False  # pragma: no cover
 
     def get_error_initialization_test(self):
         """Test the get_error of BaseErrorMeasure for the initialization exception."""
@@ -66,46 +67,45 @@ class BaseErrorMeasureTest(unittest.TestCase):
         except StandardError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
     def double_initialize_test(self):
         """Test for the error ocuring when the same error measure is initialized twice."""
-        data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
-        tsOrg  = TimeSeries.from_twodim_list(data)
+        data = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
+        tsOrg = TimeSeries.from_twodim_list(data)
         tsCalc = TimeSeries.from_twodim_list(data)
-
 
         bem = BaseErrorMeasure()
 
-        bem_calculate  = bem._calculate
+        bem_calculate = bem._calculate
         bem_local_error = bem.local_error
-        
+
         def return_zero(ignoreMe, ignoreMeToo):
             return 0
 
         ## remove the NotImplementedErrors for initialization
         bem.local_error = return_zero
-        bem._calculate   = return_zero
-        
+        bem._calculate = return_zero
+
         ## correct initialize call
         bem.initialize(tsOrg, tsCalc)
 
         ## incorrect initialize call
         for cnt in xrange(10):
             try:
-                bem.initialize(tsOrg, tsCalc)        
+                bem.initialize(tsOrg, tsCalc)
             except StandardError:
                 pass
             else:
-                assert False    # pragma: no cover
+                assert False  # pragma: no cover
 
         bem.local_error = bem_calculate
-        bem._calculate   = bem_local_error
+        bem._calculate = bem_local_error
 
     def initialize_test(self):
         """Test if calculate throws an error as expected."""
-        data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
-        tsOrg  = TimeSeries.from_twodim_list(data)
+        data = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
+        tsOrg = TimeSeries.from_twodim_list(data)
         tsCalc = TimeSeries.from_twodim_list(data)
 
         bem = BaseErrorMeasure()
@@ -115,38 +115,38 @@ class BaseErrorMeasureTest(unittest.TestCase):
         except NotImplementedError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
         assert not bem.initialize(tsOrg, TimeSeries())
 
     def get_error_parameter_test(self):
         """Test for the parameter validity of get_error()."""
-        data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
-        tsOrg  = TimeSeries.from_twodim_list(data)
+        data = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
+        tsOrg = TimeSeries.from_twodim_list(data)
         tsCalc = TimeSeries.from_twodim_list(data)
 
         bem = BaseErrorMeasure()
 
-        bem_calculate  = bem._calculate
+        bem_calculate = bem._calculate
         bem_local_error = bem.local_error
-        
+
         def return_zero(ignoreMe, ignoreMeToo, andMe=None, andMeToo=None):
             return 0
 
         ## remove the NotImplementedErrors for initialization
         bem.local_error = return_zero
-        bem._calculate   = return_zero
+        bem._calculate = return_zero
         bem.initialize(tsOrg, tsCalc)
 
         bem.local_error = bem_local_error
-        bem._calculate  = bem_calculate
+        bem._calculate = bem_calculate
 
         try:
             bem.get_error(10.0, 90.0)
         except NotImplementedError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
         for start in [-1.0, 80.0, 103.0]:
             for end in [-5.0, 10.0, 105.0]:
@@ -155,12 +155,12 @@ class BaseErrorMeasureTest(unittest.TestCase):
                 except ValueError:
                     pass
                 else:
-                    assert False    # pragma: no cover
+                    assert False  # pragma: no cover
 
     def local_error_test(self):
         """Test local_error of BaseErrorMeasure."""
-        data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
-        tsOrg  = TimeSeries.from_twodim_list(data)
+        data = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
+        tsOrg = TimeSeries.from_twodim_list(data)
         tsCalc = TimeSeries.from_twodim_list(data)
 
         bem = BaseErrorMeasure()
@@ -171,7 +171,7 @@ class BaseErrorMeasureTest(unittest.TestCase):
             except NotImplementedError:
                 pass
             else:
-                assert False    # pragma: no cover
+                assert False  # pragma: no cover
 
     def optimized_test(self):
         """Check if all tests are passed, using optimized implementations."""
@@ -181,6 +181,7 @@ class BaseErrorMeasureTest(unittest.TestCase):
         self.initialize_test()
         self.double_initialize_test()
         PyCastObject.disable_global_optimization()
+
 
 class MeanSquaredErrorTest(unittest.TestCase):
     """Testing MeanSquaredError."""
@@ -192,37 +193,37 @@ class MeanSquaredErrorTest(unittest.TestCase):
 
         mse = MeanSquaredError()
         for idx in xrange(len(orgValues)):
-            res = (calValues[idx] - orgValues[idx])**2.0
-            assert  str(res)[:6] == str(mse.local_error([orgValues[idx]], [calValues[idx]]))[:6]
+            res = (calValues[idx] - orgValues[idx]) ** 2.0
+            assert str(res)[:6] == str(mse.local_error([orgValues[idx]], [calValues[idx]]))[:6]
 
     def number_of_comparisons_test(self):
         """Test MeanSquaredError for a valid response to the minimalErrorCalculationPercentage."""
-        dataOrg  = [[0,0],[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9]]
-        dataCalc = [[0,0],[1,1],[2,2],[3,3],[4,4],[5.1,5],[6.1,6],[7.1,7],[8.1,8],[9.1,9]]
+        dataOrg = [[0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [7, 7], [8, 8], [9, 9]]
+        dataCalc = [[0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5.1, 5], [6.1, 6], [7.1, 7], [8.1, 8], [9.1, 9]]
 
-        tsOrg  = TimeSeries.from_twodim_list(dataOrg)
+        tsOrg = TimeSeries.from_twodim_list(dataOrg)
         tsCalc = TimeSeries.from_twodim_list(dataCalc)
 
         mse = MeanSquaredError(60.0)
 
         ## only 50% of the original TimeSeries have a corresponding partner
         if mse.initialize(tsOrg, tsCalc):
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
         if not mse.initialize(tsOrg, tsOrg):
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
     def error_calculation_test(self):
         """Test for a valid error calculation."""
-        dataOrg         = [[0,0], [1,1], [2,2], [3,3], [4,4], [5,5], [6,  6], [7,7], [8,8],   [9,9]]
-        dataCalc        = [[0,1], [1,3], [2,5], [3,0], [4,3], [5,5], [6.1,6], [7,3], [8.1,8], [9,8]]
+        dataOrg = [[0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [7, 7], [8, 8], [9, 9]]
+        dataCalc = [[0, 1], [1, 3], [2, 5], [3, 0], [4, 3], [5, 5], [6.1, 6], [7, 3], [8.1, 8], [9, 8]]
         # difference:         1      2      3      3      1      0       NA      4       NA      1
         # local errors:       1      4      9      9      1      0       NA     16       NA      1
 
-        tsOrg  = TimeSeries.from_twodim_list(dataOrg)
+        tsOrg = TimeSeries.from_twodim_list(dataOrg)
         tsCalc = TimeSeries.from_twodim_list(dataCalc)
 
-        tsOrg  = TimeSeries.from_twodim_list(dataOrg)
+        tsOrg = TimeSeries.from_twodim_list(dataOrg)
         tsCalc = TimeSeries.from_twodim_list(dataCalc)
 
         mse = MeanSquaredError(80.0)
@@ -232,8 +233,8 @@ class MeanSquaredErrorTest(unittest.TestCase):
 
     def start_and_enddate_test(self):
         """Testing for startDate, endDate exceptions."""
-        data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
-        tsOrg  = TimeSeries.from_twodim_list(data)
+        data = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
+        tsOrg = TimeSeries.from_twodim_list(data)
         tsCalc = TimeSeries.from_twodim_list(data)
 
         bem = MeanSquaredError()
@@ -250,14 +251,15 @@ class MeanSquaredErrorTest(unittest.TestCase):
         except ValueError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
         try:
             bem.get_error(endDate=-1)
         except ValueError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
+
 
 class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
     """Testing symmetric mean absolute percentage error.
@@ -266,9 +268,9 @@ class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
 
     def local_error_test(self):
         """Test SymmetricMeanAbsolutePercentageError local error."""
-        dataPtsOrg  = [2.30,     .373,           .583,          1.88,  1.44,         -0.0852, -.341,  .619,  .131,  1.27, 4.0]
-        dataPtsCalc = [-1.21,   -.445,           .466,          .226, -.694,           -.575,  2.73, -1.49, -1.45, -.193, 4.0]
-        localErrors = [  2.0,     2.0, 0.223069590086, 1.57075023742,   2.0,   1.48379279006,   2.0,   2.0,   2.0,   2.0, 0.0]
+        dataPtsOrg = [2.30, .373, .583, 1.88, 1.44, -0.0852, -.341, .619, .131, 1.27, 4.0]
+        dataPtsCalc = [-1.21, -.445, .466, .226, -.694, -.575, 2.73, -1.49, -1.45, -.193, 4.0]
+        localErrors = [2.0, 2.0, 0.223069590086, 1.57075023742, 2.0, 1.48379279006, 2.0, 2.0, 2.0, 2.0, 0.0]
 
         smape = SymmetricMeanAbsolutePercentageError()
 
@@ -281,14 +283,14 @@ class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
 
     def error_calculation_test(self):
         """Test the calculation of the SymmetricMeanAbsolutePercentageError."""
-        dataPtsOrg  = [2.30,     .373,           .583,          1.88,  1.44,         -0.0852, -.341,  .619,  .131,  1.27, 0]
-        dataPtsCalc = [-1.21,   -.445,           .466,          .226, -.694,           -.575,  2.73, -1.49, -1.45, -.193, 0]
+        dataPtsOrg = [2.30, .373, .583, 1.88, 1.44, -0.0852, -.341, .619, .131, 1.27, 0]
+        dataPtsCalc = [-1.21, -.445, .466, .226, -.694, -.575, 2.73, -1.49, -1.45, -.193, 0]
 
-        tsOrg  = TimeSeries()
+        tsOrg = TimeSeries()
         tsCalc = TimeSeries()
-        
+
         for idx in xrange(len(dataPtsOrg)):
-            tsOrg.add_entry(float(idx),  dataPtsOrg[idx])
+            tsOrg.add_entry(float(idx), dataPtsOrg[idx])
             tsCalc.add_entry(float(idx), dataPtsCalc[idx])
 
         smape = SymmetricMeanAbsolutePercentageError()
@@ -297,14 +299,15 @@ class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
         ## compare the strings due to accuracy
         assert "1.5706" == str(smape.get_error())[:6]
 
+
 class MeanAbsoluteDeviationErrorTest(unittest.TestCase):
     """Testing symmetric mean absolute deviation error."""
 
     def local_error_test(self):
         """Test SymmetricMeanAbsolutePercentageError local error."""
-        dataPtsOrg  = [ 2.30,  .373, .583, 1.880, 500]
-        dataPtsCalc = [-1.21, -.445, .466,  .226, 300]
-        localErrors = [ 3.51,  .818, .117, 1.654, 200]
+        dataPtsOrg = [2.30, .373, .583, 1.880, 500]
+        dataPtsCalc = [-1.21, -.445, .466, .226, 300]
+        localErrors = [3.51, .818, .117, 1.654, 200]
 
         mad = MeanAbsoluteDeviationError()
 
@@ -318,14 +321,14 @@ class MeanAbsoluteDeviationErrorTest(unittest.TestCase):
 
     def error_calculation_test(self):
         """Test the calculation of the SymmetricMeanAbsolutePercentageError."""
-        dataPtsOrg  = [2.30,     .373,           .583,          1.88,  1.44,         -0.0852, -.341,  .619,  .131,  1.27, 0]
-        dataPtsCalc = [-1.21,   -.445,           .466,          .226, -.694,           -.575,  2.73, -1.49, -1.45, -.193, 0]
+        dataPtsOrg = [2.30, .373, .583, 1.88, 1.44, -0.0852, -.341, .619, .131, 1.27, 0]
+        dataPtsCalc = [-1.21, -.445, .466, .226, -.694, -.575, 2.73, -1.49, -1.45, -.193, 0]
 
-        tsOrg  = TimeSeries()
+        tsOrg = TimeSeries()
         tsCalc = TimeSeries()
-        
+
         for idx in xrange(len(dataPtsOrg)):
-            tsOrg.add_entry(float(idx),  dataPtsOrg[idx])
+            tsOrg.add_entry(float(idx), dataPtsOrg[idx])
             tsCalc.add_entry(float(idx), dataPtsCalc[idx])
 
         mad = MeanAbsoluteDeviationError()
@@ -335,14 +338,14 @@ class MeanAbsoluteDeviationErrorTest(unittest.TestCase):
         #print str(mad.get_error())[:6]
         assert "1.5406" == str(mad.get_error())[:6]
 
-class MedianAbsolutePercentageErrorTest(unittest.TestCase):
 
+class MedianAbsolutePercentageErrorTest(unittest.TestCase):
     def error_calculation_test(self):
         """Test the MdAPE error calculation."""
-        dataOrg         = [[1,1], [2,2], [3,3], [4,4], [5,5], [6,6], [7,8], [7.3, 5], [8, 0], [9,10]]
-        dataCalc        = [[1,3], [2,5], [3,0], [4,3], [5,5], [6.1,6], [7,3], [7.3, 5], [8, 0], [9,9]]
-                
-        tsOrg  = TimeSeries.from_twodim_list(dataOrg)
+        dataOrg = [[1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [7, 8], [7.3, 5], [8, 0], [9, 10]]
+        dataCalc = [[1, 3], [2, 5], [3, 0], [4, 3], [5, 5], [6.1, 6], [7, 3], [7.3, 5], [8, 0], [9, 9]]
+
+        tsOrg = TimeSeries.from_twodim_list(dataOrg)
         tsCalc = TimeSeries.from_twodim_list(dataCalc)
 
         em = MedianAbsolutePercentageError()
@@ -351,8 +354,8 @@ class MedianAbsolutePercentageErrorTest(unittest.TestCase):
         assert em.get_error() == 62.5
         assert em.get_error(20.0, 50.0) == 100.0
 
-class MeanAbsoluteScaledErrorTest(unittest.TestCase):
 
+class MeanAbsoluteScaledErrorTest(unittest.TestCase):
     def initialization_error_test(self):
         """Test for the exceptions raised during initialization."""
         MeanAbsoluteScaledError(minimalErrorCalculationPercentage=60.0, historyLength=20.0)
@@ -362,46 +365,52 @@ class MeanAbsoluteScaledErrorTest(unittest.TestCase):
         except ValueError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
         try:
             MeanAbsoluteScaledError(60.0, -12.0)
         except ValueError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
         try:
             MeanAbsoluteScaledError(60.0, 120.0)
         except ValueError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
         try:
             MeanAbsoluteScaledError(60.0, 60.0)
         except ValueError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
     def calculate_historic_means_test(self):
         """Test the calculation of the historic means."""
-        dataOrg = [[1.0, 10], [2.0, 12], [3.0, 14], [4.0, 13], [5.0, 17], [6.0, 20], [7.0, 23], [8.0, 26], [9.0, 29], [10.0, 31], [11.0, 26], [12.0, 21], [13.0, 18], [14.0, 14], [15.0, 13], [16.0, 19], [17.0, 24], [18.0, 28], [19.0, 30], [20.0, 32]]
+        dataOrg = [[1.0, 10], [2.0, 12], [3.0, 14], [4.0, 13], [5.0, 17], [6.0, 20], [7.0, 23], [8.0, 26], [9.0, 29],
+                   [10.0, 31], [11.0, 26], [12.0, 21], [13.0, 18], [14.0, 14], [15.0, 13], [16.0, 19], [17.0, 24],
+                   [18.0, 28], [19.0, 30], [20.0, 32]]
         ##                           2          2          1          4          3          3          3          3           2           5           5           3           4           1           6           5           4           2           2
         ## Sum(History)                                                         12         13         14         16          14          16          18          18          19          18          19          19          20          18          19                                          
-        correctResult = [                                                      2.4,       2.6,       2.8,       3.2,        2.8,        3.2,        3.6,        3.6,        3.8,        3.6,        3.8,        3.8,        4.0,        3.6]
+        correctResult = [2.4, 2.6, 2.8, 3.2, 2.8, 3.2, 3.6, 3.6, 3.8, 3.6, 3.8, 3.8, 4.0, 3.6]
 
         tsOrg = TimeSeries.from_twodim_list(dataOrg)
-        mase  = MeanAbsoluteScaledError(historyLength=5)
+        mase = MeanAbsoluteScaledError(historyLength=5)
         result = mase._get_historic_means(tsOrg)
-        
+
         assert result == correctResult
 
     def local_error_calculation_test(self):
         """Testing the mean absolute error calculation of the MASE."""
-        dataOrg = [[1.0, 10], [2.0, 12], [3.0, 14], [4.0, 13], [5.0, 17], [6.0, 20], [7.0, 23], [8.0, 26], [9.0, 29], [10.0, 31], [11.0, 26], [12.0, 21], [13.0, 18], [14.0, 14], [15.0, 13], [16.0, 19], [17.0, 24], [18.0, 28], [19.0, 30], [20.0, 32]]
-        dataFor = [[1.0, 11], [2.0, 13], [3.0, 14], [4.0, 11], [5.0, 13], [6.0, 18], [7.0, 20], [8.0, 26], [9.0, 21], [10.0, 34], [11.0, 23], [12.0, 23], [13.0, 15], [14.0, 12], [15.0, 14], [16.0, 17], [17.0, 25], [18.0, 22], [19.0, 14], [20.0, 30]]
+        dataOrg = [[1.0, 10], [2.0, 12], [3.0, 14], [4.0, 13], [5.0, 17], [6.0, 20], [7.0, 23], [8.0, 26], [9.0, 29],
+                   [10.0, 31], [11.0, 26], [12.0, 21], [13.0, 18], [14.0, 14], [15.0, 13], [16.0, 19], [17.0, 24],
+                   [18.0, 28], [19.0, 30], [20.0, 32]]
+        dataFor = [[1.0, 11], [2.0, 13], [3.0, 14], [4.0, 11], [5.0, 13], [6.0, 18], [7.0, 20], [8.0, 26], [9.0, 21],
+                   [10.0, 34], [11.0, 23], [12.0, 23], [13.0, 15], [14.0, 12], [15.0, 14], [16.0, 17], [17.0, 25],
+                   [18.0, 22], [19.0, 14], [20.0, 30]]
 
         historyLength = 5
         em = MeanAbsoluteScaledError(historyLength=historyLength)
@@ -419,9 +428,13 @@ class MeanAbsoluteScaledErrorTest(unittest.TestCase):
 
     def initialization_test(self):
         """Test for MASE initialization."""
-        dataOrg = [[1.0, 10], [2.0, 12], [3.0, 14], [4.0, 13], [5.0, 17], [6.0, 20], [7.0, 23], [8.0, 26], [9.0, 29], [10.0, 31], [11.0, 26], [12.0, 21], [13.0, 18], [14.0, 14], [15.0, 13], [16.0, 19], [17.0, 24], [18.0, 28], [19.0, 30], [20.0, 32]]
-        dataFor = [[1.0, 11], [2.0, 13], [3.0, 14], [4.0, 11], [5.0, 13], [6.0, 18], [7.0, 20], [8.0, 26], [9.0, 21], [10.0, 34], [11.0, 23], [12.0, 23], [13.0, 15], [14.0, 12], [15.0, 14], [16.0, 17], [17.0, 25], [18.0, 22], [19.0, 14], [20.0, 30]]
-        
+        dataOrg = [[1.0, 10], [2.0, 12], [3.0, 14], [4.0, 13], [5.0, 17], [6.0, 20], [7.0, 23], [8.0, 26], [9.0, 29],
+                   [10.0, 31], [11.0, 26], [12.0, 21], [13.0, 18], [14.0, 14], [15.0, 13], [16.0, 19], [17.0, 24],
+                   [18.0, 28], [19.0, 30], [20.0, 32]]
+        dataFor = [[1.0, 11], [2.0, 13], [3.0, 14], [4.0, 11], [5.0, 13], [6.0, 18], [7.0, 20], [8.0, 26], [9.0, 21],
+                   [10.0, 34], [11.0, 23], [12.0, 23], [13.0, 15], [14.0, 12], [15.0, 14], [16.0, 17], [17.0, 25],
+                   [18.0, 22], [19.0, 14], [20.0, 30]]
+
         tsOrg = TimeSeries.from_twodim_list(dataOrg)
         tsFor = TimeSeries.from_twodim_list(dataFor)
 
@@ -435,7 +448,7 @@ class MeanAbsoluteScaledErrorTest(unittest.TestCase):
         except StandardError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
         em = MeanAbsoluteScaledError(historyLength=20.0)
         em.initialize(tsOrg, tsFor)
@@ -454,8 +467,12 @@ class MeanAbsoluteScaledErrorTest(unittest.TestCase):
 
         History length is 5 in this test.
         """
-        dataOrg = [[1.0, 10], [2.0, 12], [3.0, 14], [4.0, 13], [5.0, 17], [6.0, 20], [7.0, 23], [8.0, 26], [9.0, 29], [10.0, 31], [11.0, 26], [12.0, 21], [13.0, 18], [14.0, 14], [15.0, 13], [16.0, 19], [17.0, 24], [18.0, 28], [19.0, 30], [20.0, 32]]
-        dataFor = [[1.0, 11], [2.0, 13], [3.0, 14], [4.0, 11], [5.0, 13], [6.0, 18], [7.0, 20], [8.0, 26], [9.0, 21], [10.0, 34], [11.0, 23], [12.0, 23], [13.0, 15], [14.0, 12], [15.0, 14], [16.0, 17], [17.0, 25], [18.0, 22], [19.0, 14], [20.0, 30]]
+        dataOrg = [[1.0, 10], [2.0, 12], [3.0, 14], [4.0, 13], [5.0, 17], [6.0, 20], [7.0, 23], [8.0, 26], [9.0, 29],
+                   [10.0, 31], [11.0, 26], [12.0, 21], [13.0, 18], [14.0, 14], [15.0, 13], [16.0, 19], [17.0, 24],
+                   [18.0, 28], [19.0, 30], [20.0, 32]]
+        dataFor = [[1.0, 11], [2.0, 13], [3.0, 14], [4.0, 11], [5.0, 13], [6.0, 18], [7.0, 20], [8.0, 26], [9.0, 21],
+                   [10.0, 34], [11.0, 23], [12.0, 23], [13.0, 15], [14.0, 12], [15.0, 14], [16.0, 17], [17.0, 25],
+                   [18.0, 22], [19.0, 14], [20.0, 30]]
         ##                           2          2          1          4          3          3          3          3           2           5           5           3           4           1           6           5           4           2           2
         ## Sum(History)                                                         12         13         14         16          14          16          18          18          19          18          19          19          20          18          19                                          
         ## Mean(History) ##         ##         ##         ##         ##        2.4        2.6        2.8        3.2         2.8         3.2         3.6         3.6         3.8         3.6         3.8         3.8         4.0         3.6         3.8
@@ -472,26 +489,27 @@ class MeanAbsoluteScaledErrorTest(unittest.TestCase):
         em.initialize(tsOrg, tsFor)
 
         ## check for error calculation depending on a specific endpoint
-        correctResult = [1.25, 0.625, 1.527, 1.458, 1.416, 1.319, 1.309, 1.25, 1.157, 1.125, "1.060", "1.180", 1.602, 1.547]
+        correctResult = [1.25, 0.625, 1.527, 1.458, 1.416, 1.319, 1.309, 1.25, 1.157, 1.125, "1.060", "1.180", 1.602,
+                         1.547]
         percentage = 100.0 / len(correctResult) + 0.2
         for errVal in xrange(14):
             endPercentage = percentage * (errVal + 1)
-            
+
             ## set maximum percentage
             if endPercentage > 100.0:
                 endPercentage = 100.0
 
-            calcErr    = str(em.get_error(endPercentage=endPercentage))[:5]
+            calcErr = str(em.get_error(endPercentage=endPercentage))[:5]
             correctRes = str(correctResult[errVal])[:5]
 
             assert calcErr == correctRes
 
         for errVal in xrange(14):
             endDate = dataOrg[errVal + 6][0]
-            
-            calcErr    = str(em.get_error(endDate=endDate))[:5]
+
+            calcErr = str(em.get_error(endDate=endDate))[:5]
             correctRes = str(correctResult[errVal])[:5]
-        
+
             assert calcErr == correctRes, "%s != %s" % (calcErr, correctRes)
 
         em.get_error(startDate=7.0)
@@ -501,20 +519,21 @@ class MeanAbsoluteScaledErrorTest(unittest.TestCase):
         except ValueError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
+
 
 class MeanSignedDifferenceErrorTest(unittest.TestCase):
     """Test for the MeanSignedDifferenceError."""
-    
+
     def setUp(self):
-        self.ts1 = TimeSeries.from_twodim_list([[1.0, 1.0], [2.0,20.0], [3.0, 3.0]])
-        self.ts2 = TimeSeries.from_twodim_list([[1.0,10.0], [2.0, 2.0], [3.0,30.0]])
+        self.ts1 = TimeSeries.from_twodim_list([[1.0, 1.0], [2.0, 20.0], [3.0, 3.0]])
+        self.ts2 = TimeSeries.from_twodim_list([[1.0, 10.0], [2.0, 2.0], [3.0, 30.0]])
         self.msd = MeanSignedDifferenceError()
         self.msd.initialize(self.ts1, self.ts2)
 
     def local_error_test(self):
         assert -10.0 == self.msd.local_error(10.0, 20.0)
-        assert  10.0 == self.msd.local_error(20.0, 10.0)
+        assert 10.0 == self.msd.local_error(20.0, 10.0)
 
     def error_calculation_test(self):
         assert -6.0 == self.msd.get_error()
@@ -525,7 +544,7 @@ class MeanSignedDifferenceErrorTest(unittest.TestCase):
         except ValueError:
             pass
         else:
-            assert False, "ValueError not raised."    # pragma: no cover
+            assert False, "ValueError not raised."  # pragma: no cover
 
         res = self.msd.confidence_interval(0.5)
         assert (-9.0, 0.0) == res, res

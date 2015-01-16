@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+# Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -22,11 +22,13 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import types 
+import types
 
 from pycast.errors import BaseErrorMeasure
 
 from pycast.common import PyCastObject
+
+
 class BaseOptimizationMethod(PyCastObject):
     """Baseclass for all optimization methods."""
 
@@ -34,9 +36,9 @@ class BaseOptimizationMethod(PyCastObject):
         """Initializes the optimization method.
 
         :param BaseErrorMeasure errorMeasureClass:    Error measure class from :py:mod:`pycast.errors`.
-        :param Dictionary errorMeasureInitializationParameters:    Parameters used to initialize
+        :param dictionary errorMeasureInitializationParameters:    Parameters used to initialize
             the errorMeasureClass. This dictionary will be passed to the errorMeasureClass as \*\*kwargs.
-        :param Integer precision:    Defines the accuracy for parameter tuning in 10^precision.
+        :param integer precision:    Defines the accuracy for parameter tuning in 10^precision.
             This parameter has to be an integer in [-7, 0].
 
         :raise:    Raises a :py:exc:`TypeError` if errorMeasureClass is not a valid class.
@@ -48,15 +50,17 @@ class BaseOptimizationMethod(PyCastObject):
             errorMeasureInitializationParameters = {}
 
         if not isinstance(errorMeasureClass, (type, types.ClassType)):
-            raise TypeError("errorMeasureClass has to be of type pycast.errors.BaseErrorMeasure or of an inherited class.")
+            raise TypeError(
+                "errorMeasureClass has to be of type pycast.errors.BaseErrorMeasure or of an inherited class.")
         if not issubclass(errorMeasureClass, BaseErrorMeasure):
-            raise TypeError("errorMeasureClass has to be of type pycast.errors.BaseErrorMeasure or of an inherited class.")
+            raise TypeError(
+                "errorMeasureClass has to be of type pycast.errors.BaseErrorMeasure or of an inherited class.")
         if not -7 <= precision <= 0:
             raise ValueError("precision has to be in [-7,0].")
 
         super(BaseOptimizationMethod, self).__init__()
 
-        self._precison   = int(precision)
+        self._precison = int(precision)
         self._errorClass = errorMeasureClass
         self._errorMeasureKWArgs = errorMeasureInitializationParameters
 
@@ -64,9 +68,9 @@ class BaseOptimizationMethod(PyCastObject):
         """Runs the optimization on the given TimeSeries.
 
         :param TimeSeries timeSeries:    TimeSeries instance that requires an optimized forecast.
-        :param List forecastingMethods:    List of forecastingMethods that will be used for optimization.
+        :param list forecastingMethods:    List of forecastingMethods that will be used for optimization.
 
-        :return:    Returns the optimzed forecasting method with the smallest error.
+        :return:    Returns the optimized forecasting method with the smallest error.
         :rtype:     (BaseForecastingMethod, Dictionary)
 
         :raise:    Raises a :py:exc:`ValueError` ValueError if no forecastingMethods is empty.

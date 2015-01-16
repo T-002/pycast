@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+# Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -31,6 +31,7 @@ from pycast.common.timeseries import TimeSeries, FusionMethods
 from pycast.methods.basemethod import BaseMethod
 from pycast.common.pycastobject import PyCastObject
 
+
 class TimeSeriesMiscellaneousTest(unittest.TestCase):
     """Test class containing tests for miscallaneous TimeSeries functions."""
 
@@ -46,10 +47,10 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         """Test if TimeSeries apply branches work correctly.
 
         This is mainly to increase code coverage."""
-        mOne   = BaseMethod([], hasToBeSorted=True, hasToBeNormalized=True)
-        mTwo   = BaseMethod([], hasToBeSorted=False, hasToBeNormalized=True)
+        mOne = BaseMethod([], hasToBeSorted=True, hasToBeNormalized=True)
+        mTwo = BaseMethod([], hasToBeSorted=False, hasToBeNormalized=True)
         mThree = BaseMethod([], hasToBeSorted=True, hasToBeNormalized=False)
-        mFour  = BaseMethod([], hasToBeSorted=False, hasToBeNormalized=False)
+        mFour = BaseMethod([], hasToBeSorted=False, hasToBeNormalized=False)
 
         ts = TimeSeries(isNormalized=True)
         ts.add_entry(0.0, 0.0)
@@ -63,28 +64,28 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         except NotImplementedError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
         try:
             ts.apply(mTwo)
         except NotImplementedError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
         try:
             ts.apply(mThree)
         except NotImplementedError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
         try:
             ts.apply(mFour)
         except NotImplementedError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
     def validity_of___str___test(self):
         """Test the validity of __str__ for a given TimeSeries."""
@@ -96,7 +97,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         ts.add_entry(0.4, 0.4)
 
         matchres = re.match("TimeSeries\(\[(.*)\]\)", ts.__str__())
-        
+
         assert (None != matchres)
 
     def list_initialization_test(self):
@@ -135,54 +136,54 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
 
     def equality_test(self):
         """Test the == operator for TimeSeries instances."""
-        data  = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
-        
-        tsOne   = TimeSeries.from_twodim_list(data)
-        tsTwo   = TimeSeries.from_twodim_list(data)
+        data = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
+
+        tsOne = TimeSeries.from_twodim_list(data)
+        tsTwo = TimeSeries.from_twodim_list(data)
         tsThree = TimeSeries.from_twodim_list(data[:-2])
-        tsFour  = TimeSeries.from_twodim_list(data)
-        tsFive  = TimeSeries.from_twodim_list(data)
+        tsFour = TimeSeries.from_twodim_list(data)
+        tsFive = TimeSeries.from_twodim_list(data)
 
         tsFour[1][0] = 1.3
         tsFive[1][1] = 1.3
 
         assert (tsOne == tsTwo)
         assert (tsOne != tsThree)
-        assert (tsTwo != tsThree) 
-        assert (tsOne != tsFour)  
-        assert (tsOne != tsFive)  
+        assert (tsTwo != tsThree)
+        assert (tsOne != tsFour)
+        assert (tsOne != tsFive)
         assert (tsThree != tsFour)
         assert (tsThree != tsFive)
-        assert (tsFour != tsFive) 
+        assert (tsFour != tsFive)
 
     def gnuplot_serialization_without_format_test(self):
         """Test serialization of timeSeries into gnuplot file."""
-        data  = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
+        data = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
         tsOne = TimeSeries.from_twodim_list(data)
         tsOne.to_gnuplot_datafile("temp_plot.dat")
-        
+
         assert os.path.isfile("temp_plot.dat")
 
     def gnuplot_serialization_with_format_test(self):
         """Test serialization of timeSeries into gnuplot file."""
-        data  = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
+        data = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
         tsOne = TimeSeries.from_twodim_list(data)
         tsOne.set_timeformat("%Y-%m-%d_%H:%M:%S")
         tsOne.to_gnuplot_datafile("temp_plot.dat")
-        
+
         assert os.path.isfile("temp_plot.dat")
 
     def gnuplot_serialization_exception_handling_test(self):
         """Test serialization of timeSeries into gnuplot file."""
-        data  = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
+        data = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
         tsOne = TimeSeries.from_twodim_list(data)
         tsOne.to_gnuplot_datafile(None)
 
     def timeseries_sort_test(self):
         """Tests the sort_timeseries function."""
         data = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
-        ts   = TimeSeries.from_twodim_list(data)
-        
+        ts = TimeSeries.from_twodim_list(data)
+
         ts.sort_timeseries()
         ts.sort_timeseries(False)
 
@@ -191,9 +192,9 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
 
     def timeseries_sorted_test(self):
         """Test the sorted_timeseries function."""
-        data  = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
+        data = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
         tsOne = TimeSeries.from_twodim_list(data)
-        
+
         tsTwo = tsOne.sorted_timeseries()
 
         if not (tsOne == tsTwo): raise AssertionError
@@ -205,7 +206,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
 
     def timeseries___setitem___test(self):
         """Test TimeSeries.__setitem__"""
-        data  = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
+        data = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
         tsOne = TimeSeries.from_twodim_list(data)
         tsTwo = TimeSeries.from_twodim_list(data)
 
@@ -215,7 +216,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
     def timeseries_iterator_test(self):
         """Test iteration over TimeSeries."""
         data = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
-        ts   = TimeSeries.from_twodim_list(data)
+        ts = TimeSeries.from_twodim_list(data)
 
         idx = 0
         for entry in ts:
@@ -228,7 +229,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         dataOne = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
         dataTwo = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
         dataThree = dataOne + dataTwo
-        dataThree.sort(key=lambda item:item[0])
+        dataThree.sort(key=lambda item: item[0])
 
         tsOne = TimeSeries.from_twodim_list(dataOne)
         tsTwo = TimeSeries.from_twodim_list(dataTwo)
@@ -253,9 +254,9 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         dataOne = [[0.0, 0.0], [1.0, 1.0], [2.0, 2.0], [5.1, 5.0]]
         dataTwo = [[0.5, 0.0], [1.5, 1.0], [2.5, 2.0], [3.5, 3.0], [4.5, 4.0], [5.5, 5.0]]
 
-        tsOne   = TimeSeries.from_twodim_list(dataOne)
-        tsTwo   = TimeSeries.from_twodim_list(dataTwo)
-        
+        tsOne = TimeSeries.from_twodim_list(dataOne)
+        tsTwo = TimeSeries.from_twodim_list(dataTwo)
+
         tsOne.normalize("second")
 
         if not len(tsOne) == len(tsTwo): raise AssertionError
@@ -266,67 +267,67 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         dataOne = [[0.0, 0.0], [1.0, 1.0], [2.0, 2.0], [5.0, 5.0]]
         dataTwo = [[0.5, 0.0], [1.5, 1.0], [2.5, 2.0], [3.5, 3.0], [4.5, 4.0], [5.5, 5.0]]
 
-        tsOne   = TimeSeries.from_twodim_list(dataOne)
-        tsTwo   = TimeSeries.from_twodim_list(dataTwo)
-        
+        tsOne = TimeSeries.from_twodim_list(dataOne)
+        tsTwo = TimeSeries.from_twodim_list(dataTwo)
+
         tsOne.normalize("second")
         tsOne.normalize("second")
-        
+
         if not len(tsOne) == len(tsTwo):  raise AssertionError
         if not tsOne == tsTwo:            raise AssertionError
 
     def normalization_illegal_parameter_test(self):
         """Test illegal parameter of TimeSeries.normalize()."""
         data = [[0.0, 0.0], [1.0, 1.0], [2.0, 2.0], [5.0, 5.0]]
-        ts   = TimeSeries.from_twodim_list(data)
+        ts = TimeSeries.from_twodim_list(data)
 
         try:
             ts.normalize(normalizationLevel="ILLEGAL_PARAMETER")
         except ValueError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
         try:
             ts.normalize(fusionMethod="ILLEGAL_PARAMETER")
         except ValueError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
         try:
             ts.normalize(interpolationMethod="ILLEGAL_PARAMETER")
         except ValueError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
     def sum_fusion_method_test(self):
         """Testing the sum fusion method."""
-        data  = [1,2,3,4,5,6,0,7]
-        data2 = [1,3,5,65,3,2,1,34,0.5]
-        
-        assert FusionMethods["sum"](data)  == 28
+        data = [1, 2, 3, 4, 5, 6, 0, 7]
+        data2 = [1, 3, 5, 65, 3, 2, 1, 34, 0.5]
+
+        assert FusionMethods["sum"](data) == 28
         assert FusionMethods["sum"](data2) == 114.5
-    
+
     def median_fusion_method_test(self):
         """Testing the median fusion method."""
         data0 = [3]
-        data1 = [0,1,2,3,4,5,6,7]
-        data2 = [0,1,8,7,3,4,5,2,6]
-        data3 = [2,0.5,0.5,34,1,5,1,3,3,65]
+        data1 = [0, 1, 2, 3, 4, 5, 6, 7]
+        data2 = [0, 1, 8, 7, 3, 4, 5, 2, 6]
+        data3 = [2, 0.5, 0.5, 34, 1, 5, 1, 3, 3, 65]
 
         assert FusionMethods["median"](data0) == 3
         assert FusionMethods["median"](data1) == 4
         assert FusionMethods["median"](data2) == 4
         assert FusionMethods["median"](data3) == 3
-    
+
     def mean_fusion_method_test(self):
         """Testing the average fusion method."""
         data0 = [3]
-        data1 = [0,1,2,3,4,5,6,7]
-        data2 = [0,1,8,7,3,4,5,2,6]
-        data3 = [2,0.5,0.5,34,1,5,1,3,3,65]
+        data1 = [0, 1, 2, 3, 4, 5, 6, 7]
+        data2 = [0, 1, 8, 7, 3, 4, 5, 2, 6]
+        data3 = [2, 0.5, 0.5, 34, 1, 5, 1, 3, 3, 65]
 
         assert str(FusionMethods["mean"](data0))[:6] == "3.0"
         assert str(FusionMethods["mean"](data1))[:6] == "3.5"
@@ -339,7 +340,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         tsClone = copy(ts)
 
         assert tsClone == ts
-        
+
         ts[0][0] = 0.0
         assert ts != tsClone
 
@@ -348,13 +349,14 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
 
     def normalized_method_requirement_test(self):
         """Test for StandardError."""
+
         def nothing(self):
             return
 
         data = [[0.0, 0.0], [1.1, 1.0], [2.0, 2.0], [5.0, 5.0]]
-        ts   = TimeSeries.from_twodim_list(data)
+        ts = TimeSeries.from_twodim_list(data)
 
-        mOne   = BaseMethod([], hasToBeSorted=True, hasToBeNormalized=True)
+        mOne = BaseMethod([], hasToBeSorted=True, hasToBeNormalized=True)
         mOne.execute = nothing
 
         try:
@@ -362,7 +364,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         except StandardError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
         ts.normalize("second")
         ts.apply(mOne)
@@ -370,7 +372,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
 
     def check_normalization_test(self):
         """Check for check_normalization."""
-        dataOK    = zip(xrange(10), [random.random() for i in xrange(10)])
+        dataOK = zip(xrange(10), [random.random() for i in xrange(10)])
         dataNotOK = dataOK[:]
         del dataNotOK[2]
         del dataNotOK[7]
@@ -378,7 +380,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         tsOK = TimeSeries.from_twodim_list(dataOK)
         tsNotOK = TimeSeries.from_twodim_list(dataNotOK)
 
-        assert     tsOK._check_normalization()
+        assert tsOK._check_normalization()
         assert not tsNotOK._check_normalization()
 
     def optimized_test(self):
@@ -391,17 +393,17 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         """Test if the two parts of a sampled timeSeries
         add up to the entire timeSeries"""
         data = [[0.0, 0.0], [1.0, 0.1], [2.0, 0.2], [3.0, 0.3], [4.0, 0.4]]
-        ts   = TimeSeries.from_twodim_list(data)
-        
+        ts = TimeSeries.from_twodim_list(data)
+
         for illegalValue in (-3.1, 0.0, 1.0, 1.3, 4.2):
             try:
                 ts.sample(illegalValue)
             except ValueError:
                 pass
             else:
-                assert False, "ValueError not raised. Percentage was %s." % illegalValue    # pragma: no cover
+                assert False, "ValueError not raised. Percentage was %s." % illegalValue  # pragma: no cover
 
         sample, rest = ts.sample(0.4)
-        
+
         self.assertEquals(len(sample), 2)
         self.assertEquals(sample + rest, ts)

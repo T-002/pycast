@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+# Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -26,11 +26,12 @@
 import unittest
 
 ## required modules from pycast
-from pycast.errors            import SymmetricMeanAbsolutePercentageError as SMAPE
+from pycast.errors import SymmetricMeanAbsolutePercentageError as SMAPE
 from pycast.common.timeseries import TimeSeries
-from pycast.methods           import BaseForecastingMethod, ExponentialSmoothing, HoltMethod
+from pycast.methods import BaseForecastingMethod, ExponentialSmoothing, HoltMethod
 
 from pycast.optimization import GridSearch
+
 
 class GridSearchTest(unittest.TestCase):
     """Test class for the GridSearch."""
@@ -55,8 +56,8 @@ class GridSearchTest(unittest.TestCase):
     def create_generator_test(self):
         """Test the parameter generation function."""
         ## initialize a correct result
-        precision = 10**-2
-        values_one = [i * precision for i in xrange(1,100)]
+        precision = 10 ** -2
+        values_one = [i * precision for i in xrange(1, 100)]
         values_two = [i * precision for i in xrange(201)]
 
         generator_one = GridSearch(SMAPE, precision=-2)._generate_next_parameter_value("parameter_one", self.bfm)
@@ -83,7 +84,7 @@ class GridSearchTest(unittest.TestCase):
         except ValueError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
         try:
             GridSearch(SMAPE, -1).optimize(self.timeSeries, [self.bfm])
@@ -91,7 +92,7 @@ class GridSearchTest(unittest.TestCase):
         except NotImplementedError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
     def optimize_value_creation_test(self):
         """Testing the first part of optimize_forecasting_method."""
@@ -103,7 +104,7 @@ class GridSearchTest(unittest.TestCase):
         except NotImplementedError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
         self.bfm._parameterIntervals = {
             "param3": [0.0, 1.0, True, True],
@@ -117,18 +118,18 @@ class GridSearchTest(unittest.TestCase):
         except NotImplementedError:
             pass
         else:
-            assert False    # pragma: no cover
-    
+            assert False  # pragma: no cover
+
     def inner_optimization_result_test(self):
         """Test for the correct result of a GridSearch optimization."""
         fm = ExponentialSmoothing()
-        startingPercentage =   0.0
-        endPercentage      = 100.0
+        startingPercentage = 0.0
+        endPercentage = 100.0
 
         ## manually select the best alpha
         self.timeSeries.normalize("second")
         results = []
-        for smoothingFactor in [alpha / 100.0 for alpha in xrange(1, 100)]:    # pragma: no cover
+        for smoothingFactor in [alpha / 100.0 for alpha in xrange(1, 100)]:  # pragma: no cover
             fm.set_parameter("smoothingFactor", smoothingFactor)
             resultTS = self.timeSeries.apply(fm)
             error = SMAPE()
@@ -147,14 +148,14 @@ class GridSearchTest(unittest.TestCase):
         gridSearch = GridSearch(SMAPE, precision=-2)
         ## used, because we test a submethod here
         gridSearch._startingPercentage = startingPercentage
-        gridSearch._endPercentage      = endPercentage
-        result     = gridSearch.optimize_forecasting_method(self.timeSeries, fm)
+        gridSearch._endPercentage = endPercentage
+        result = gridSearch.optimize_forecasting_method(self.timeSeries, fm)
 
         ## the grid search should have determined the same alpha
-        bestManualAlpha     = bestManualResult[1]
-        errorManualResult     = bestManualResult[0].get_error()
+        bestManualAlpha = bestManualResult[1]
+        errorManualResult = bestManualResult[0].get_error()
 
-        bestGridSearchAlpha   = result[1]["smoothingFactor"]
+        bestGridSearchAlpha = result[1]["smoothingFactor"]
         errorGridSearchResult = result[0].get_error()
 
         ## Debugging
@@ -165,18 +166,18 @@ class GridSearchTest(unittest.TestCase):
         #print ""
 
         assert str(errorManualResult)[:8] >= str(errorGridSearchResult)[:8]
-        assert str(bestManualAlpha)[:5]   == str(bestGridSearchAlpha)[:5]
+        assert str(bestManualAlpha)[:5] == str(bestGridSearchAlpha)[:5]
 
     def inner_optimization_result_accuracy_test(self):
         """Test for the correct result of a GridSearch optimization."""
         fm = ExponentialSmoothing()
-        startingPercentage =   0.0
-        endPercentage      = 100.0
+        startingPercentage = 0.0
+        endPercentage = 100.0
 
         ## manually select the best alpha
         self.timeSeries.normalize("second")
         results = []
-        for smoothingFactor in [alpha / 100.0 for alpha in xrange(1, 100)]:    # pragma: no cover
+        for smoothingFactor in [alpha / 100.0 for alpha in xrange(1, 100)]:  # pragma: no cover
             fm.set_parameter("smoothingFactor", smoothingFactor)
             resultTS = self.timeSeries.apply(fm)
             error = SMAPE()
@@ -187,18 +188,18 @@ class GridSearchTest(unittest.TestCase):
 
         ## automatically determine the best alpha using GridSearch
         gridSearch = GridSearch(SMAPE, precision=-4)
-       
+
         ## used, because we test a submethod here
         gridSearch._startingPercentage = startingPercentage
-        gridSearch._endPercentage      = endPercentage
+        gridSearch._endPercentage = endPercentage
 
-        result     = gridSearch.optimize_forecasting_method(self.timeSeries, fm)
+        result = gridSearch.optimize_forecasting_method(self.timeSeries, fm)
 
         ## the grid search should have determined the same alpha
-        bestManualAlpha     = bestManualResult[1]
-        errorManualResult     = bestManualResult[0].get_error()
+        bestManualAlpha = bestManualResult[1]
+        errorManualResult = bestManualResult[0].get_error()
 
-        bestGridSearchAlpha   = result[1]["smoothingFactor"]
+        bestGridSearchAlpha = result[1]["smoothingFactor"]
         errorGridSearchResult = result[0].get_error()
 
         assert errorManualResult > errorGridSearchResult
@@ -212,7 +213,7 @@ class GridSearchTest(unittest.TestCase):
 
         ## automatically determine the best alpha using GridSearch
         gridSearch = GridSearch(SMAPE, precision=-2)
-        result     = gridSearch.optimize(self.timeSeries, [fm1, fm2])
+        result = gridSearch.optimize(self.timeSeries, [fm1, fm2])
 
     def optimization_loop_test(self):
         """Testing the optimozation loop."""

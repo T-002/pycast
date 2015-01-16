@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+# Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -25,24 +25,24 @@
 import math
 from pycast.errors import BaseErrorMeasure
 
-class MeanAbsolutePercentageError(BaseErrorMeasure):
 
+class MeanAbsolutePercentageError(BaseErrorMeasure):
     def _calculate(self, startingPercentage, endPercentage, startDate, endDate):
         """This is the error calculation function that gets called by :py:meth:`BaseErrorMeasure.get_error`.
 
         Both parameters will be correct at this time.
 
-        :param Float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
+        :param float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
             It represents the value, where the error calculation should be started. 
             25.0 for example means that the first 25% of all calculated errors will be ignored.
-        :param Float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
-            It represents the vlaue, after which all error values will be ignored. 90.0 for example means that
+        :param float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
+            It represents the value, after which all error values will be ignored. 90.0 for example means that
             the last 10% of all local errors will be ignored.
-        :param Float startDate: Epoch representing the start date used for error calculation.
-        :param Float endDate: Epoch representing the end date used in the error calculation.
+        :param float startDate: Epoch representing the start date used for error calculation.
+        :param float endDate: Epoch representing the end date used in the error calculation.
 
         :return:    Returns a float representing the error.
-        :rtype:     Float
+        :rtype:     float
         """
         ## get the defined subset of error values
         errorValues = self._get_error_values(startingPercentage, endPercentage, startDate, endDate)
@@ -53,22 +53,24 @@ class MeanAbsolutePercentageError(BaseErrorMeasure):
     def local_error(self, originalValue, calculatedValue):
         """Calculates the error between the two given values.
 
-        :param List originalValue:    List containing the values of the original data.
-        :param List calculatedValue:    List containing the values of the calculated TimeSeries that
+        :param list originalValue:    List containing the values of the original data.
+        :param list calculatedValue:    List containing the values of the calculated TimeSeries that
             corresponds to originalValue.
 
         :return:    Returns the error measure of the two given values.
-        :rtype:     Numeric
+        :rtype:     numeric
         """
         originalValue = originalValue[0]
         calculatedValue = calculatedValue[0]
-        
+
         if 0 == originalValue:
             return None
 
-        return ((math.fabs(calculatedValue - originalValue))/float(originalValue)) * 100.0
+        return ((math.fabs(calculatedValue - originalValue)) / float(originalValue)) * 100.0
+
 
 MAPE = MeanAbsolutePercentageError
+
 
 class GeometricMeanAbsolutePercentageError(MeanAbsolutePercentageError):
     """Calculates the geometric MAPE."""
@@ -78,22 +80,22 @@ class GeometricMeanAbsolutePercentageError(MeanAbsolutePercentageError):
 
         Both parameters will be correct at this time.
 
-        :param Float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
+        :param float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
             It represents the value, where the error calculation should be started. 
             25.0 for example means that the first 25% of all calculated errors will be ignored.
-        :param Float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
-            It represents the vlaue, after which all error values will be ignored. 90.0 for example means that
+        :param float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
+            It represents the value, after which all error values will be ignored. 90.0 for example means that
             the last 10% of all local errors will be ignored.
-        :param Float startDate: Epoch representing the start date used for error calculation.
-        :param Float endDate: Epoch representing the end date used in the error calculation.
+        :param float startDate: Epoch representing the start date used for error calculation.
+        :param float endDate: Epoch representing the end date used in the error calculation.
 
         :return:    Returns a float representing the error.
-        :rtype:     Float
+        :rtype:     float
         """
         ## get the defined subset of error values
         errorValues = self._get_error_values(startingPercentage, endPercentage, startDate, endDate)
         errorValues = filter(lambda item: item != None, errorValues)
-        
+
         share = 1.0 / float(len(errorValues))
 
         product = 1.0
@@ -102,10 +104,11 @@ class GeometricMeanAbsolutePercentageError(MeanAbsolutePercentageError):
             ## never multiply with zero!
             if 0 == errorValue:
                 continue
-            
-            product *= errorValue**share
-        
+
+            product *= errorValue ** share
+
         return product
+
 
 GMAPE = GeometricMeanAbsolutePercentageError
 
@@ -116,12 +119,12 @@ class MeanSignedPercentageError(MeanAbsolutePercentageError):
     def local_error(self, originalValue, calculatedValue):
         """Calculates the error between the two given values.
 
-        :param List originalValue:    List containing the values of the original data.
-        :param List calculatedValue:    List containing the values of the calculated TimeSeries that
+        :param list originalValue:    List containing the values of the original data.
+        :param list calculatedValue:    List containing the values of the calculated TimeSeries that
             corresponds to originalValue.
 
         :return:    Returns the error measure of the two given values.
-        :rtype:     Numeric
+        :rtype:     numeric
         """
         if calculatedValue[0] - originalValue[0] > 0:
             # over estimation
@@ -133,5 +136,6 @@ class MeanSignedPercentageError(MeanAbsolutePercentageError):
                 return local * -1
             else:
                 return None
+
 
 MSPE = MeanSignedPercentageError

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+# Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -31,13 +31,14 @@ import unittest, random, sqlite3
 ## required modules from pycast
 from pycast.common.timeseries import TimeSeries, MultiDimensionalTimeSeries
 
+
 class DatabaseConnectorTest(unittest.TestCase):
     """Testclass for all database connection related tests."""
 
     def setUp(self):
         """Initializes the environment for each test."""
         self._db = sqlite3.connect(":memory:")
-        self.add_data_into_db(self._db, random.randint(100,10000))
+        self.add_data_into_db(self._db, random.randint(100, 10000))
 
     def tearDown(self):
         """This function gets called after each test function."""
@@ -78,12 +79,12 @@ class DatabaseConnectorTest(unittest.TestCase):
 
         ## create the tuples
         for item in xrange(numberOfTuples):
-            timestamp += random.random() 
-            value     = random.random() * 1000
-            junkOne   = random.random()
-            junkTwo   = random.choice(junk_two)
+            timestamp += random.random()
+            value = random.random() * 1000
+            junkOne = random.random()
+            junkTwo = random.choice(junk_two)
 
-            append([timestamp, value,junkOne, junkTwo])
+            append([timestamp, value, junkOne, junkTwo])
 
         ## insert the tuples into the database
         cur.executemany("""INSERT INTO TestTable VALUES (?,?,?,?)""", tuples)
@@ -100,7 +101,7 @@ class DatabaseConnectorTest(unittest.TestCase):
         take the first two attributes for data initialization, regardless of their names.
         """
         ## read the number of rows from the database
-        cur = self._db.cursor().execute("""SELECT COUNT(*) from TestTable""")
+        cur = self._db.cursor().execute("""SELECT COUNT(*) FROM TestTable""")
         nbrOfTuples = cur.fetchall()[0][0]
 
         ## initialize a TimeSeries instance from a database cursor
@@ -122,7 +123,7 @@ class DatabaseConnectorTest(unittest.TestCase):
         take the first two attributes for data initialization, regardless of their names.
         """
         ## read the number of rows from the database
-        cur = self._db.cursor().execute("""SELECT COUNT(*) from TestTable""")
+        cur = self._db.cursor().execute("""SELECT COUNT(*) FROM TestTable""")
         nbrOfTuples = cur.fetchall()[0][0]
 
         ## initialize a TimeSeries instance from a database cursor
@@ -136,7 +137,7 @@ class DatabaseConnectorTest(unittest.TestCase):
     def multidimensionaltimeseries_test(self):
         """Test the initialization of the MultiDimensionalTimeSeries."""
         ## read the number of rows from the database
-        cur = self._db.cursor().execute("""SELECT COUNT(*) from TestTable""")
+        cur = self._db.cursor().execute("""SELECT COUNT(*) FROM TestTable""")
         nbrOfTuples = cur.fetchall()[0][0]
 
         ## initialize a TimeSeries instance from a database cursor
@@ -150,7 +151,7 @@ class DatabaseConnectorTest(unittest.TestCase):
     def check_for_consistency_test(self):
         """Tests if database initialization and manual initialization create equal TimeSeries instances."""
         ## read the number of rows from the database
-        cur = self._db.cursor().execute("""SELECT COUNT(*) from TestTable""")
+        cur = self._db.cursor().execute("""SELECT COUNT(*) FROM TestTable""")
         nbrOfTuples = cur.fetchall()[0][0]
 
         ## SQL extraction statement
@@ -158,7 +159,7 @@ class DatabaseConnectorTest(unittest.TestCase):
 
         ## Initialize one TimeSeries instance manually
         tsManual = TimeSeries()
-        data     = self._db.cursor().execute(sqlstmt).fetchall()
+        data = self._db.cursor().execute(sqlstmt).fetchall()
         for entry in data:
             tsManual.add_entry(str(entry[0]), entry[1])
 
@@ -167,7 +168,7 @@ class DatabaseConnectorTest(unittest.TestCase):
         tsAuto.initialize_from_sql_cursor(self._db.cursor().execute(sqlstmt))
 
         ## check if those TimeSeries are equal
-        assert (nbrOfTuples   == len(tsManual))
-        assert (nbrOfTuples   == len(tsAuto))
+        assert (nbrOfTuples == len(tsManual))
+        assert (nbrOfTuples == len(tsAuto))
         assert (len(tsManual) == len(tsAuto))
-        assert (tsManual      == tsAuto)
+        assert (tsManual == tsAuto)

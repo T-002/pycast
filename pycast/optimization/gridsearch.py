@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+# Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -24,6 +24,7 @@
 
 from pycast.optimization import BaseOptimizationMethod
 
+
 class GridSearch(BaseOptimizationMethod):
     """Implements the grid search method for parameter optimization. 
 
@@ -34,15 +35,15 @@ class GridSearch(BaseOptimizationMethod):
         """Runs the optimization of the given TimeSeries.
 
         :param TimeSeries timeSeries:    TimeSeries instance that requires an optimized forecast.
-        :param List forecastingMethods:    List of forecastingMethods that will be used for optimization.
-        :param Float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
+        :param list forecastingMethods:    List of forecastingMethods that will be used for optimization.
+        :param float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
             It represents the value, where the error calculation should be started. 
             25.0 for example means that the first 25% of all calculated errors will be ignored.
-        :param Float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
-            It represents the vlaue, after which all error values will be ignored. 90.0 for example means that
+        :param float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
+            It represents the value, after which all error values will be ignored. 90.0 for example means that
             the last 10% of all local errors will be ignored.
 
-        :return:    Returns the optimzed forecasting method, the corresponding error measure and the forecasting methods
+        :return:    Returns the optimized forecasting method, the corresponding error measure and the forecasting methods
             parameters.
         :rtype:     [BaseForecastingMethod, BaseErrorMeasure, Dictionary]
 
@@ -53,14 +54,15 @@ class GridSearch(BaseOptimizationMethod):
             raise ValueError("forecastingMethods cannot be empty.")
 
         self._startingPercentage = startingPercentage
-        self._endPercentage      = endPercentage
+        self._endPercentage = endPercentage
 
         results = []
         for forecastingMethod in forecastingMethods:
             results.append([forecastingMethod] + self.optimize_forecasting_method(timeSeries, forecastingMethod))
 
         ## get the forecasting method with the smallest error
-        bestForecastingMethod = min(results, key=lambda item: item[1].get_error(self._startingPercentage, self._endPercentage))
+        bestForecastingMethod = min(results,
+                                    key=lambda item: item[1].get_error(self._startingPercentage, self._endPercentage))
 
         for parameter in bestForecastingMethod[2]:
             bestForecastingMethod[0].set_parameter(parameter, bestForecastingMethod[2][parameter])
@@ -71,17 +73,17 @@ class GridSearch(BaseOptimizationMethod):
     def _generate_next_parameter_value(self, parameter, forecastingMethod):
         """Generator for a specific parameter of the given forecasting method.
 
-        :param String parameter:    Name of the parameter the generator is used for.
+        :param string parameter:    Name of the parameter the generator is used for.
         :param BaseForecastingMethod forecastingMethod:    Instance of a ForecastingMethod.
 
         :return:    Creates a generator used to iterate over possible parameters.
-        :rtype:     Generator Function
+        :rtype:     generator
         """
-        interval  = forecastingMethod.get_interval(parameter)
-        precision = 10**self._precison
+        interval = forecastingMethod.get_interval(parameter)
+        precision = 10 ** self._precison
 
         startValue = interval[0]
-        endValue   = interval[1]
+        endValue = interval[1]
 
         if not interval[2]:
             startValue += precision
@@ -92,7 +94,7 @@ class GridSearch(BaseOptimizationMethod):
         while startValue < endValue:
             ## fix the parameter precision
             parameterValue = startValue
-            
+
             yield parameterValue
             startValue += precision
 
@@ -104,13 +106,15 @@ class GridSearch(BaseOptimizationMethod):
 
         :return: Returns a tuple containing only the smallest BaseErrorMeasure instance as defined in
             :py:meth:`BaseOptimizationMethod.__init__` and the forecastingMethods parameter.
-        :rtype: Tuple
+        :rtype: tuple
         """
         tuneableParameters = forecastingMethod.get_optimizable_parameters()
 
         remainingParameters = []
         for tuneableParameter in tuneableParameters:
-            remainingParameters.append([tuneableParameter, [item for item in self._generate_next_parameter_value(tuneableParameter, forecastingMethod)]])
+            remainingParameters.append([tuneableParameter, [item for item in
+                                                            self._generate_next_parameter_value(tuneableParameter,
+                                                                                                forecastingMethod)]])
 
         ## Collect the forecasting results
         forecastingResults = self.optimization_loop(timeSeries, forecastingMethod, remainingParameters)
@@ -124,7 +128,8 @@ class GridSearch(BaseOptimizationMethod):
         #print ""
 
         ## Collect the parameters that resulted in the smallest error
-        bestForecastingResult = min(forecastingResults, key=lambda item: item[0].get_error(self._startingPercentage, self._endPercentage))
+        bestForecastingResult = min(forecastingResults,
+                                    key=lambda item: item[0].get_error(self._startingPercentage, self._endPercentage))
 
         ## return the determined parameters
         return bestForecastingResult
@@ -139,11 +144,11 @@ class GridSearch(BaseOptimizationMethod):
         :param list remainingParameters:    List containing all parameters with their corresponding values that still
             need to be evaluated.
             When this list is empty, the most inner optimization loop is reached.
-        :param Dictionary currentParameterValues:    The currently evaluated forecast parameter combination.
+        :param dictionary currentParameterValues:    The currently evaluated forecast parameter combination.
 
         :return: Returns a list containing a BaseErrorMeasure instance as defined in
             :py:meth:`BaseOptimizationMethod.__init__` and the forecastingMethods parameter.
-        :rtype: List
+        :rtype: list
         """
 
         if currentParameterValues == None:
@@ -170,20 +175,21 @@ class GridSearch(BaseOptimizationMethod):
 
             ## return the result
             return [[error, dict(currentParameterValues)]]
-        
+
         ## If this is not the most inner loop than extract an additional parameter
-        localParameter       = remainingParameters[-1]
-        localParameterName   = localParameter[0]
+        localParameter = remainingParameters[-1]
+        localParameterName = localParameter[0]
         localParameterValues = localParameter[1]
 
 
         ## initialize the result
         results = []
-        
+
         ## check the next level for each existing parameter
         for value in localParameterValues:
             currentParameterValues[localParameterName] = value
             remainingParameters = remainingParameters[:-1]
-            results += self.optimization_loop(timeSeries, forecastingMethod, remainingParameters, currentParameterValues)
+            results += self.optimization_loop(timeSeries, forecastingMethod, remainingParameters,
+                                              currentParameterValues)
 
         return results
