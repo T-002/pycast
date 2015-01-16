@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+# Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -25,6 +25,7 @@
 from pycast.methods import BaseMethod
 from pycast.common.timeseries import TimeSeries
 
+
 class SimpleMovingAverage(BaseMethod):
     """Implements the simple moving average.
 
@@ -38,13 +39,13 @@ class SimpleMovingAverage(BaseMethod):
     def __init__(self, windowsize=5):
         """Initializes the SimpleMovingAverage.
 
-        :param Integer windowsize:    Size of the SimpleMovingAverages window.
+        :param integer windowsize:    Size of the SimpleMovingAverages window.
         
         :raise:    Raises a :py:exc:`ValueError` if windowsize is an even or not larger than zero.
         """
         if windowsize <= 0:
             raise ValueError("windowsize has to be larger than 0.")
-        if windowsize/2 == windowsize/2.0:
+        if windowsize / 2 == windowsize / 2.0:
             raise ValueError("windowsize has to be uneven.")
 
         super(SimpleMovingAverage, self).__init__(["windowsize"], True, True)
@@ -69,7 +70,7 @@ class SimpleMovingAverage(BaseMethod):
                 - maxIntervalClosed:
                     :py:const:`True`, if maxValue represents a valid value for the parameter.
                     :py:const:`False` otherwise.
-        :rtype:     Dictionary
+        :rtype:     dictionary
         """
         parameterIntervals = {}
 
@@ -88,23 +89,23 @@ class SimpleMovingAverage(BaseMethod):
 
         :note:    This implementation aims to support independent for loop execution.
         """
-        windowsize    = self._parameters["windowsize"]
+        windowsize = self._parameters["windowsize"]
 
-        if len (timeSeries) < windowsize:
+        if len(timeSeries) < windowsize:
             raise ValueError("windowsize is larger than the number of elements in timeSeries.")
 
         minIdx = len(timeSeries) / 2
-        
-        tsLength      = len(timeSeries)
+
+        tsLength = len(timeSeries)
         nbrOfLoopRuns = tsLength - windowsize + 1
 
-        res = TimeSeries()        
+        res = TimeSeries()
         for idx in xrange(nbrOfLoopRuns):
             end = idx + windowsize
             data = timeSeries[idx:end]
 
-            timestamp = data[windowsize//2][0]
-            value     = sum([i[1] for i in data])/windowsize
+            timestamp = data[windowsize // 2][0]
+            value = sum([i[1] for i in data]) / windowsize
 
             res.add_entry(timestamp, value)
 
