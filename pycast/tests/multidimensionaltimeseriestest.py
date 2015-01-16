@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+# Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -31,6 +31,7 @@ from copy import copy
 
 from pycast.common.timeseries import MultiDimensionalTimeSeries
 
+
 class MultiDimensionalTimeSeriesTest(unittest.TestCase):
     """"Tests the MultiDimensionalTimeSeries."""
 
@@ -41,12 +42,12 @@ class MultiDimensionalTimeSeriesTest(unittest.TestCase):
         try:
             MultiDimensionalTimeSeries(0)
         except ValueError:
-            pass    # pragma: no cover
+            pass  # pragma: no cover
 
         try:
             MultiDimensionalTimeSeries(-4)
         except ValueError:
-            pass    # pragma: no cover
+            pass  # pragma: no cover
 
     def dimension_count_test(self):
         """Test the dimension count."""
@@ -56,31 +57,31 @@ class MultiDimensionalTimeSeriesTest(unittest.TestCase):
 
     def add_entry_error_test(self):
         """Test ValueError of MultiDimensionalTimeSeries.add_entry(...)."""
-        MultiDimensionalTimeSeries(3).add_entry(1, [1,2,3])
-        MultiDimensionalTimeSeries(4).add_entry(1, [1,2,3,4])
-        
-        try:
-            MultiDimensionalTimeSeries(3).add_entry(1, [1,2])
-        except ValueError:
-            pass    # pragma: no cover
+        MultiDimensionalTimeSeries(3).add_entry(1, [1, 2, 3])
+        MultiDimensionalTimeSeries(4).add_entry(1, [1, 2, 3, 4])
 
         try:
-            MultiDimensionalTimeSeries(3).add_entry(1, [1,2,3,4])
+            MultiDimensionalTimeSeries(3).add_entry(1, [1, 2])
         except ValueError:
-            pass    # pragma: no cover
+            pass  # pragma: no cover
+
+        try:
+            MultiDimensionalTimeSeries(3).add_entry(1, [1, 2, 3, 4])
+        except ValueError:
+            pass  # pragma: no cover
 
         MultiDimensionalTimeSeries
 
     def add_entry_test(self):
         """Test MultiDimensionalTimeSeries.add_entry()."""
-        data = [[1,2,3],[4,5,6],[7,8,9]]
+        data = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
         mdts = MultiDimensionalTimeSeries(3)
 
         for entry in data:
             mdts.add_entry(len(mdts), entry)
 
         assert len(data) == len(mdts)
-        
+
         for idx in xrange(len(data)):
             assert [idx] + data[idx] == mdts[idx]
 
@@ -93,9 +94,9 @@ class MultiDimensionalTimeSeriesTest(unittest.TestCase):
 
     def timeseries_sorted_test(self):
         """Test the sorted_timeseries function."""
-        data  = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
+        data = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
         tsOne = MultiDimensionalTimeSeries(1).from_twodim_list(data)
-        
+
         tsTwo = tsOne.sorted_timeseries()
 
         assert (tsOne == tsTwo)
@@ -107,27 +108,28 @@ class MultiDimensionalTimeSeriesTest(unittest.TestCase):
 
     def equal_test(self):
         """Test the == operator for TimeSeries instances."""
-        data  = [[0.0, [0.0]], [0.1, [0.1]], [0.2, [0.2]], [0.3, [0.3]], [0.4, [0.4]], [0.5, [0.5]]]
-        data2Dim  = [[0.0, [0.0, 0.42]], [0.1, [0.1, 0.42]], [0.2, [0.2, 0.42]], [0.3, [0.3, 0.42]], [0.4, [0.4, 0.42]], [0.5, [0.5, 0.42]]]
-        
-        tsOne   = MultiDimensionalTimeSeries.from_twodim_list(data)
-        tsTwo   = MultiDimensionalTimeSeries.from_twodim_list(data)
+        data = [[0.0, [0.0]], [0.1, [0.1]], [0.2, [0.2]], [0.3, [0.3]], [0.4, [0.4]], [0.5, [0.5]]]
+        data2Dim = [[0.0, [0.0, 0.42]], [0.1, [0.1, 0.42]], [0.2, [0.2, 0.42]], [0.3, [0.3, 0.42]], [0.4, [0.4, 0.42]],
+                    [0.5, [0.5, 0.42]]]
+
+        tsOne = MultiDimensionalTimeSeries.from_twodim_list(data)
+        tsTwo = MultiDimensionalTimeSeries.from_twodim_list(data)
         tsThree = MultiDimensionalTimeSeries.from_twodim_list(data[:-2])
-        tsFour  = MultiDimensionalTimeSeries.from_twodim_list(data)
-        tsFive  = MultiDimensionalTimeSeries.from_twodim_list(data)
-        tsSix   = MultiDimensionalTimeSeries.from_twodim_list(data2Dim, dimensions=2)
+        tsFour = MultiDimensionalTimeSeries.from_twodim_list(data)
+        tsFive = MultiDimensionalTimeSeries.from_twodim_list(data)
+        tsSix = MultiDimensionalTimeSeries.from_twodim_list(data2Dim, dimensions=2)
 
         tsFour[1][0] = 1.3
         tsFive[1][1] = 1.3
 
         assert (tsOne == tsTwo)
         assert (tsOne != tsThree)
-        assert (tsTwo != tsThree) 
-        assert (tsOne != tsFour)  
-        assert (tsOne != tsFive)  
+        assert (tsTwo != tsThree)
+        assert (tsOne != tsFour)
+        assert (tsOne != tsFive)
         assert (tsThree != tsFour)
         assert (tsThree != tsFive)
-        assert (tsFour != tsFive) 
+        assert (tsFour != tsFive)
         assert (tsSix != tsOne)
         assert (tsSix != tsTwo)
         assert (tsSix != tsThree)
@@ -136,10 +138,11 @@ class MultiDimensionalTimeSeriesTest(unittest.TestCase):
 
     def addition_test(self):
         """Test the addition of MultiDimensionalTimeSeries."""
-        dataOne  = [[0.0, [0.0]], [0.1, [0.1]], [0.2, [0.2]], [0.3, [0.3]], [0.4, [0.4]], [0.5, [0.5]]]
-        dataTwo  = [[0.0, [0.0]], [0.1, [0.1]], [0.2, [0.2]], [0.3, [0.3]], [0.4, [0.4]], [0.5, [0.5]]]
-        data2Dim  = [[0.0, [0.0, 0.42]], [0.1, [0.1, 0.42]], [0.2, [0.2, 0.42]], [0.3, [0.3, 0.42]], [0.4, [0.4, 0.42]], [0.5, [0.5, 0.42]]]
-        dataThree  = dataOne + dataTwo
+        dataOne = [[0.0, [0.0]], [0.1, [0.1]], [0.2, [0.2]], [0.3, [0.3]], [0.4, [0.4]], [0.5, [0.5]]]
+        dataTwo = [[0.0, [0.0]], [0.1, [0.1]], [0.2, [0.2]], [0.3, [0.3]], [0.4, [0.4]], [0.5, [0.5]]]
+        data2Dim = [[0.0, [0.0, 0.42]], [0.1, [0.1, 0.42]], [0.2, [0.2, 0.42]], [0.3, [0.3, 0.42]], [0.4, [0.4, 0.42]],
+                    [0.5, [0.5, 0.42]]]
+        dataThree = dataOne + dataTwo
 
         tsOne = MultiDimensionalTimeSeries.from_twodim_list(dataOne)
         tsTwo = MultiDimensionalTimeSeries.from_twodim_list(dataTwo)
@@ -151,9 +154,9 @@ class MultiDimensionalTimeSeriesTest(unittest.TestCase):
         try:
             tsFive + tsOne
         except ValueError:
-            pass    
+            pass
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 
     def list_serialization_formatfree_test(self):
         """Test the format free list serialization."""
@@ -178,11 +181,12 @@ class MultiDimensionalTimeSeriesTest(unittest.TestCase):
 
     def copy_test(self):
         """Test TimeSeries cloning."""
-        ts = MultiDimensionalTimeSeries.from_twodim_list([[0.5, 0.0], [1.5, 1.0], [2.5, 2.0], [3.5, 3.0], [4.5, 4.0], [5.5, 5.0]])
+        ts = MultiDimensionalTimeSeries.from_twodim_list(
+            [[0.5, 0.0], [1.5, 1.0], [2.5, 2.0], [3.5, 3.0], [4.5, 4.0], [5.5, 5.0]])
         tsClone = copy(ts)
 
         assert tsClone == ts
-        
+
         ts[0][0] = 0.0
         assert ts != tsClone
 
@@ -191,24 +195,24 @@ class MultiDimensionalTimeSeriesTest(unittest.TestCase):
 
     def gnuplot_serialization_without_format_test(self):
         """Test serialization of timeSeries into gnuplot file."""
-        data  = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
+        data = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
         tsOne = MultiDimensionalTimeSeries.from_twodim_list(data, dimensions=1)
         tsOne.to_gnuplot_datafile("temp_plot.dat")
-        
+
         assert os.path.isfile("temp_plot.dat")
 
     def gnuplot_serialization_with_format_test(self):
         """Test serialization of timeSeries into gnuplot file."""
-        data  = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
+        data = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
         tsOne = MultiDimensionalTimeSeries.from_twodim_list(data, dimensions=1)
         tsOne.set_timeformat("%Y-%m-%d_%H:%M:%S")
         tsOne.to_gnuplot_datafile("temp_plot.dat")
-        
+
         assert os.path.isfile("temp_plot.dat")
 
     def gnuplot_serialization_exception_handling_test(self):
         """Test serialization of timeSeries into gnuplot file."""
-        data  = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
+        data = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
         tsOne = MultiDimensionalTimeSeries.from_twodim_list(data, dimensions=1)
         tsOne.to_gnuplot_datafile(None)
 
@@ -217,7 +221,7 @@ class MultiDimensionalTimeSeriesTest(unittest.TestCase):
         try:
             MultiDimensionalTimeSeries(3).normalize()
         except NotImplementedError:
-            pass    # pragma: no cover
+            pass  # pragma: no cover
         else:
-            assert False    # pragma: no cover
+            assert False  # pragma: no cover
 

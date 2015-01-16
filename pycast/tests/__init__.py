@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+# Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -23,9 +23,9 @@
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## TimeSeries related tests
-from timeseriesdatabasetest         import DatabaseConnectorTest
-from timeseriesmiscellaneoustest    import TimeSeriesMiscellaneousTest
-from json_encodertest               import PycastEncoderTest
+from timeseriesdatabasetest import DatabaseConnectorTest
+from timeseriesmiscellaneoustest import TimeSeriesMiscellaneousTest
+from json_encodertest import PycastEncoderTest
 from multidimensionaltimeseriestest import MultiDimensionalTimeSeriesTest
 
 ## profileMe decorator related tests
@@ -35,18 +35,21 @@ from profilemetest import ProfileMeDecoratorTest
 from helpertest import HelperTest
 
 ## method tests
-from methodtest import BaseMethodTest, BaseForecastingMethodTest, SimpleMovingAverageTest, ExponentialSmoothingTest, HoltMethodTest, HoltWintersMethodTest
+from methodtest import BaseMethodTest, BaseForecastingMethodTest, SimpleMovingAverageTest, ExponentialSmoothingTest, \
+    HoltMethodTest, HoltWintersMethodTest
 #from regressiontest import RegressionTest, LinearRegressionTest
 
 ## error measure tests
-from errormeasuretest import BaseErrorMeasureTest, MeanSquaredErrorTest, SymmetricMeanAbsolutePercentageErrorTest, MeanAbsoluteDeviationErrorTest, MedianAbsolutePercentageErrorTest, MeanAbsoluteScaledErrorTest, MeanSignedDifferenceErrorTest
-from mapetest         import MeanAbsolutePercentageErrorTest, GeometricMeanAbsolutePercentageErrorTest
+from errormeasuretest import BaseErrorMeasureTest, MeanSquaredErrorTest, SymmetricMeanAbsolutePercentageErrorTest, \
+    MeanAbsoluteDeviationErrorTest, MedianAbsolutePercentageErrorTest, MeanAbsoluteScaledErrorTest, \
+    MeanSignedDifferenceErrorTest
+from mapetest import MeanAbsolutePercentageErrorTest, GeometricMeanAbsolutePercentageErrorTest
 from weightedmapetest import WeightedMeanAbsolutePercentageErrorTest
 #from meetest import MeanEconomicErrorTest
 
 ## optimization method
 from baseoptimizationtest import BaseOptimizationMethodTest
-from gridsearchtest       import GridSearchTest
+from gridsearchtest import GridSearchTest
 
 #decorators test
 from decoratorstest import OptimizedDecoratorTest

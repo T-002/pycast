@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+# Copyright (c) 2012-2013 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -28,6 +28,7 @@ import unittest, os
 
 ## required modules from pycast
 from pycast.common import profileMe
+
 
 class ProfileMeDecoratorTest(unittest.TestCase):
     """Test class containing all tests for the @profileMe decorator."""
@@ -56,7 +57,7 @@ class ProfileMeDecoratorTest(unittest.TestCase):
 
             summedVals = sum(xrange(sumUpTo + 1))
             easySum = (sumUpTo * (sumUpTo + 1)) / 2
-            
+
             return easySum == summedVals
 
         booleanVal = dummy_func()
@@ -79,7 +80,7 @@ class ProfileMeDecoratorTest(unittest.TestCase):
 
             summedVals = sum(xrange(sumUpTo + 1))
             easySum = (sumUpTo * (sumUpTo + 1)) / 2
-            
+
             return easySum == summedVals
 
         booleanVal = dummy_func()
@@ -98,7 +99,7 @@ class ProfileMeDecoratorTest(unittest.TestCase):
 
             summedVals = sum(xrange(sumUpTo + 1))
             easySum = (sumUpTo * (sumUpTo + 1)) / 2
-            
+
             return easySum == summedVals
 
         booleanVal = dummy_func()
