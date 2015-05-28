@@ -69,9 +69,3 @@ class MeanAbsolutePercentageError(BaseErrorMeasure):
         return (math.fabs((calculatedValue - originalValue)/float(originalValue))) * 100.0
 
 MAPE = MeanAbsolutePercentageError
-
-class GeometricMeanAbsolutePercentageError(MeanAbsolutePercentageError):
-    """Calculates the geometric MAPE."""
-
-    def _calculate(self, startingPercentage, endPercentage, startDate, endDate):
-        """This is the error calculation function that gets called by :py:meth:`BaseErrorMeasure.get_error`.

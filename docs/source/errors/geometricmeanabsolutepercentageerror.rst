@@ -3,4 +3,4 @@
 Geometric Mean Absolute Percentage Error
 ========================================
 
-.. autoclass:: pycast.errors.meanabsolutepercentageerror.GeometricMeanAbsolutePercentageError
+.. autoclass:: pycast.errors.geometricmeanabsolutepercentageerror.GeometricMeanAbsolutePercentageError
