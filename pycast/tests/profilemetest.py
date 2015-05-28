@@ -105,4 +105,3 @@ class ProfileMeDecoratorTest(unittest.TestCase):
 
         if not (booleanVal):                                  raise AssertionError
         if not (dummy_func.__doc__ == """StupidDocString"""): raise AssertionError
-

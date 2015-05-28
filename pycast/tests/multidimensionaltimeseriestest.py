@@ -220,4 +220,3 @@ class MultiDimensionalTimeSeriesTest(unittest.TestCase):
             pass    # pragma: no cover
         else:
             assert False    # pragma: no cover
-
