@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+#Copyright (c) 2012-2015 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -38,7 +38,7 @@ class SimpleMovingAverage(BaseMethod):
     def __init__(self, windowsize=5):
         """Initializes the SimpleMovingAverage.
 
-        :param Integer windowsize:    Size of the SimpleMovingAverages window.
+        :param integer windowsize:    Size of the SimpleMovingAverages window.
         
         :raise:    Raises a :py:exc:`ValueError` if windowsize is an even or not larger than zero.
         """
@@ -69,7 +69,7 @@ class SimpleMovingAverage(BaseMethod):
                 - maxIntervalClosed:
                     :py:const:`True`, if maxValue represents a valid value for the parameter.
                     :py:const:`False` otherwise.
-        :rtype:     Dictionary
+        :rtype: dictionary
         """
         parameterIntervals = {}
 

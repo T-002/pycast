@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+#Copyright (c) 2012-2015 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -35,9 +35,9 @@ class ExponentialSmoothing(BaseForecastingMethod):
     def __init__(self, smoothingFactor=0.1, valuesToForecast=1):
         """Initializes the ExponentialSmoothing.
 
-        :param Float smoothingFactor:    Defines the alpha for the ExponentialSmoothing.
+        :param float smoothingFactor:    Defines the alpha for the ExponentialSmoothing.
             Valid values are in (0.0, 1.0).
-        :param Integer valuesToForecast:    Number of values that should be forecasted.
+        :param integer valuesToForecast:    Number of values that should be forecasted.
 
         :raise: Raises a :py:exc:`ValueError` when smoothingFactor has an invalid value.
         """
@@ -64,7 +64,7 @@ class ExponentialSmoothing(BaseForecastingMethod):
                 - maxIntervalClosed:
                     :py:const:`True`, if maxValue represents a valid value for the parameter.
                     :py:const:`False` otherwise.
-        :rtype:     Dictionary
+        :rtype: dictionary
         """
         parameterIntervals = {}
 
@@ -155,11 +155,11 @@ class HoltMethod(BaseForecastingMethod):
     def __init__(self, smoothingFactor=0.1, trendSmoothingFactor=0.5, valuesToForecast=1):
         """Initializes the HoltMethod.
 
-        :param Float smoothingFactor:    Defines the alpha for the ExponentialSmoothing.
+        :param float smoothingFactor:    Defines the alpha for the ExponentialSmoothing.
             Valid values are in (0.0, 1.0).
-        :param Float trendSmoothingFactor:    Defines the beta for the HoltMethod.
+        :param float trendSmoothingFactor:    Defines the beta for the HoltMethod.
             Valid values are in (0.0, 1.0).
-        :param Integer valuesToForecast:    Defines the number of forecasted values that will
+        :param integer valuesToForecast:    Defines the number of forecasted values that will
             be part of the result.
 
         :raise:    Raises a :py:exc:`ValueError` when smoothingFactor or trendSmoothingFactor has an invalid value.
@@ -190,7 +190,7 @@ class HoltMethod(BaseForecastingMethod):
                 - maxIntervalClosed:
                     :py:const:`True`, if maxValue represents a valid value for the parameter.
                     :py:const:`False` otherwise.
-        :rtype:     Dictionary
+        :rtype: dictionary
         """
         parameterIntervals = {}
 
@@ -286,14 +286,14 @@ class HoltWintersMethod(BaseForecastingMethod):
     def __init__(self, smoothingFactor=0.1, trendSmoothingFactor=0.5, seasonSmoothingFactor=0.5, seasonLength=0, valuesToForecast=1):
         """Initializes the HoltWintersMethod.
 
-        :param Float smoothingFactor:    Defines the alpha for the Holt-Winters algorithm.
+        :param float smoothingFactor:    Defines the alpha for the Holt-Winters algorithm.
             Valid values are (0.0, 1.0).
-        :param Float trendSmoothingFactor:    Defines the beta for the Holt-Winters algorithm..
+        :param float trendSmoothingFactor:    Defines the beta for the Holt-Winters algorithm..
             Valid values are (0.0, 1.0).
-        :param Float seasonSmoothingFactor:    Defines the gamma for the Holt-Winters algorithm.
+        :param float seasonSmoothingFactor:    Defines the gamma for the Holt-Winters algorithm.
             Valid values are (0.0, 1.0). 
-        :param Integer seasonLength:    The expected length for the seasons. Please use a good estimate here!
-        :param Integer valuesToForecast:    Defines the number of forecasted values that will be part of the result.
+        :param integer seasonLength:    The expected length for the seasons. Please use a good estimate here!
+        :param integer valuesToForecast:    Defines the number of forecasted values that will be part of the result.
         """
         super(HoltWintersMethod, self).__init__(["smoothingFactor",
                                           "trendSmoothingFactor",
@@ -329,7 +329,7 @@ class HoltWintersMethod(BaseForecastingMethod):
                 - maxIntervalClosed:
                     :py:const:`True`, if maxValue represents a valid value for the parameter.
                     :py:const:`False` otherwise.
-        :rtype:     Dictionary
+        :rtype: dictionary
         """
         parameterIntervals = {}
 
@@ -399,7 +399,7 @@ class HoltWintersMethod(BaseForecastingMethod):
         """ Computes the initial season smoothing factors.
 
         :return:    Returns a list of season vectors of length "seasonLength".
-        :rtype:     List
+        :rtype: list
         """
 
         seasonLength = self.get_parameter("seasonLength")
@@ -445,7 +445,7 @@ class HoltWintersMethod(BaseForecastingMethod):
         """ Calculates A_j. Aj is the average value of x in the jth cycle of your data
 
         :return:    A_j
-        :rtype:     Numeric
+        :rtype:     numeric
         """
         seasonLength = self.get_parameter("seasonLength")
         A_j = 0

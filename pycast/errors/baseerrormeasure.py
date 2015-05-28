@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+#Copyright (c) 2012-2015 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -31,7 +31,7 @@ class BaseErrorMeasure(PyCastObject):
     def __init__(self, minimalErrorCalculationPercentage=60):
         """Initializes the error measure.
 
-        :param Integer minimalErrorCalculationPercentage:    The number of entries in an
+        :param integer minimalErrorCalculationPercentage:    The number of entries in an
             original TimeSeries that have to have corresponding partners in the calculated
             TimeSeries. Corresponding partners have the same time stamp.
             Valid values are in [0.0, 100.0].
@@ -61,7 +61,7 @@ class BaseErrorMeasure(PyCastObject):
 
         :return:    Return :py:const:`True` if the error could be calculated, :py:const:`False`
             otherwise based on the minimalErrorCalculationPercentage.
-        :rtype:     Boolean
+        :rtype: boolean
 
         :raise:    Raises a :py:exc:`StandardError` if the error measure is initialized multiple times.
         """
@@ -105,17 +105,17 @@ class BaseErrorMeasure(PyCastObject):
 
         Both parameters will be correct at this time.
 
-        :param Float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
+        :param float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
             It represents the value, where the error calculation should be started. 
             25.0 for example means that the first 25% of all calculated errors will be ignored.
-        :param Float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
-            It represents the vlaue, after which all error values will be ignored. 90.0 for example means that
+        :param float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
+            It represents the value, after which all error values will be ignored. 90.0 for example means that
             the last 10% of all local errors will be ignored.
-        :param Float startDate: Epoch representing the start date used for error calculation.
-        :param Float endDate: Epoch representing the end date used in the error calculation.
+        :param float startDate: Epoch representing the start date used for error calculation.
+        :param float endDate: Epoch representing the end date used in the error calculation.
 
         :return:    Returns a list with the defined error values.
-        :rtype:     List
+        :rtype: list
 
         :raise:    Raises a ValueError if startDate or endDate do not represent correct boundaries for error calculation.
         """
@@ -143,17 +143,17 @@ class BaseErrorMeasure(PyCastObject):
         """Calculates the error for the given interval (startingPercentage, endPercentage) between the TimeSeries 
         given during :py:meth:`BaseErrorMeasure.initialize`.
 
-        :param Float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
+        :param float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
             It represents the value, where the error calculation should be started. 
             25.0 for example means that the first 25% of all calculated errors will be ignored.
-        :param Float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
-            It represents the vlaue, after which all error values will be ignored. 90.0 for example means that
+        :param float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
+            It represents the value, after which all error values will be ignored. 90.0 for example means that
             the last 10% of all local errors will be ignored.
-        :param Float startDate: Epoch representing the start date used for error calculation.
-        :param Float endDate: Epoch representing the end date used in the error calculation.
+        :param float startDate: Epoch representing the start date used for error calculation.
+        :param float endDate: Epoch representing the end date used in the error calculation.
 
         :return:    Returns a float representing the error.
-        :rtype:     Float
+        :rtype: float
 
         :raise:    Raises a :py:exc:`ValueError` in one of the following cases:
             
@@ -182,17 +182,17 @@ class BaseErrorMeasure(PyCastObject):
 
         Both parameters will be correct at this time.
 
-        :param Float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
+        :param float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
             It represents the value, where the error calculation should be started. 
             25.0 for example means that the first 25% of all calculated errors will be ignored.
-        :param Float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
-            It represents the vlaue, after which all error values will be ignored. 90.0 for example means that
+        :param float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
+            It represents the value, after which all error values will be ignored. 90.0 for example means that
             the last 10% of all local errors will be ignored.
-        :param Float startDate: Epoch representing the start date used for error calculation.
-        :param Float endDate: Epoch representing the end date used in the error calculation.
+        :param float startDate: Epoch representing the start date used for error calculation.
+        :param float endDate: Epoch representing the end date used in the error calculation.
 
         :return:    Returns a float representing the error.
-        :rtype:     Float
+        :rtype: float
 
         :raise:    Raises a :py:exc:`NotImplementedError` if the child class does not overwrite this method.
         """
@@ -202,12 +202,12 @@ class BaseErrorMeasure(PyCastObject):
     def local_error(self, originalValue, calculatedValue):
         """Calculates the error between the two given values.
 
-        :param List originalValue:    List containing the values of the original data.
-        :param List calculatedValue:    List containing the values of the calculated TimeSeries that
+        :param list originalValue:    List containing the values of the original data.
+        :param list calculatedValue:    List containing the values of the calculated TimeSeries that
             corresponds to originalValue.
 
         :return:    Returns the error measure of the two given values.
-        :rtype:     Numeric
+        :rtype:     numeric
 
         :raise:    Raises a :py:exc:`NotImplementedError` if the child class does not overwrite this method.
         """

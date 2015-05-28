@@ -24,9 +24,9 @@ class Matrix(PyCastObject):
     def __init__(self, columns, rows, oneDimArray=None, rowBased=True, isOneDimArray=True):
         """Initialize the Matrix with the given number of columns and rows.
 
-        :param Integer columns:     The number of columns for the Matrix.
-        :param Integer rows:        The number of rows for the Matrix.
-        :param List oneDimArray:    The values for the Matrix in a based
+        :param integer columns:     The number of columns for the Matrix.
+        :param integer rows:        The number of rows for the Matrix.
+        :param list oneDimArray:    The values for the Matrix in a based
                                     one dimensional list. Depending on the
                                     rowBased parameter, the first n values
                                     (n = the number of rows) represents either
@@ -35,11 +35,11 @@ class Matrix(PyCastObject):
                                     columns * rows.
                                     If isOneDimArray is False this should be a
                                     two dimensonal list.
-        :param Boolean rowBased:    Only necessary if the oneDimArray is given.
+        :param boolean rowBased:    Only necessary if the oneDimArray is given.
                                     Indicates whether the oneDimArray combines
                                     rows together (rowBased=True) or columns
                                     (rowBased=False)
-        :param Boolean isOneDimArray: Indicates whether the parameter
+        :param boolean isOneDimArray: Indicates whether the parameter
                                     oneDimArray is a one dimensional array or
                                     a two dimensional array.
 
@@ -99,7 +99,7 @@ class Matrix(PyCastObject):
 
         :return:    :py:const:`True` if Matrix objects are equal,
                     :py:const:`False` mulotherwise.
-        :rtype:     Boolean
+        :rtype: boolean
         """
         if self.matrix != otherMatrix.matrix:
             return False
@@ -164,9 +164,9 @@ class Matrix(PyCastObject):
     def from_two_dim_array(cls, cols, rows, twoDimArray):
         """Create a new Matrix instance from a two dimensional array.
 
-        :param Integer columns:     The number of columns for the Matrix.
-        :param Integer rows:        The number of rows for the Matrix.
-        :param List twoDimArray:    A two dimensional column based array
+        :param integer columns:     The number of columns for the Matrix.
+        :param integer rows:        The number of rows for the Matrix.
+        :param list twoDimArray:    A two dimensional column based array
                                     with the values of the matrix.
         :raise: Raises an :py:exc:`ValueError` if:
             - columns < 1 or
@@ -179,10 +179,10 @@ class Matrix(PyCastObject):
     def initialize(self, datalist, rowBased=True):
         """Initialize :py:obj:`self` with the values stored in the two dimensional list.
 
-        :param List datalist: A list representing the matrix rows
+        :param list datalist: A list representing the matrix rows
                     containing lists representing the columns for each row.
-                    The values in the List must be Numeric
-        :param Boolean rowBased: Indicates wether the datalist is row or
+                    The values in the List must be numeric
+        :param boolean rowBased: Indicates wether the datalist is row or
             column based. Has to be True if datalist[i] is the i'th row,
             or False if datalist[i] is the i'th column
 
@@ -212,13 +212,13 @@ class Matrix(PyCastObject):
     def get_array(self, rowBased=True):
         """Return a two dimensional list with the values of the :py:obj:`self`.
 
-        :param Boolean rowBased: Indicates wether the returned list should be
+        :param boolean rowBased: Indicates wether the returned list should be
             row or column based. Has to be True if list[i] should be the i'th
             row, False if list[i] should be the i'th column.
 
         :return:    Returns a list representing the matrix rows
                     containing lists representing the columns for each row.
-        :rtype:     List
+        :rtype: list
         """
         if rowBased:
             array = []
@@ -234,8 +234,8 @@ class Matrix(PyCastObject):
         """Create a new Matrix instance from a matrix_list.
 
         :note: This method is used to create a Matrix instance using cpython.
-        :param Integer rows:        The height of the Matrix.
-        :param Integer columns:     The width of the Matrix.
+        :param integer rows:        The height of the Matrix.
+        :param integer columns:     The width of the Matrix.
         :param matrix_list:         A one dimensional list containing the
                                     values for Matrix. Depending on the
                                     rowBased parameter, either the rows are
@@ -251,9 +251,9 @@ class Matrix(PyCastObject):
     def set_value(self, column, row, value):
         """Set the value of the Matrix at the specified column and row.
 
-        :param Integer column:  The index for the column (starting at 0)
-        :param Integer row:     The index for the row (starting at 0)
-        :param Numeric value:   The new value at the given column/row
+        :param integer column:  The index for the column (starting at 0)
+        :param integer row:     The index for the row (starting at 0)
+        :param numeric value:   The new value at the given column/row
 
         :raise:     Raises an :py:exc:`IndexError` if the index is out of xrange.
         """
@@ -262,8 +262,8 @@ class Matrix(PyCastObject):
     def get_value(self, column, row):
         """Return the value of :py:obj:`self` at the specified column and row.
 
-        :param Integer column:  The index for the column (starting at 0)
-        :param Integer row:     The index for the row (starting at 0)
+        :param integer column:  The index for the column (starting at 0)
+        :param integer row:     The index for the row (starting at 0)
 
         :raise:     Raises an :py:exc:`IndexError` if the index is out of xrange.
         """
@@ -280,7 +280,7 @@ class Matrix(PyCastObject):
     def set_string_precision(self, precision):
         """Set the number of digits after the decimal point used to print the Matrix
 
-        :param Integer precision: The number of digits to which the values
+        :param integer precision: The number of digits to which the values
             should be rounded when the Matrix is printed.
 
         :raise: Raises an :py:exc:`ValueError` if precision is negative.
@@ -586,7 +586,7 @@ class Matrix(PyCastObject):
     def __div__(self, divider):
         """Return a new Matrix, where all values are divided by the divider
 
-        :param Integer divider: The divider to divide all values of the matrix
+        :param integer divider: The divider to divide all values of the matrix
 
         :return:    A new Matrix, where all values are divided by the divider
         :rtype: Matrix
@@ -689,7 +689,7 @@ class Matrix(PyCastObject):
     def svd(self, maxIteration=50):
         """Return the singular value decomposition of the Matrix instance
 
-        :param Integer maxIteration: The maximmum number of iterations,
+        :param integer maxIteration: The maximmum number of iterations,
             which are executed in the qr decomposition
 
         :return: A tuple with Matrices u, sigma, v with
@@ -933,7 +933,7 @@ class Vector(Matrix):
         """Create vector from matrix
 
         :param Matrix matrix: The Matrix, which should be used to create the vector.
-        :param Integer column: The column of the matrix, which should be used
+        :param integer column: The column of the matrix, which should be used
                                 to create the new vector.
         :raise: Raises an :py:exc:`IndexError` if the matrix does not have the specified column.
         """

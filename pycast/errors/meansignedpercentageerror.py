@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+#Copyright (c) 2012-2015 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -32,12 +32,12 @@ class MeanSignedPercentageError(MeanAbsolutePercentageError):
     def local_error(self, originalValue, calculatedValue):
         """Calculates the error between the two given values.
 
-        :param List originalValue:    List containing the values of the original data.
-        :param List calculatedValue:    List containing the values of the calculated TimeSeries that
+        :param list originalValue:    List containing the values of the original data.
+        :param list calculatedValue:    List containing the values of the calculated TimeSeries that
             corresponds to originalValue.
 
         :return:    Returns the error measure of the two given values.
-        :rtype:     Numeric
+        :rtype:     numeric
         """
         
         return (float(calculatedValue[0] - originalValue[0])/originalValue[0])*100 if originalValue[0] else None

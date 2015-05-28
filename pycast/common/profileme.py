@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+#Copyright (c) 2012-2015 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -34,8 +34,8 @@ class _ProfileDecorator(object):
     def __init__(self, filelocation):
         """Initializes the ProfileMe decorator.
 
-        :param Function func:    Function that will be profiles.
-        :param String filelocation:    Location for the profiling results.
+        :param function func:    Function that will be profiles.
+        :param string filelocation:    Location for the profiling results.
         """
         super(_ProfileDecorator, self).__init__()
         self._filelocation = filelocation
@@ -43,15 +43,15 @@ class _ProfileDecorator(object):
     def __call__(self, func):
         """Returns a wrapped version of the called function.
 
-        :param Function func:    Function that should be wrapped.
+        :param function func:    Function that should be wrapped.
 
         :return:    Returns a wrapped version of the called function.
-        :rtype:     Function
+        :rtype:     function
         """
         def wrapped_func(*args, **kwargs):
             """This function gets executed, if the wrapped function gets called.
 
-            It automatically created a performance profile for the corresonding function call.
+            It automatically created a performance profile for the corresponding function call.
             """
             ## create the profiler and execute the called function
             profiler = profile.Profile()

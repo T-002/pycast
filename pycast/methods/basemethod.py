@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+#Copyright (c) 2012-2015 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -33,9 +33,9 @@ class BaseMethod(PyCastObject):
     def __init__(self, requiredParameters=None, hasToBeSorted=True, hasToBeNormalized=True):
         """Initializes the BaseMethod.
 
-        :param List requiredParameters:    List of parameternames that have to be defined.
-        :param Boolean hasToBeSorted:    Defines if the TimeSeries has to be sorted or not.
-        :param Boolean hasToBeNormalized:    Defines if the TimeSeries has to be normalized or not.
+        :param list requiredParameters:    List of parameternames that have to be defined.
+        :param boolean hasToBeSorted:    Defines if the TimeSeries has to be sorted or not.
+        :param boolean hasToBeNormalized:    Defines if the TimeSeries has to be normalized or not.
         """
 
         if requiredParameters == None:
@@ -71,7 +71,7 @@ class BaseMethod(PyCastObject):
                 - maxIntervalClosed:
                     :py:const:`True`, if maxValue represents a valid value for the parameter.
                     :py:const:`False` otherwise.
-        :rtype:     Dictionary
+        :rtype: dictionary
         """
         parameterIntervals = {}
 
@@ -84,7 +84,7 @@ class BaseMethod(PyCastObject):
     def get_interval(self, parameter):
         """Returns the interval for a given parameter.
 
-        :param String parameter:     Name of the parameter.
+        :param string parameter:     Name of the parameter.
 
         :return:     Returns a list containing with [minValue, maxValue, minIntervalClosed, maxIntervalClosed].
             If no interval definitions for the given parameter exist, :py:const:`None` is returned.
@@ -99,7 +99,7 @@ class BaseMethod(PyCastObject):
                 - maxIntervalClosed:
                     :py:const:`True`, if maxValue represents a valid value for the parameter.
                     :py:const:`False` otherwise.
-        :rtype:    List
+        :rtype: list
         """
         if not parameter in self._parameterIntervals:
             return None
@@ -110,19 +110,19 @@ class BaseMethod(PyCastObject):
         """Returns a list with the names of all required parameters.
 
         :return:    Returns a list with the names of all required parameters.
-        :rtype:     List
+        :rtype: list
         """
         return self._requiredParameters.keys()
 
     def _in_valid_interval(self, parameter, value):
         """Returns if the parameter is within its valid interval.
 
-        :param String parameter:     Name of the parameter that has to be checked.
-        :param Numeric value:     Value of the parameter.
+        :param string parameter:     Name of the parameter that has to be checked.
+        :param numeric value:     Value of the parameter.
 
         :return:    Returns :py:const:`True` it the value for the given parameter is valid,
             :py:const:`False` otherwise.
-        :rtype:     Boolean
+        :rtype: boolean
         """
         ## return True, if not interval is defined for the parameter
         if not parameter in self._parameterIntervals:
@@ -145,11 +145,11 @@ class BaseMethod(PyCastObject):
     def _get_value_error_message_for_invalid_prarameter(self, parameter, value):
         """Returns the ValueError message for the given parameter.
 
-        :param String parameter:    Name of the parameter the message has to be created for.
-        :param Numeric value:    Value outside the parameters interval.
+        :param string parameter:    Name of the parameter the message has to be created for.
+        :param numeric value:    Value outside the parameters interval.
 
         :return:    Returns a string containing hte message.
-        :rtype:     String
+        :rtype: string
         """
         ## return if not interval is defined for the parameter
         if not parameter in self._parameterIntervals:
@@ -161,8 +161,8 @@ class BaseMethod(PyCastObject):
     def set_parameter(self, name, value):
         """Sets a parameter for the BaseMethod.
 
-        :param String name:     Name of the parameter that has to be checked.
-        :param Numeric value:     Value of the parameter.
+        :param string name:     Name of the parameter that has to be checked.
+        :param numeric value:     Value of the parameter.
         """
         if not self._in_valid_interval(name, value):
             raise ValueError(self._get_value_error_message_for_invalid_prarameter(name, value))
@@ -175,10 +175,10 @@ class BaseMethod(PyCastObject):
     def get_parameter(self, name):
         """Returns a forecasting parameter.
 
-        :param String name:    Name of the parameter.
+        :param string name:    Name of the parameter.
 
         :return:    Returns the value stored in parameter.
-        :rtype:     Numeric
+        :rtype:     numeric
 
         :raise:    Raises a :py:exc:`KeyError` if the parameter is not defined.
         """
@@ -188,7 +188,7 @@ class BaseMethod(PyCastObject):
         """Returns if the TimeSeries has to be normalized or not.
 
         :return:    Returns :py:const:`True` if the TimeSeries has to be normalized, :py:const:`False` otherwise.
-        :rtype:     Boolean
+        :rtype: boolean
         """
         return self._hasToBeNormalized
 
@@ -196,7 +196,7 @@ class BaseMethod(PyCastObject):
         """Returns if the TimeSeries has to be sorted or not.
 
         :return:    Returns :py:const:`True` if the TimeSeries has to be sorted, :py:const:`False` otherwise.
-        :rtype:     Boolean
+        :rtype: boolean
         """
         return self._hasToBeSorted
 
@@ -204,7 +204,7 @@ class BaseMethod(PyCastObject):
         """Returns if the method can already be executed.
 
         :return:    Returns :py:const:`True` if all required parameters where already set, False otherwise.
-        :rtype:     Boolean 
+        :rtype: boolean 
         """
         missingParams = filter(lambda rp: rp not in self._parameters, self._requiredParameters)
         return len(missingParams) == 0
@@ -227,11 +227,11 @@ class BaseForecastingMethod(BaseMethod):
     def __init__(self, requiredParameters=None, valuesToForecast=1, hasToBeSorted=True, hasToBeNormalized=True):
         """Initializes the BaseForecastingMethod.
 
-        :param List requiredParameters:    List of parameternames that have to be defined.
-        :param Integer valuesToForecast:    Number of entries that will be forecasted.
+        :param list requiredParameters:    List of parameternames that have to be defined.
+        :param integer valuesToForecast:    Number of entries that will be forecasted.
             This can be changed by using forecast_until().
-        :param Boolean hasToBeSorted:    Defines if the TimeSeries has to be sorted or not.
-        :param Boolean hasToBeNormalized:    Defines if the TimeSeries has to be normalized or not.
+        :param boolean hasToBeSorted:    Defines if the TimeSeries has to be sorted or not.
+        :param boolean hasToBeNormalized:    Defines if the TimeSeries has to be normalized or not.
 
         :raise: Raises a :py:exc:`ValueError` when valuesToForecast is smaller than zero.
         """
@@ -256,7 +256,7 @@ class BaseForecastingMethod(BaseMethod):
         All required parameters of a forecasting method with defined intervals can be used for optimization.
 
         :return:    Returns a list with optimizable parameter names.
-        :rtype:     List
+        :rtype: list
 
         :todo:    Should we return all parameter names from the self._parameterIntervals instead?
         """
@@ -265,8 +265,8 @@ class BaseForecastingMethod(BaseMethod):
     def set_parameter(self, name, value):
         """Sets a parameter for the BaseForecastingMethod.
 
-        :param String name:    Name of the parameter.
-        :param Numeric value:    Value of the parameter.
+        :param string name:    Name of the parameter.
+        :param numeric value:    Value of the parameter.
         """
         ## set the furecast until variable to None if necessary
         if name == "valuesToForecast":
@@ -281,7 +281,7 @@ class BaseForecastingMethod(BaseMethod):
         This function enables the automatic determination of valuesToForecast.
 
         :param timestamp:    timestamp containing the end date of the forecast.
-        :param String format:    Format of the timestamp. This is used to convert the
+        :param string format:    Format of the timestamp. This is used to convert the
             timestamp from UNIX epochs, if necessary. For valid examples
             take a look into the :py:func:`time.strptime` documentation.
         """

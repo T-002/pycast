@@ -31,4 +31,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 Contributors
 ------------
 Christian Schwarz,
-Felix Leupold
+Felix Leupold,
+Alexander Franke,
+Tobias Schubotz,
+Jannik Marten,
+Jan-Peer Rudolph

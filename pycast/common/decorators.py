@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+#Copyright (c) 2012-2015 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -22,26 +22,28 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 def optimized(fn):
-    """Decorater that will call the optimized c++ version
+    """Decorator that will call the optimized c++ version
     of a pycast function if available rather than theo
     original pycast function
 
-    :param Function fn: original pycast function
+    :param function fn: original pycast function
 
     :return: return the wrapped function
-    :rtype: Function
+    :rtype: function
     """
     def _optimized(self, *args, **kwargs):
-        """ This method calls the pycastC function ff
-        otimization is enabled and the pycastC function
-        is available
+        """ This method calls the pycastC function if
+        optimization is enabled and the pycastC function
+        is available.
 
-        :param: PyCastObject self: reference to the calling object. Needs to be passed to the pycastC function, so that all uts members are available.
+        :param: PyCastObject self: reference to the calling object. 
+                                    Needs to be passed to the pycastC function,
+                                    so that all uts members are available.
         :param: list *args: list of arguments the function is called with.
         :param: dict **kwargs: dictionary of parameter  names and values the function has been called with.
 
         :return result of the function call either from pycast or pycastC module.
-        :rtype: Function
+        :rtype: function
         """
         if self.optimizationEnabled:
             class_name = self.__class__.__name__

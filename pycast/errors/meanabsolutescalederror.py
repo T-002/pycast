@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2013 Christian Schwarz
+#Copyright (c) 2012-2015 Christian Schwarz
 #
 #Permission is hereby granted, free of charge, to any person obtaining
 #a copy of this software and associated documentation files (the
@@ -33,11 +33,11 @@ class MeanAbsoluteScaledError(BaseErrorMeasure):
     def __init__(self, minimalErrorCalculationPercentage=60, historyLength=10.0):
         """Initializes the error measure.
 
-        :param Integer minimalErrorCalculationPercentage:    The number of entries in an
+        :param integer minimalErrorCalculationPercentage:    The number of entries in an
             original TimeSeries that have to have corresponding partners in the calculated
             TimeSeries. Corresponding partners have the same time stamp.
             Valid values are in [0.0, 100.0].
-        :param Numeric historyLength:    Length of the TimeSeries used to calculate the mean
+        :param numeric historyLength:    Length of the TimeSeries used to calculate the mean
             of the history. If this is an Integer, the last historyLength data points will be used.
             If this is a Float, the last historyLength percent of the TimeSeries will be used for
             error calculation.
@@ -65,7 +65,7 @@ class MeanAbsoluteScaledError(BaseErrorMeasure):
         :param TimeSeries timeSeries:    Original TimeSeries used to calculate the mean historic values.
 
         :return:    Returns a list containing the historic means.
-        :rtype:     List
+        :rtype: list
         """
         ## calculate the history values
         historyLength = self._historyLength
@@ -93,7 +93,7 @@ class MeanAbsoluteScaledError(BaseErrorMeasure):
 
         :return:    Return :py:const:`True` if the error could be calculated, :py:const:`False`
             otherwise based on the minimalErrorCalculationPercentage.
-        :rtype:     Boolean
+        :rtype: boolean
 
         :raise:    Raises a :py:exc:`StandardError` if the error measure is initialized multiple times.
         """
@@ -143,17 +143,17 @@ class MeanAbsoluteScaledError(BaseErrorMeasure):
 
         Both parameters will be correct at this time.
 
-        :param Float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
+        :param float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
             It represents the value, where the error calculation should be started. 
             25.0 for example means that the first 25% of all calculated errors will be ignored.
-        :param Float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
-            It represents the vlaue, after which all error values will be ignored. 90.0 for example means that
+        :param float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
+            It represents the value, after which all error values will be ignored. 90.0 for example means that
             the last 10% of all local errors will be ignored.
-        :param Float startDate: Epoch representing the start date used for error calculation.
-        :param Float endDate: Epoch representing the end date used in the error calculation.
+        :param float startDate: Epoch representing the start date used for error calculation.
+        :param float endDate: Epoch representing the end date used in the error calculation.
 
         :return:    Returns a float representing the error.
-        :rtype:     Float
+        :rtype: float
         """
         ## get the defined subset of error values
         errorValues = self._get_error_values(startingPercentage, endPercentage, startDate, endDate)
@@ -179,12 +179,12 @@ class MeanAbsoluteScaledError(BaseErrorMeasure):
     def local_error(self, originalValue, calculatedValue):
         """Calculates the error between the two given values.
 
-        :param List originalValue:    List containing the values of the original data.
-        :param List calculatedValue:    List containing the values of the calculated TimeSeries that
+        :param list originalValue:    List containing the values of the original data.
+        :param list calculatedValue:    List containing the values of the calculated TimeSeries that
             corresponds to originalValue.
 
         :return:    Returns the error measure of the two given values.
-        :rtype:     Numeric
+        :rtype:     numeric
         """
         originalValue = originalValue[0]
         calculatedValue = calculatedValue[0]
