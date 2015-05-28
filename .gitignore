@@ -11,3 +11,7 @@
 /libpycast.so
 /libpycastC.so
 /pycastC.so
+build
+dist
+docs/build/html.zip
+pycast.egg-info
