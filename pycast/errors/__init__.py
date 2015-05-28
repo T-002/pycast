@@ -31,7 +31,9 @@ from meanabsolutedeviationerror           import MeanAbsoluteDeviationError, MAD
 from meansigneddifferenceerror            import MeanSignedDifferenceError, MSD
 
 ## scaled errors that can be used to compare prediction accuracy on different TimeSeries
-from meanabsolutepercentageerror          import MeanAbsolutePercentageError, MAPE, GeometricMeanAbsolutePercentageError, GMAPE, MeanSignedPercentageError, MSPE
+from meanabsolutepercentageerror          import MeanAbsolutePercentageError, MAPE
+from geometricmeanabsolutepercentageerror import GeometricMeanAbsolutePercentageError, GMAPE
+from meansignedpercentageerror            import MeanSignedPercentageError, MSPE
 from symmetricmeanabsolutepercentageerror import SymmetricMeanAbsolutePercentageError, SMAPE
 from medianabsolutepercentageerror        import MedianAbsolutePercentageError, MdAPE
 from weightedmeanabsolutepercentageerror  import WeightedMeanAbsolutePercentageError, WMAPE

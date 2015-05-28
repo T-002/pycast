@@ -25,10 +25,11 @@
 from pycast.errors import BaseErrorMeasure
 
 class SymmetricMeanAbsolutePercentageError(BaseErrorMeasure):
-    """Implements the symmetric mean absolute percentage error with a boarder of 200%.
+    """Implements the symmetric mean absolute percentage error whose values are
+    between 0 and 200%.
 
     Explanation:
-        http://monashforecasting.com/index.php?title=SMAPE (Formula (3))
+    http://www.stat.iastate.edu/preprint/articles/2004-10.pdf (page 14)
 
     If the calculated value and the original value are equal, the error is 0.
     """
@@ -69,9 +70,18 @@ class SymmetricMeanAbsolutePercentageError(BaseErrorMeasure):
         calculatedValue = calculatedValue[0]
         
         ## error is zero
-        if originalValue == calculatedValue:
+        if not originalValue and not calculatedValue:
             return 0.0
 
-        return abs(originalValue - calculatedValue) / ((abs(originalValue) + abs(calculatedValue)) / 2)
+        return abs(calculatedValue - originalValue)/ ((abs(originalValue) + abs(calculatedValue))/2) * 100
+
+#        originalValue = originalValue[0]
+#       
+#        
+#        ## error is zero
+#        if originalValue == calculatedValue:
+#            return 0.0
+#
+#        return (abs(calculatedValue - originalValue) / ((originalValue + calculatedValue) / 2))
 
 SMAPE = SymmetricMeanAbsolutePercentageError

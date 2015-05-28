@@ -27,34 +27,8 @@ import unittest
 
 ## required modules from pycast
 from pycast.common.timeseries import TimeSeries
-from pycast.errors import MeanAbsolutePercentageError, GeometricMeanAbsolutePercentageError
+from pycast.errors import GeometricMeanAbsolutePercentageError
 import math
-
-class MeanAbsolutePercentageErrorTest(unittest.TestCase):
-    """Test class containing all tests for MeanAbsolutePercentageError."""
-    def local_error_test(self):
-        orgValues = [11, 33.1, 2.3, 6.54, 123.1, 12.54, 12.9]
-        calValues = [24, 1.23, 342, 1.21, 4.112, 9.543, 3.54]
-
-        mape = MeanAbsolutePercentageError()
-        for idx in xrange(len(orgValues)):
-            res = ((math.fabs(calValues[idx] - orgValues[idx]))/orgValues[idx])*100
-            assert  str(res)[:6] == str(mape.local_error([orgValues[idx]], [calValues[idx]]))[:6]
-
-    def error_calculation_test(self):
-        """Test the calculation of the MeanAbsolutePercentageError."""        
-        dataOrg         = [[1,1], [2,2], [3,3], [4,4], [5,5], [6,6], [7,8], [7.3, 5], [8, 0], [9,10]]
-        dataCalc        = [[1,3], [2,5], [3,0], [4,3], [5,5], [6.1,6], [7,3], [7.3, 5], [8, 0], [9,9]]
-        # abs difference:     2      3      3      1      0       NA      5    0         NA       1
-        # local errors:       200    150    100    25     0       NA      62,5 0         NA       10
-        # sum: 547,5
-                
-        tsOrg  = TimeSeries.from_twodim_list(dataOrg)
-        tsCalc = TimeSeries.from_twodim_list(dataCalc)
-
-        mape = MeanAbsolutePercentageError()
-        mape.initialize(tsOrg, tsCalc)
-        assert str(mape.get_error())[:6] == "68.437"
 
 class GeometricMeanAbsolutePercentageErrorTest(unittest.TestCase):
     """Test class containing all tests for GeometricMeanAbsolutePercentageError."""
