@@ -36,3 +36,7 @@ Alexander Franke,
 Tobias Schubotz,
 Jannik Marten,
 Jan-Peer Rudolph
+
+Thanks to
+---------
+6ahodir
