@@ -26,9 +26,9 @@ from setuptools     import find_packages
 
 setup(
     name             = "pycast",
-    version          = "v0.1.4-alpha",
+    version          = "v0.1.5-alpha",
     author           = "Christian Schwarz",
-    author_email     = "pixeldreck@gmail.com",
+    author_email     = "christianschw4rz@gmail.com",
     packages         = find_packages(exclude=["tests"]),
     url              = "https://github.com/T-002/pycast",
     description      = "A Forecasting and Smoothing Library",
