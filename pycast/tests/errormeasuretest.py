@@ -29,6 +29,7 @@ import unittest
 from pycast.errors import BaseErrorMeasure
 from pycast.common.timeseries import TimeSeries
 from pycast.common.pycastobject import PyCastObject
+from pycast.errors.meansquarederror import MeanSquaredError
 
 class BaseErrorMeasureTest(unittest.TestCase):
     """Test class for the BaseErrorMeasure interface."""
@@ -211,6 +212,7 @@ class BaseErrorMeasureTest(unittest.TestCase):
         #prevent NotImplementedError
         bem.local_error = lambda a,b: 1
 
+        mse = MeanSquaredError(80.0)
         ## only 50% of the original TimeSeries have a corresponding partner
         if mse.initialize(tsOrg, tsCalc):
             assert False    # pragma: no cover
@@ -236,11 +238,11 @@ class BaseErrorMeasureTest(unittest.TestCase):
 
         assert str(mse.get_error()) == "5.125"
 
-    def start_and_enddate_test(self):
-        """Testing for startDate, endDate exceptions."""
-        data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
-        tsOrg  = TimeSeries.from_twodim_list(data)
-        tsCalc = TimeSeries.from_twodim_list(data)
+#    def start_and_enddate_test(self):
+#        """Testing for startDate, endDate exceptions."""
+#        data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
+#        tsOrg  = TimeSeries.from_twodim_list(data)
+#        tsCalc = TimeSeries.from_twodim_list(data)
 
-        bem = MeanSquaredError()
-        self.assertEquals(bem.initialize(tsOrg, tsCalc), False)
+#        bem = MeanSquaredError()
+#        self.assertEquals(bem.initialize(tsOrg, tsCalc), False)
