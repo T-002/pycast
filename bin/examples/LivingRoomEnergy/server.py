@@ -1,6 +1,8 @@
-from itty import *
-import json, sqlite3
+from itty import get, post, Response, serve_static_file, run_itty
+
+import json, sqlite3, sys, os
 sys.path.append('../../../')
+
 from pycast.methods.exponentialsmoothing import HoltWintersMethod
 from pycast.optimization import GridSearch
 from pycast.errors import SymmetricMeanAbsolutePercentageError as SMAPE
@@ -11,7 +13,7 @@ db = sqlite3.connect('energy.db')
 MY_ROOT = os.path.join(os.path.dirname(__file__), 'static')
 
 @get('/energyData')
-def energy_data(request):
+def energy_data():
     """
         Connects to the database and loads Readings for device 8.
     """

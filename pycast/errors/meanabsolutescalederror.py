@@ -130,7 +130,7 @@ class MeanAbsoluteScaledError(BaseErrorMeasure):
                 appendDates(orgPair[0])
 
         ## return False, if the error cannot be calculated
-        if len(filter(lambda item: item != None, self._errorValues)) < self._minimalErrorCalculationPercentage * len(originalTimeSeries):
+        if len(filter(lambda item: item is not None, self._errorValues)) < self._minimalErrorCalculationPercentage * len(originalTimeSeries):
             self._errorValues = []
             self._errorDates = []
             self._historicMeans = []
@@ -159,7 +159,7 @@ class MeanAbsoluteScaledError(BaseErrorMeasure):
         errorValues = self._get_error_values(startingPercentage, endPercentage, startDate, endDate)
 
         ## get the historic mean
-        if None != startDate:
+        if startDate is not None:
             possibleDates = filter(lambda date: date >= startDate, self._errorDates)
             
             ## This piece of code is not required, because _get_error_values already ensured that the startDate
