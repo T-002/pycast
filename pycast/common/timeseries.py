@@ -112,7 +112,7 @@ class TimeSeries(PyCastObject):
         format = self._timestampFormat
         
         formatval = format
-        if None == format:
+        if format is None:
             formatval = _STR_EPOCHS
 
         datafile.write("## time_as_<%s> value\n" % formatval)
@@ -120,7 +120,7 @@ class TimeSeries(PyCastObject):
         convert = TimeSeries.convert_epoch_to_timestamp
         for datapoint in self._timeseriesData:
             timestamp, value = datapoint
-            if None != format:
+            if format is not None:
                 timestamp = convert(timestamp, format)
 
             datafile.write("%s %s\n" % (timestamp, value))
@@ -153,7 +153,7 @@ class TimeSeries(PyCastObject):
         """
         format = self._timestampFormat
 
-        if None == format:
+        if format is None:
             return self._timeseriesData
 
         datalist = []
@@ -358,7 +358,7 @@ class TimeSeries(PyCastObject):
         self._sorted     = self._predefinedSorted
 
         format = self._timestampFormat
-        if None != format:
+        if format is not None:
             timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, format)
 
         self._timeseriesData.append([float(timestamp), float(data)])
@@ -400,7 +400,7 @@ class TimeSeries(PyCastObject):
         :rtype:     TimeSeries
         """
         sortorder = 1
-        if False == ascending:
+        if not ascending:
             sortorder = -1
 
         data = sorted(self._timeseriesData, key=lambda i: sortorder * i[0])
@@ -436,11 +436,11 @@ class TimeSeries(PyCastObject):
                 return
 
         ## check if all parameters are defined correctly
-        if not normalizationLevel in NormalizationLevels:
+        if normalizationLevel not in NormalizationLevels:
             raise ValueError("Normalization level %s is unknown." % normalizationLevel)
-        if not fusionMethod in FusionMethods:
+        if fusionMethod not in FusionMethods:
             raise ValueError("Fusion method %s is unknown." % fusionMethod)
-        if not interpolationMethod in InterpolationMethods:
+        if interpolationMethod not in InterpolationMethods:
             raise ValueError("Interpolation method %s is unknown." % interpolationMethod)
 
         ## (nearly) empty TimeSeries instances do not require normalization
@@ -547,7 +547,7 @@ class TimeSeries(PyCastObject):
             distance = self[idx+1][0] - self[idx][0]
 
             ## first run
-            if None == lastDistance:
+            if lastDistance is None:
                 lastDistance = distance
                 continue
 
@@ -670,7 +670,7 @@ class MultiDimensionalTimeSeries(TimeSeries):
         self._sorted     = self._predefinedSorted
 
         format = self._timestampFormat
-        if None != format:
+        if format is not None:
             timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, format)
 
         self._timeseriesData.append([float(timestamp)] + [float(dimensionValue) for dimensionValue in data])
@@ -687,7 +687,7 @@ class MultiDimensionalTimeSeries(TimeSeries):
         :rtype:     TimeSeries
         """
         sortorder = 1
-        if False == ascending:
+        if not ascending:
             sortorder = -1
 
         data = sorted(self._timeseriesData, key=lambda i: sortorder * i[0])
@@ -708,7 +708,7 @@ class MultiDimensionalTimeSeries(TimeSeries):
         """
         format = self._timestampFormat
 
-        if None == format:
+        if format is None:
             return self._timeseriesData
 
         datalist = []
@@ -862,7 +862,7 @@ class MultiDimensionalTimeSeries(TimeSeries):
         format = self._timestampFormat
         
         formatval = format
-        if None == format:
+        if format is None:
             formatval = _STR_EPOCHS
 
         datafile.write("## time_as_<%s> value..." % formatval)
@@ -871,7 +871,7 @@ class MultiDimensionalTimeSeries(TimeSeries):
         for datapoint in self._timeseriesData:
             timestamp = datapoint[0]
             values = datapoint[1:]
-            if None != format:
+            if format is not None:
                 timestamp = convert(timestamp, format)
 
             datafile.write("%s %s" % (timestamp, " ".join([str(entry) for entry in values])))
