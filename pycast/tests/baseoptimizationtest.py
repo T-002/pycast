@@ -25,9 +25,8 @@
 ## required external modules
 import unittest
 
-from pycast.optimization import BaseOptimizationMethod
-from pycast.errors       import BaseErrorMeasure
-from pycast.methods      import BaseMethod
+from pycast.optimization.baseoptimizationmethod import BaseOptimizationMethod
+from pycast.errors.baseerrormeasure import BaseErrorMeasure
 from pycast.common.timeseries import TimeSeries
 
 class BaseOptimizationMethodTest(unittest.TestCase):

@@ -21,10 +21,3 @@
 #LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import timeseries
-
-from timeseries import TimeSeries, MultiDimensionalTimeSeries
-from profileme import profileMe
-from pycastobject import PyCastObject
-from matrix import Matrix, Vector

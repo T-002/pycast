@@ -27,7 +27,7 @@ from nose import with_setup
 import unittest, os
 
 ## required modules from pycast
-from pycast.common import profileMe
+from pycast.common.profileme import profileMe
 
 class ProfileMeDecoratorTest(unittest.TestCase):
     """Test class containing all tests for the @profileMe decorator."""

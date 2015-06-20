@@ -26,7 +26,7 @@
 import unittest
 
 ## required modules from pycast
-from pycast.errors import MeanSignedPercentageError
+from pycast.errors.meansignedpercentageerror import MeanSignedPercentageError
 import math
 
 

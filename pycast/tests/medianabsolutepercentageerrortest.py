@@ -27,7 +27,7 @@
 import unittest
 
 ## required modules from pycast
-from pycast.errors import MedianAbsolutePercentageError
+from pycast.errors.medianabsolutepercentageerror import MedianAbsolutePercentageError
 from pycast.common.timeseries import TimeSeries
 
 

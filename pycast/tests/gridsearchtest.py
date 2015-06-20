@@ -26,11 +26,12 @@
 import unittest
 
 ## required modules from pycast
-from pycast.errors            import SymmetricMeanAbsolutePercentageError as SMAPE
+from pycast.errors.symmetricmeanabsolutepercentageerror import SymmetricMeanAbsolutePercentageError as SMAPE
 from pycast.common.timeseries import TimeSeries
-from pycast.methods           import BaseForecastingMethod, ExponentialSmoothing, HoltMethod
+from pycast.methods.basemethod           import BaseForecastingMethod
+from pycast.methods.exponentialsmoothing import ExponentialSmoothing, HoltMethod
 
-from pycast.optimization import GridSearch
+from pycast.optimization.gridsearch import GridSearch
 
 class GridSearchTest(unittest.TestCase):
     """Test class for the GridSearch."""

@@ -24,7 +24,7 @@
 
 
 import math
-from pycast.errors import MeanAbsolutePercentageError
+from pycast.errors.meanabsolutepercentageerror import MeanAbsolutePercentageError
 
 class GeometricMeanAbsolutePercentageError(MeanAbsolutePercentageError):
     """Calculates the geometric MAPE."""

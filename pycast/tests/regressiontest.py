@@ -30,7 +30,7 @@ from mock import patch
 ## required modules from pycast
 from pycast.common.timeseries import TimeSeries
 from pycast.common.matrix import Matrix
-from pycast.methods import Regression, LinearRegression
+from pycast.methods.regression import Regression, LinearRegression
 
 
 class RegressionTest(unittest.TestCase):

@@ -27,7 +27,7 @@
 import unittest
 
 ## required modules from pycast
-from pycast.errors import MeanAbsoluteDeviationError
+from pycast.errors.meanabsolutedeviationerror import MeanAbsoluteDeviationError
 from pycast.common.timeseries import TimeSeries
 
 

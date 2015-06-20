@@ -27,7 +27,7 @@
 import unittest
 
 ## required modules from pycast
-from pycast.errors import MeanAbsoluteScaledError
+from pycast.errors.meanabsolutescalederror import MeanAbsoluteScaledError
 from pycast.common.timeseries import TimeSeries
 
 

@@ -23,7 +23,7 @@
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import math
-from pycast.errors import BaseErrorMeasure
+from pycast.errors.baseerrormeasure import BaseErrorMeasure
 
 class MeanAbsolutePercentageError(BaseErrorMeasure):
 

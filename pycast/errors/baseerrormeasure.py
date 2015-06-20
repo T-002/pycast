@@ -22,7 +22,7 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from pycast.common import PyCastObject
+from pycast.common.pycastobject import PyCastObject
 from pycast.common.decorators import optimized
 
 class BaseErrorMeasure(PyCastObject):

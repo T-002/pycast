@@ -23,7 +23,7 @@
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import math
-from pycast.errors import MeanAbsolutePercentageError
+from pycast.errors.meanabsolutepercentageerror import MeanAbsolutePercentageError
 
 class WeightedMeanAbsolutePercentageError(MeanAbsolutePercentageError):
     """Implements a weighted alternative of the MeanAbsolutePercentageError."""

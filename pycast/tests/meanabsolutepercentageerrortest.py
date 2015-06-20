@@ -27,7 +27,7 @@ import unittest
 
 ## required modules from pycast
 from pycast.common.timeseries import TimeSeries
-from pycast.errors import MeanAbsolutePercentageError
+from pycast.errors.meanabsolutepercentageerror import MeanAbsolutePercentageError
 import math
 
 class MeanAbsolutePercentageErrorTest(unittest.TestCase):

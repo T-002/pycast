@@ -21,23 +21,3 @@
 #LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-## the mother of all errors
-from baseerrormeasure import BaseErrorMeasure
-
-## absolute errors
-from meansquarederror                     import MeanSquaredError, MSE
-from meanabsolutedeviationerror           import MeanAbsoluteDeviationError, MAD
-from meansigneddifferenceerror            import MeanSignedDifferenceError, MSD
-
-## scaled errors that can be used to compare prediction accuracy on different TimeSeries
-from meanabsolutepercentageerror          import MeanAbsolutePercentageError, MAPE
-from geometricmeanabsolutepercentageerror import GeometricMeanAbsolutePercentageError, GMAPE
-from meansignedpercentageerror            import MeanSignedPercentageError, MSPE
-from symmetricmeanabsolutepercentageerror import SymmetricMeanAbsolutePercentageError, SMAPE
-from medianabsolutepercentageerror        import MedianAbsolutePercentageError, MdAPE
-from weightedmeanabsolutepercentageerror  import WeightedMeanAbsolutePercentageError, WMAPE
-from meanabsolutescalederror              import MeanAbsoluteScaledError, MASE
-
-
-#from meaneconomicerror           import MeanEconomicError, MEE, MeanSignedEconomicError, MSEE

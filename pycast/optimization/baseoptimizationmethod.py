@@ -24,9 +24,9 @@
 
 import types 
 
-from pycast.errors import BaseErrorMeasure
+from pycast.errors.baseerrormeasure import BaseErrorMeasure
 
-from pycast.common import PyCastObject
+from pycast.common.pycastobject import PyCastObject
 class BaseOptimizationMethod(PyCastObject):
     """Baseclass for all optimization methods."""
 

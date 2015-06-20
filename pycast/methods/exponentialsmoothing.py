@@ -22,7 +22,7 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from pycast.methods import BaseForecastingMethod
+from pycast.methods.basemethod import BaseForecastingMethod
 from pycast.common.timeseries import TimeSeries
 
 class ExponentialSmoothing(BaseForecastingMethod):

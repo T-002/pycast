@@ -27,7 +27,7 @@
 import unittest
 
 ## required modules from pycast
-from pycast.errors import SymmetricMeanAbsolutePercentageError
+from pycast.errors.symmetricmeanabsolutepercentageerror import SymmetricMeanAbsolutePercentageError
 from pycast.common.timeseries import TimeSeries
 
 

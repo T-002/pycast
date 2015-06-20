@@ -26,7 +26,7 @@
 import unittest
 
 ## required modules from pycast
-from pycast.errors import WeightedMeanAbsolutePercentageError
+from pycast.errors.weightedmeanabsolutepercentageerror import WeightedMeanAbsolutePercentageError
 from pycast.common.timeseries import TimeSeries
 
 class WeightedMeanAbsolutePercentageErrorTest(unittest.TestCase):

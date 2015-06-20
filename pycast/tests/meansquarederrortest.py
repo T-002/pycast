@@ -27,7 +27,7 @@
 import unittest
 
 ## required modules from pycast
-from pycast.errors import MeanSquaredError
+from pycast.errors.meansquarederror import MeanSquaredError
 from pycast.common.timeseries import TimeSeries
 
 

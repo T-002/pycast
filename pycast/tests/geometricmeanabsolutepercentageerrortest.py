@@ -27,7 +27,7 @@ import unittest
 
 ## required modules from pycast
 from pycast.common.timeseries import TimeSeries
-from pycast.errors import GeometricMeanAbsolutePercentageError
+from pycast.errors.geometricmeanabsolutepercentageerror import GeometricMeanAbsolutePercentageError
 import math
 
 class GeometricMeanAbsolutePercentageErrorTest(unittest.TestCase):

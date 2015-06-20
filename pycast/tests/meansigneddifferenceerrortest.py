@@ -27,7 +27,7 @@
 import unittest
 
 ## required modules from pycast
-from pycast.errors import MeanSignedDifferenceError
+from pycast.errors.meansigneddifferenceerror import MeanSignedDifferenceError
 from pycast.common.timeseries import TimeSeries
 
 

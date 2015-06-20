@@ -24,7 +24,8 @@
 
 from pycast.common.timeseries import TimeSeries
 
-from pycast.common import PyCastObject
+from pycast.common.pycastobject import PyCastObject
+
 class BaseMethod(PyCastObject):
     """Baseclass for all smoothing and forecasting methods."""
 
