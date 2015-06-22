@@ -26,6 +26,7 @@
 
 class PyCastObject(object):
 
+
     """The base class for all pycast objects.
 
     This class is used to introduce a common interface for potential
@@ -54,8 +55,7 @@ class PyCastObject(object):
         self.optimizationEnabled = True
 
     def _disable_instance_optimization(self):
-        """Disables the optimization for the PyCastObject instance.
-        """
+        """Disables the optimization for the PyCastObject instance."""
         self.optimizationEnabled = False
 
     @classmethod
