@@ -302,12 +302,12 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
             assert False    # pragma: no cover
 
     def sum_fusion_method_test(self):
-        """Testing the sum fusion method."""
+        """Testing the add fusion method."""
         data  = [1,2,3,4,5,6,0,7]
         data2 = [1,3,5,65,3,2,1,34,0.5]
         
-        assert FusionMethods["sum"](data)  == 28
-        assert FusionMethods["sum"](data2) == 114.5
+        assert FusionMethods["add"](data)  == 28
+        assert FusionMethods["add"](data2) == 114.5
     
     def median_fusion_method_test(self):
         """Testing the median fusion method."""

@@ -45,7 +45,7 @@ NormalizationLevels = {
 FusionMethods = {
     "mean":       lambda l: sum(l) / float(len(l)),    # pragma: no cover
     "median":     lambda l: sorted(l)[len(l)//2],      # pragma: no cover
-    "sum":        lambda l: sum(l)                     # pragma: no cover
+    "add":        lambda l: sum(l)                     # pragma: no cover
 }
 
 ## Interpolation methods that can be used for interpolation missing data points.
