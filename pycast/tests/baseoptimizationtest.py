@@ -26,6 +26,7 @@
 import unittest
 
 from pycast.optimization.baseoptimizationmethod import BaseOptimizationMethod
+from pycast.methods.basemethod import BaseMethod
 from pycast.errors.baseerrormeasure import BaseErrorMeasure
 from pycast.common.timeseries import TimeSeries
 

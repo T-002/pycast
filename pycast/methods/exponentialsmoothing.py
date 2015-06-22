@@ -102,7 +102,7 @@ class ExponentialSmoothing(BaseForecastingMethod):
             t = timeSeries[idx]
 
             ## get the initial estimate
-            if None == estimator:
+            if estimator is None:
                 estimator = t[1]
                 continue
 
@@ -214,7 +214,6 @@ class HoltMethod(BaseForecastingMethod):
         ## extract the required parameters, performance improvement
         alpha            = self._parameters["smoothingFactor"]
         beta             = self._parameters["trendSmoothingFactor"]
-        valuesToForecast = self._parameters["valuesToForecast"]
 
         ## initialize some variables
         resultList  = []
@@ -231,7 +230,7 @@ class HoltMethod(BaseForecastingMethod):
             t = timeSeries[idx]
 
             ## get the initial estimate
-            if None == estimator:
+            if estimator is None:
                 estimator = t[1]
                 lastT     = t
                 continue
@@ -258,11 +257,11 @@ class HoltMethod(BaseForecastingMethod):
             lastEstimator = estimator
 
         ## forecast additional values if requested
-        if valuesToForecast > 0:
+        if self._parameters["valuesToForecast"] > 0:
             currentTime        = resultList[-1][0]
             normalizedTimeDiff = currentTime - resultList[-2][0]
 
-            for idx in xrange(1, valuesToForecast + 1):
+            for idx in xrange(1, self._parameters["valuesToForecast"] + 1):
                 currentTime += normalizedTimeDiff
 
                 ## reuse everything
@@ -358,7 +357,6 @@ class HoltWintersMethod(BaseForecastingMethod):
         alpha = self.get_parameter("smoothingFactor")
         beta = self.get_parameter("trendSmoothingFactor")
         gamma = self.get_parameter("seasonSmoothingFactor")
-        valuesToForecast = self._parameters["valuesToForecast"]
 
 
         seasonValues = self.initSeasonFactors(timeSeries)
@@ -387,9 +385,9 @@ class HoltWintersMethod(BaseForecastingMethod):
         currentTime        = resultList[-1][0]
         normalizedTimeDiff = currentTime - resultList[-2][0]
         
-        for m in xrange(1, valuesToForecast + 1):
+        for m in xrange(1, self._parameters["valuesToForecast"] + 1):
             currentTime += normalizedTimeDiff
-            lastSeasonValue = seasonValues[(idx + m-1) % seasonLength]
+            lastSeasonValue = seasonValues[(len(timeSeries) + m - 2) % seasonLength]
             forecast = (lastEstimator + m * lastTrend) * lastSeasonValue
             resultList.append([currentTime, forecast])
         

@@ -126,7 +126,7 @@ class BaseMethod(PyCastObject):
         :rtype: boolean
         """
         ## return True, if not interval is defined for the parameter
-        if not parameter in self._parameterIntervals:
+        if parameter not in self._parameterIntervals:
             return True
 
         interval = self._parameterIntervals[parameter]
