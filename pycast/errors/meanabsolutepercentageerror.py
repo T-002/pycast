@@ -46,7 +46,7 @@ class MeanAbsolutePercentageError(BaseErrorMeasure):
         """
         ## get the defined subset of error values
         errorValues = self._get_error_values(startingPercentage, endPercentage, startDate, endDate)
-        errorValues = filter(lambda item: item != None, errorValues)
+        errorValues = filter(lambda item: item is not None, errorValues)
 
         return float(sum(errorValues)) / float(len(errorValues))
 

@@ -82,4 +82,9 @@ class BaseOptimizationMethod(PyCastObject):
         if forecastingMethods is None or len(forecastingMethods) == 0:
             raise ValueError("forecastingMethods cannot be empty.")
 
-        raise NotImplementedError("Add an implementation here.\nTimeSeries data: %s" % timeSeries)
+        message = "Add an implementation here.\n"
+        message += "    TimeSeries data:    %s\n"
+        message += "    Starting Percentage %s\n"
+        message += "    End Percentage:     %s"
+
+        raise NotImplementedError(message % (timeSeries, startingPercentage, endPercentage))

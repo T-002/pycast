@@ -292,7 +292,7 @@ class BaseForecastingMethod(BaseMethod):
             timestamp from UNIX epochs, if necessary. For valid examples
             take a look into the :py:func:`time.strptime` documentation.
         """
-        if None != tsformat:
+        if tsformat is not None:
             timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, tsformat)
 
         self._forecastUntil = timestamp
