@@ -22,16 +22,17 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## Tests concerning the database connection of pycast.common.TimeSeries
-## SQLite is used for connector tests
+# Tests concerning the database connection of pycast.common.TimeSeries
+# SQLite is used for connector tests
 
-## required external modules
+# required external modules
 import unittest, os
 from copy import copy
 
 from pycast.common.timeseries import MultiDimensionalTimeSeries
 
 class MultiDimensionalTimeSeriesTest(unittest.TestCase):
+
     """"Tests the MultiDimensionalTimeSeries."""
 
     def initialization_error_test(self):

@@ -32,6 +32,7 @@ def optimized(fn):
     :return: return the wrapped function
     :rtype: function
     """
+
     def _optimized(self, *args, **kwargs):
         """ This method calls the pycastC function if
         optimization is enabled and the pycastC function

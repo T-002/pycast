@@ -26,6 +26,7 @@ from pycast.errors.meanabsolutepercentageerror import MeanAbsolutePercentageErro
 
 
 class MeanSignedPercentageError(MeanAbsolutePercentageError):
+
     """An over/under estimation aware percentage error."""
 
     def local_error(self, originalValue, calculatedValue):

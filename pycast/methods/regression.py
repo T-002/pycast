@@ -72,7 +72,7 @@ class Regression(PyCastObject):
         try:
             parameter1 = sum(x * y for x, y in zip(xDeviation, yDeviation)) / sum(x * x for x in xDeviation)
         except ZeroDivisionError:
-            ## error occures if xDeviation is always 0, which means that all x values are the same
+            # error occures if xDeviation is always 0, which means that all x values are the same
             raise ValueError("Not enough distinct x values")
         parameter0 = yMean - (parameter1 * xMean)
 

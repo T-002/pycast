@@ -28,12 +28,12 @@ import time
 import random
 import os
 
-## some string constants
+# some string constants
 _STR_EPOCHS = "UNIX-epochs"
 
 os.environ['TZ'] = 'GMT'
 
-## Time series levels that can be used for normalization.
+# Time series levels that can be used for normalization.
 NormalizationLevels = {
     "second":  1,
     "minute":  1 * 60,
@@ -44,15 +44,15 @@ NormalizationLevels = {
     "4week":   1 * 60 * 60 * 24 * 7 * 4
 }
 
-## Fusion methods that can be used to fusionate multiple data points within
-## the same time bucket. This might sort the list it is used on.
+# Fusion methods that can be used to fusionate multiple data points within
+# the same time bucket. This might sort the list it is used on.
 FusionMethods = {
     "mean":       lambda l: sum(l) / float(len(l)),    # pragma: no cover
     "median":     lambda l: sorted(l)[len(l)//2],      # pragma: no cover
     "sum":        lambda l: sum(l)                     # pragma: no cover
 }
 
-## Interpolation methods that can be used for interpolation missing data points.
+# Interpolation methods that can be used for interpolation missing data points.
 from helper import linear_interpolation
 InterpolationMethods = {
     "linear": linear_interpolation
@@ -60,6 +60,7 @@ InterpolationMethods = {
 
 from pycastobject import PyCastObject
 class TimeSeries(PyCastObject):
+
     """A TimeSeries instance stores all relevant data for a real world time series.
 
     :warning: TimeSeries instances are NOT thread-safe.
@@ -116,7 +117,7 @@ class TimeSeries(PyCastObject):
         if self._timestampFormat is None:
             self._timestampFormat = _STR_EPOCHS
 
-        datafile.write("## time_as_<%s> value\n" % self._timestampFormat)
+        datafile.write("# time_as_<%s> value\n" % self._timestampFormat)
 
         convert = TimeSeries.convert_epoch_to_timestamp
         for datapoint in self._timeseriesData:
@@ -179,14 +180,14 @@ class TimeSeries(PyCastObject):
         :return:    Returns a TimeSeries instance containing the data from datalist.
         :rtype:     TimeSeries
         """
-        ## create and fill the given TimeSeries
+        # create and fill the given TimeSeries
         ts = TimeSeries()
         ts.set_timeformat(tsformat)
 
         for entry in datalist:
             ts.add_entry(*entry[:2])
 
-        ## set the normalization level
+        # set the normalization level
         ts._normalized = ts.is_normalized()
         ts.sort_timeseries()
 
@@ -204,10 +205,10 @@ class TimeSeries(PyCastObject):
         :return:    Returns the number of entries added to the TimeSeries.
         :rtype:     integer
         """
-        ## initialize the result
+        # initialize the result
         tuples = 0
 
-        ## add the SQL result to the time series
+        # add the SQL result to the time series
         data = sqlcursor.fetchmany()
         while 0 < len(data):
             for entry in data:
@@ -215,10 +216,10 @@ class TimeSeries(PyCastObject):
 
             data = sqlcursor.fetchmany()
 
-        ## set the normalization level
+        # set the normalization level
         self._normalized = self._check_normalization
 
-        ## return the number of tuples added to the timeseries.
+        # return the number of tuples added to the timeseries.
         return tuples
 
     def __str__(self):
@@ -263,24 +264,24 @@ class TimeSeries(PyCastObject):
         :return:    :py:const:`True` if the TimeSeries objects are equal, :py:const:`False` otherwise.
         :rtype:     boolean
         """
-        ## Compare the length of the time series
+        # Compare the length of the time series
         if len(self) != len(otherTimeSeries):
             return False
 
-        ## @todo: This can be really cost intensive!
+        # @todo: This can be really cost intensive!
         orgTS  = self.sorted_timeseries()
         compTS = otherTimeSeries.sorted_timeseries()
 
         for idx in xrange(len(orgTS)):
-            ## compare the timestamp
+            # compare the timestamp
             if orgTS[idx][0] != compTS[idx][0]:
                 return False
 
-            ## compare the data
+            # compare the data
             if orgTS[idx][1] != compTS[idx][1]:
                 return False
 
-        ## everything seams to be ok
+        # everything seams to be ok
         return True
 
     def __ne__(self, otherTimeSeries):
@@ -430,13 +431,13 @@ class TimeSeries(PyCastObject):
 
         :raise: Raises a :py:exc:`ValueError` if a normalizationLevel, fusionMethod or interpolationMethod hanve an unknown value.
         """
-        ## do not normalize the TimeSeries if it is already normalized, either by
-        ## definition or a prior call of normalize(*)
+        # do not normalize the TimeSeries if it is already normalized, either by
+        # definition or a prior call of normalize(*)
         if self._normalizationLevel == normalizationLevel:
             if self._normalized:    # pragma: no cover
                 return
 
-        ## check if all parameters are defined correctly
+        # check if all parameters are defined correctly
         if normalizationLevel not in NormalizationLevels:
             raise ValueError("Normalization level %s is unknown." % normalizationLevel)
         if fusionMethod not in FusionMethods:
@@ -444,21 +445,21 @@ class TimeSeries(PyCastObject):
         if interpolationMethod not in InterpolationMethods:
             raise ValueError("Interpolation method %s is unknown." % interpolationMethod)
 
-        ## (nearly) empty TimeSeries instances do not require normalization
+        # (nearly) empty TimeSeries instances do not require normalization
         if len(self) < 2:
             self._normalized = True
             return
 
-        ## get the defined methods and parameter
+        # get the defined methods and parameter
         self._normalizationLevel = normalizationLevel
         normalizationLevel       = NormalizationLevels[normalizationLevel]
         fusionMethod             = FusionMethods[fusionMethod]
         interpolationMethod      = InterpolationMethods[interpolationMethod]
 
-        ## sort the TimeSeries
+        # sort the TimeSeries
         self.sort_timeseries()
 
-        ## prepare the required buckets
+        # prepare the required buckets
         start           = self._timeseriesData[0][0]
         end             = self._timeseriesData[-1][0]
         span            = end - start
@@ -469,52 +470,52 @@ class TimeSeries(PyCastObject):
         buckets         = [[bucketstart + idx * normalizationLevel] for idx in xrange(bucketcnt)]
 
         # Step One: Populate buckets
-        ## Initialize the timeseries data iterators
+        # Initialize the timeseries data iterators
         tsdStartIdx = 0
         tsdEndIdx   = 0
         tsdlength   = len(self)
 
         for idx in xrange(bucketcnt):
-            ## get the bucket to avoid multiple calls of buckets.__getitem__()
+            # get the bucket to avoid multiple calls of buckets.__getitem__()
             bucket = buckets[idx]
 
-            ## get the range for the given bucket
+            # get the range for the given bucket
             bucketend   = bucket[0] + buckethalfwidth
 
             while tsdEndIdx < tsdlength and self._timeseriesData[tsdEndIdx][0] < bucketend:
                 tsdEndIdx += 1
 
-            ## continue, if no valid data entries exist
+            # continue, if no valid data entries exist
             if tsdStartIdx == tsdEndIdx:
                 continue
 
-            ## use the given fusion method to calculate the fusioned value
+            # use the given fusion method to calculate the fusioned value
             values = [i[1] for i in self._timeseriesData[tsdStartIdx:tsdEndIdx]]
             bucket.append(fusionMethod(values))
 
-            ## set the new timeseries data index
+            # set the new timeseries data index
             tsdStartIdx = tsdEndIdx
 
-        ## Step Two: Fill missing buckets
+        # Step Two: Fill missing buckets
         missingCount   = 0
         lastIdx        = 0
         for idx in xrange(bucketcnt):
-            ## bucket is empty
+            # bucket is empty
             if 1 == len(buckets[idx]):
                 missingCount += 1
                 continue
 
-            ## This is the first bucket. The first bucket is not empty by definition!
+            # This is the first bucket. The first bucket is not empty by definition!
             if idx == 0:
                 lastIdx = idx
                 continue
 
-            ## update the lastIdx, if none was missing
+            # update the lastIdx, if none was missing
             if 0 == missingCount:
                 lastIdx = idx
                 continue
 
-            ## calculate and fill in missing values
+            # calculate and fill in missing values
             missingValues = interpolationMethod(buckets[lastIdx][1], buckets[idx][1], missingCount)
             for idx2 in xrange(1, missingCount + 1):
                 buckets[lastIdx + idx2].append(missingValues[idx2 - 1])
@@ -524,7 +525,7 @@ class TimeSeries(PyCastObject):
 
         self._timeseriesData = buckets
 
-        ## at the end set self._normalized to True
+        # at the end set self._normalized to True
         self._normalized = True
 
     def is_normalized(self):
@@ -549,7 +550,7 @@ class TimeSeries(PyCastObject):
         for idx in xrange(len(self) - 1):
             distance = self[idx+1][0] - self[idx][0]
 
-            ## first run
+            # first run
             if lastDistance is None:
                 lastDistance = distance
                 continue
@@ -579,7 +580,7 @@ class TimeSeries(PyCastObject):
         :raise:    Raises a StandardError when the TimeSeries was not normalized and hte method requires a
             normalized TimeSeries
         """
-        ## check, if the methods requirements are fullfilled
+        # check, if the methods requirements are fullfilled
         if method.has_to_be_normalized() and not self._normalized:
             raise StandardError("method requires a normalized TimeSeries instance.")
 
@@ -735,14 +736,14 @@ class MultiDimensionalTimeSeries(TimeSeries):
         :return:    Returns a MultiDimensionalTimeSeries instance containing the data from datalist.
         :rtype:     MultiDimensionalTimeSeries
         """
-        ## create and fill the given TimeSeries
+        # create and fill the given TimeSeries
         ts = MultiDimensionalTimeSeries(dimensions=dimensions)
         ts.set_timeformat(tsformat)
 
         for entry in datalist:
             ts.add_entry(entry[0], entry[1])
 
-        ## set the normalization level
+        # set the normalization level
         ts._normalized = ts.is_normalized()
         ts.sort_timeseries()
 
@@ -777,28 +778,28 @@ class MultiDimensionalTimeSeries(TimeSeries):
         :return:    :py:const:`True` if the MultiDimensionalTimeSeries objects are equal, :py:const:`False` otherwise.
         :rtype: boolean
         """
-        ## Compare the length of the time series
+        # Compare the length of the time series
         if len(self) != len(otherTimeSeries):
             return False
 
-        ## compare the number of dimensions:
+        # compare the number of dimensions:
         if self._dimensionCount != otherTimeSeries.dimension_count():
             return False
 
-        ## @todo: This can be really cost intensive!
+        # @todo: This can be really cost intensive!
         orgTS  = self.sorted_timeseries()
         compTS = otherTimeSeries.sorted_timeseries()
 
         for idx in xrange(len(orgTS)):
-            ## compare the timestamp
+            # compare the timestamp
             if orgTS[idx][0] != compTS[idx][0]:
                 return False
 
-            ## compare the data
+            # compare the data
             if orgTS[idx][1:] != compTS[idx][1:]:
                 return False
 
-        ## everything seams to be ok
+        # everything seams to be ok
         return True
 
     def __copy__(self):
@@ -829,10 +830,10 @@ class MultiDimensionalTimeSeries(TimeSeries):
         :return:    Returns the number of entries added to the MultiDimensionalTimeSeries.
         :rtype: integer
         """
-        ## initialize the result
+        # initialize the result
         tuples = 0
 
-        ## add the SQL result to the timeseries
+        # add the SQL result to the timeseries
         data = sqlcursor.fetchmany()
         while 0 < len(data):
             for entry in data:
@@ -840,10 +841,10 @@ class MultiDimensionalTimeSeries(TimeSeries):
 
             data = sqlcursor.fetchmany()
 
-        ## set the normalization level
+        # set the normalization level
         self._normalized = self._check_normalization()
 
-        ## return the number of tuples added to the timeseries.
+        # return the number of tuples added to the timeseries.
         return tuples
 
     def to_gnuplot_datafile(self, datafilepath):
@@ -863,7 +864,7 @@ class MultiDimensionalTimeSeries(TimeSeries):
         if self._timestampFormat is None:
             self._timestampFormat = _STR_EPOCHS
 
-        datafile.write("## time_as_<%s> value..." % self._timestampFormat)
+        datafile.write("# time_as_<%s> value..." % self._timestampFormat)
 
         convert = TimeSeries.convert_epoch_to_timestamp
         for datapoint in self._timeseriesData:

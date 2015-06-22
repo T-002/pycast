@@ -28,6 +28,7 @@ from pycast.errors.baseerrormeasure import BaseErrorMeasure
 
 from pycast.common.pycastobject import PyCastObject
 class BaseOptimizationMethod(PyCastObject):
+
     """Baseclass for all optimization methods."""
 
     def __init__(self, errorMeasureClass, errorMeasureInitializationParameters=None, precision=-1):
@@ -78,7 +79,7 @@ class BaseOptimizationMethod(PyCastObject):
 
         :raise:    Raises a :py:exc:`ValueError` ValueError if no forecastingMethods is empty.
         """
-        ## no forecasting methods provided
+        # no forecasting methods provided
         if forecastingMethods is None or len(forecastingMethods) == 0:
             raise ValueError("forecastingMethods cannot be empty.")
 

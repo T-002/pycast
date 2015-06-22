@@ -22,15 +22,16 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## required external modules
+# required external modules
 import unittest
 
-## required modules from pycast
+# required modules from pycast
 from pycast.errors.meansigneddifferenceerror import MeanSignedDifferenceError
 from pycast.common.timeseries import TimeSeries
 
 
 class MeanSignedDifferenceErrorTest(unittest.TestCase):
+
     """Test for the MeanSignedDifferenceError."""
 
     def setUp(self):

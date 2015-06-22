@@ -37,6 +37,7 @@ PRECISION = 4
 
 
 class MatrixTest(unittest.TestCase):
+
     """Test class for the matrix"""
 
     def init_test(self):
@@ -396,11 +397,11 @@ class MatrixTest(unittest.TestCase):
                 ]
         matrix = Matrix(cols, rows)
         matrix.initialize(data, rowBased=True)
-        ## Change value at specified column/row
+        # Change value at specified column/row
         matrix.set_value(1, 0, 10)
         matrix.set_value(2, 1, 9)
 
-        ## Test if the new value is set correctly
+        # Test if the new value is set correctly
         self.assertEqual(matrix.matrix[1][0], 10)
         self.assertEqual(matrix.matrix[2][1], 9)
 
@@ -725,7 +726,7 @@ class MatrixTest(unittest.TestCase):
                 ]
         mtrx = Matrix(cols, rows)
         mtrx.initialize(data, rowBased=True)
-        ## 2-dimensional list exRes[column][rows]
+        # 2-dimensional list exRes[column][rows]
         exRes = [
                     [1.0, 0.0, 0.0],
                     [0.0, 1.0, 0.0],
@@ -874,7 +875,7 @@ class MatrixTest(unittest.TestCase):
         # execute householder transformation
         u, bidiag, v = matrix.householder()
 
-        ## expect, that multiplication works correctly.
+        # expect, that multiplication works correctly.
         res = u * bidiag * v
         # res should be equal with c (except some rounding errors)
         for row in range(res.get_height()):
@@ -895,7 +896,7 @@ class MatrixTest(unittest.TestCase):
         # execute householder transformation
         u, bidiag, v = matrix.householder()
 
-        ## expect, that multiplication works correctly.
+        # expect, that multiplication works correctly.
         res = u * bidiag * v
         # res should be equal with c (except some rounding errors)
         for row in range(res.get_height()):
@@ -960,18 +961,18 @@ class MatrixTest(unittest.TestCase):
         matrix = Matrix(5, 8)
         matrix.initialize(a, rowBased=True)
         u, diag, v = matrix.svd()
-        ## u and v should be unitary matrices. Matrixmultiplication withs its
-        ## transformation should be the identity Matrix.
+        # u and v should be unitary matrices. Matrixmultiplication withs its
+        # transformation should be the identity Matrix.
         res = u.transform() * u
         res1 = v * v.transform()
         for row in range(res.get_height()):
             for col in range(res.get_width()):
                 if row == col:
-                    ## value should be 1 at diagonal
+                    # value should be 1 at diagonal
                     self.assertAlmostEqual(res.get_value(col, row), 1, PRECISION)
                     self.assertAlmostEqual(res1.get_value(col, row), 1, PRECISION)
                 else:
-                    ## value should be 0 otherwise.
+                    # value should be 0 otherwise.
                     self.assertAlmostEqual(res.get_value(col, row), 0, PRECISION)
                     self.assertAlmostEqual(res1.get_value(col, row), 0, PRECISION)
 

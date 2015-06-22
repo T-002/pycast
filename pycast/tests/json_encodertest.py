@@ -29,6 +29,7 @@ from pycast.common.timeseries import TimeSeries
 from pycast.common.json_encoder import PycastEncoder
 
 class PycastEncoderTest(unittest.TestCase):
+	
 	""" Test class containing all the tests for pycast.common.json_encoder.PycastEncoder"""
 
 	def encode_timeseries_test(self):

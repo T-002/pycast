@@ -52,11 +52,13 @@ def pythag(a, b):
         return absB * sqrt(1.0 + (absA / float(absB)) ** 2)
 
 class Matrix(PyCastObject):
+
     """A Matrix instance stores all relevant data of a matrix.
 
     It provides a number of Matrix operations, such as multiplication,
     transformation and inversion.
     """
+
     # default number of digits after decimal point which are printed
     defaultStringPrecision = 3
 
@@ -368,7 +370,7 @@ class Matrix(PyCastObject):
         :rtype:     Matrix
         """
         mtrx = Matrix.from_two_dim_array(self._columns, self._rows, self.matrix)
-        ## copy of immmutable Boolean.
+        # copy of immmutable Boolean.
         mtrx.optimizationEnabled = self.optimizationEnabled
 
         return mtrx
@@ -544,7 +546,7 @@ class Matrix(PyCastObject):
         # Start with complete matrix and remove in each iteration
         # the first row and the first column
         for offset in xrange(height):
-            ## Switch lines, if current first value is 0
+            # Switch lines, if current first value is 0
             if mArray[offset][offset] == 0:
                 for i in xrange(offset + 1, height):
                     if mArray[offset][i] != 0:
@@ -804,7 +806,7 @@ class Matrix(PyCastObject):
                         a[k][j] += (s * rv1[k])
             anorm = max(anorm, (abs(w[i]) + abs(rv1[i])))
 
-        ## Accumulation of right hand transformations
+        # Accumulation of right hand transformations
         for i in xrange(n - 1, -1, -1):
             if g != 0.0:
                 for j in xrange(l, n):
@@ -820,7 +822,7 @@ class Matrix(PyCastObject):
             g = rv1[i]
             l = i
 
-        ## Accumulation of left hand transformations
+        # Accumulation of left hand transformations
         for i in xrange(n - 1, -1, -1):
             l = i + 1
             g = w[i]

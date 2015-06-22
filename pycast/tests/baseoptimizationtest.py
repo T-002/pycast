@@ -22,7 +22,7 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## required external modules
+# required external modules
 import unittest
 
 from pycast.optimization.baseoptimizationmethod import BaseOptimizationMethod
@@ -31,6 +31,7 @@ from pycast.errors.baseerrormeasure import BaseErrorMeasure
 from pycast.common.timeseries import TimeSeries
 
 class BaseOptimizationMethodTest(unittest.TestCase):
+
     """Test class containing all tests for pycast.optimization.BaseOptimizationMethod."""
 
     def initialization_errormeasure_test(self):

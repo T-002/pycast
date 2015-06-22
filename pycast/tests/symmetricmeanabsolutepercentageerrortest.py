@@ -22,15 +22,16 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## required external modules
+# required external modules
 import unittest
 
-## required modules from pycast
+# required modules from pycast
 from pycast.errors.symmetricmeanabsolutepercentageerror import SymmetricMeanAbsolutePercentageError
 from pycast.common.timeseries import TimeSeries
 
 
 class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
+
     """Testing symmetric mean absolute percentage error."""
 
     def setUp(self):
@@ -76,7 +77,7 @@ class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
 #            le = smape.local_error([dataPtsOrg[idx]], [dataPtsCalc[idx]])
 #            ple = localErrors[idx]
 #
-#            ## compare the strings due to accuracy
+#            # compare the strings due to accuracy
 #            assert str(le) == str(ple)
 
 #    def error_calculation_test(self):
@@ -95,7 +96,7 @@ class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
 #        smape.initialize(tsOrg, tsCalc)
 #        print smape._errorValues
 #
-#        ## compare the strings due to accuracy
+#        # compare the strings due to accuracy
 #        assert "1.5706" == str(smape.get_error())[:6]
 
 #    def confidence_interval_test(self):

@@ -25,6 +25,7 @@
 from pycast.errors.meanabsolutepercentageerror import MeanAbsolutePercentageError
 
 class MedianAbsolutePercentageError(MeanAbsolutePercentageError):
+
     """Represents the median absolute percentage error."""
 
     def _calculate(self, startingPercentage, endPercentage, startDate, endDate):
@@ -44,7 +45,7 @@ class MedianAbsolutePercentageError(MeanAbsolutePercentageError):
         :return:    Returns a float representing the error.
         :rtype: float
         """
-        ## get the defined subset of error values
+        # get the defined subset of error values
         errorValues = self._get_error_values(startingPercentage, endPercentage, startDate, endDate)
         errorValues = filter(lambda item: item is not None, errorValues)
 

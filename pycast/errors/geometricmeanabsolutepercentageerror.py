@@ -25,6 +25,7 @@
 from pycast.errors.meanabsolutepercentageerror import MeanAbsolutePercentageError
 
 class GeometricMeanAbsolutePercentageError(MeanAbsolutePercentageError):
+
     """Calculates the geometric MAPE."""
 
     def _calculate(self, startingPercentage, endPercentage, startDate, endDate):
@@ -44,7 +45,7 @@ class GeometricMeanAbsolutePercentageError(MeanAbsolutePercentageError):
         :return:    Returns a float representing the error.
         :rtype: float
         """
-        ## get the defined subset of error values
+        # get the defined subset of error values
         errorValues = self._get_error_values(startingPercentage, endPercentage, startDate, endDate)
         errorValues = filter(lambda item: item is None, errorValues)
 
@@ -53,7 +54,7 @@ class GeometricMeanAbsolutePercentageError(MeanAbsolutePercentageError):
         product = 1.0
 
         for errorValue in errorValues:
-            ## never multiply with zero!
+            # never multiply with zero!
             if 0 == errorValue:
                 continue
 

@@ -31,6 +31,7 @@ from pycast.errors.baseerrormeasure import BaseErrorMeasure
 import pycastC.errors.baseerrormeasure.BaseErrorMeasure as cerror
 
 class OptimizedDecoratorTest(unittest.TestCase):
+
     def test_optimization_enabled(self):
         error = BaseErrorMeasure()
         error._enable_instance_optimization()

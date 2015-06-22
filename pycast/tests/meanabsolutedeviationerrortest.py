@@ -22,15 +22,16 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## required external modules
+# required external modules
 import unittest
 
-## required modules from pycast
+# required modules from pycast
 from pycast.errors.meanabsolutedeviationerror import MeanAbsoluteDeviationError
 from pycast.common.timeseries import TimeSeries
 
 
 class MeanAbsoluteDeviationErrorTest(unittest.TestCase):
+
     """Testing Mean Absolute Deviation error."""
 
 
@@ -52,7 +53,7 @@ class MeanAbsoluteDeviationErrorTest(unittest.TestCase):
             le = mad.local_error([self.dataOrg[idx]], [self.dataCalc[idx]])
             ple = localErrors[idx]
 
-            ## compare the strings due to accuracy
+            # compare the strings due to accuracy
             self.assertEqual(str(le), str(ple))
 
     def error_calculation_test(self):
@@ -70,5 +71,5 @@ class MeanAbsoluteDeviationErrorTest(unittest.TestCase):
         mad = MeanAbsoluteDeviationError()
         mad.initialize(tsOrg, tsCalc)
 
-        ## compare the strings due to accuracy
+        # compare the strings due to accuracy
         self.assertEqual("0.3454", str(mad.get_error())[:6])

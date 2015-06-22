@@ -26,6 +26,7 @@ from pycast.common.pycastobject import PyCastObject
 from pycast.common.decorators import optimized
 
 class BaseErrorMeasure(PyCastObject):
+
     """Baseclass for all error measures."""
 
     def __init__(self, minimalErrorCalculationPercentage=60):
@@ -65,34 +66,34 @@ class BaseErrorMeasure(PyCastObject):
 
         :raise:    Raises a :py:exc:`StandardError` if the error measure is initialized multiple times.
         """
-        ## ErrorMeasure was already initialized.
+        # ErrorMeasure was already initialized.
         if 0 < len(self._errorValues):
             raise StandardError("An ErrorMeasure can only be initialized once.")
 
-        ## sort the TimeSeries to reduce the required comparison operations
+        # sort the TimeSeries to reduce the required comparison operations
         originalTimeSeries.sort_timeseries()
         calculatedTimeSeries.sort_timeseries()
 
-        ## Performance optimization
+        # Performance optimization
         append      = self._errorValues.append
         appendDate  = self._errorDates.append
         local_error = self.local_error
 
         minCalcIdx  = 0
 
-        ## calculate all valid local errors
+        # calculate all valid local errors
         for orgPair in originalTimeSeries:
             for calcIdx in xrange(minCalcIdx, len(calculatedTimeSeries)):
                 calcPair = calculatedTimeSeries[calcIdx]
 
-                ## Skip values that can not be compared
+                # Skip values that can not be compared
                 if calcPair[0] != orgPair[0]:
                     continue
 
                 append(local_error(orgPair[1:], calcPair[1:]))
                 appendDate(orgPair[0])
 
-        ## return False, if the error cannot be calculated
+        # return False, if the error cannot be calculated
         calculatedErrors    = len(filter(lambda item: item is not None, self._errorValues))
         minCalculatedErrors = self._minimalErrorCalculationPercentage * len(originalTimeSeries)
 
@@ -166,11 +167,11 @@ class BaseErrorMeasure(PyCastObject):
 
         :raise:    Raises a :py:exc:`StandardError` if :py:meth:`BaseErrorMeasure.initialize` was not successfull before.
         """
-        ## not initialized:
+        # not initialized:
         if len(self._errorValues) == 0:
             raise StandardError("The last call of initialize(...) was not successfull.")
 
-        ## check for wrong parameters
+        # check for wrong parameters
         if not (0.0 <= startingPercentage <= 100.0):
             raise ValueError("startingPercentage has to be in [0.0, 100.0].")
         if not (0.0 <= endPercentage <= 100.0):

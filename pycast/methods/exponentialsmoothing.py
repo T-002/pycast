@@ -26,6 +26,7 @@ from pycast.methods.basemethod import BaseForecastingMethod
 from pycast.common.timeseries import TimeSeries
 
 class ExponentialSmoothing(BaseForecastingMethod):
+
     """Implements an exponential smoothing algorithm.
 
     Explanation:
@@ -81,50 +82,50 @@ class ExponentialSmoothing(BaseForecastingMethod):
 
         :note:    The first normalized value is chosen as the starting point.
         """
-        ## determine the number of values to forecast, if necessary
+        # determine the number of values to forecast, if necessary
         self._calculate_values_to_forecast(timeSeries)
 
-        ## extract the required parameters, performance improvement
+        # extract the required parameters, performance improvement
         alpha            = self._parameters["smoothingFactor"]
         valuesToForecast = self._parameters["valuesToForecast"]
 
-        ## initialize some variables
+        # initialize some variables
         resultList  = []
         estimator   = None
         lastT       = None
 
-        ## "It's always about performance!"
+        # "It's always about performance!"
         append = resultList.append
 
-        ## smooth the existing TimeSeries data
+        # smooth the existing TimeSeries data
         for idx in xrange(len(timeSeries)):
-            ## get the current to increase performance
+            # get the current to increase performance
             t = timeSeries[idx]
 
-            ## get the initial estimate
+            # get the initial estimate
             if estimator is None:
                 estimator = t[1]
                 continue
 
-            ## add the first value to the resultList without any correction
+            # add the first value to the resultList without any correction
             if 0 == len(resultList):
                 append([t[0], estimator])
                 lastT = t
                 continue
 
-            ## calculate the error made during the last estimation
+            # calculate the error made during the last estimation
             error = lastT[1] - estimator
 
-            ## calculate the new estimator, based on the last occured value, the error and the smoothingFactor
+            # calculate the new estimator, based on the last occured value, the error and the smoothingFactor
             estimator = estimator + alpha * error
 
-            ## save the current value for the next iteration
+            # save the current value for the next iteration
             lastT = t
 
-            ## add an entry to the result
+            # add an entry to the result
             append([t[0], estimator])
 
-        ## forecast additional values if requested
+        # forecast additional values if requested
         if valuesToForecast > 0:
             currentTime        = resultList[-1][0]
             normalizedTimeDiff = currentTime - resultList[-2][0]
@@ -132,17 +133,17 @@ class ExponentialSmoothing(BaseForecastingMethod):
             for idx in xrange(valuesToForecast):
                 currentTime += normalizedTimeDiff
 
-                ## reuse everything
+                # reuse everything
                 error     = lastT[1] - estimator
                 estimator = estimator + alpha * error
 
-                ## add a forecasted value
+                # add a forecasted value
                 append([currentTime, estimator])
 
-                ## set variables for next iteration
+                # set variables for next iteration
                 lastT         = resultList[-1]
 
-        ## return a TimeSeries, containing the result
+        # return a TimeSeries, containing the result
         return TimeSeries.from_twodim_list(resultList)
 
 class HoltMethod(BaseForecastingMethod):
@@ -208,55 +209,55 @@ class HoltMethod(BaseForecastingMethod):
 
         :note: The first normalized value is chosen as the starting point.
         """
-        ## determine the number of values to forecast, if necessary
+        # determine the number of values to forecast, if necessary
         self._calculate_values_to_forecast(timeSeries)
 
-        ## extract the required parameters, performance improvement
+        # extract the required parameters, performance improvement
         alpha            = self._parameters["smoothingFactor"]
         beta             = self._parameters["trendSmoothingFactor"]
 
-        ## initialize some variables
+        # initialize some variables
         resultList  = []
         estimator   = None
         trend       = None
         lastT       = None
 
-        ## "It's always about performance!"
+        # "It's always about performance!"
         append = resultList.append
 
-        ## smooth the existing TimeSeries data
+        # smooth the existing TimeSeries data
         for idx in xrange(len(timeSeries)):
-            ## get the current to increase performance
+            # get the current to increase performance
             t = timeSeries[idx]
 
-            ## get the initial estimate
+            # get the initial estimate
             if estimator is None:
                 estimator = t[1]
                 lastT     = t
                 continue
 
-            ## add the first value to the resultList without any correction
+            # add the first value to the resultList without any correction
             if 0 == len(resultList):
                 append([t[0], estimator])
                 trend         = t[1] - lastT[1]
 
-                ## store current values for next iteration
+                # store current values for next iteration
                 lastT         = t
                 lastEstimator = estimator
                 continue
 
-            ## calculate the new estimator and trend, based on the last occured value, the error and the smoothingFactor
+            # calculate the new estimator and trend, based on the last occured value, the error and the smoothingFactor
             estimator = alpha * t[1] + (1 - alpha) * (estimator + trend)
             trend     = beta * (estimator - lastEstimator) + (1 - beta) * trend
 
-            ## add an entry to the result
+            # add an entry to the result
             append([t[0], estimator])
 
-            ## store current values for next iteration
+            # store current values for next iteration
             lastT         = t
             lastEstimator = estimator
 
-        ## forecast additional values if requested
+        # forecast additional values if requested
         if self._parameters["valuesToForecast"] > 0:
             currentTime        = resultList[-1][0]
             normalizedTimeDiff = currentTime - resultList[-2][0]
@@ -264,16 +265,16 @@ class HoltMethod(BaseForecastingMethod):
             for idx in xrange(1, self._parameters["valuesToForecast"] + 1):
                 currentTime += normalizedTimeDiff
 
-                ## reuse everything
+                # reuse everything
                 forecast = estimator + idx * trend
 
-                ## add a forecasted value
+                # add a forecasted value
                 append([currentTime, forecast])
 
-        ## return a TimeSeries, containing the result
+        # return a TimeSeries, containing the result
         return TimeSeries.from_twodim_list(resultList)
 
-## TODO:A second method, referred to as either Brown's linear exponential smoothing (LES) or Brown's double exponential smoothing works as follows.[9]
+# TODO:A second method, referred to as either Brown's linear exponential smoothing (LES) or Brown's double exponential smoothing works as follows.[9]
 
 class HoltWintersMethod(BaseForecastingMethod):
     """Implements the Holt-Winters algorithm.
@@ -347,7 +348,7 @@ class HoltWintersMethod(BaseForecastingMethod):
 
         :note: Currently the first normalized value is simply chosen as the starting point.
         """
-        ## determine the number of values to forecast, if necessary
+        # determine the number of values to forecast, if necessary
         self._calculate_values_to_forecast(timeSeries)
 
         seasonLength = self.get_parameter("seasonLength")
@@ -450,5 +451,5 @@ class HoltWintersMethod(BaseForecastingMethod):
         for i in range(seasonLength):
             A_j += timeSeries[(seasonLength * (j)) + i][1]
         return A_j / seasonLength
-        ## :todo:
+        # :todo:
         #return A_j / float(seasonLength)

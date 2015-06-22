@@ -25,6 +25,7 @@
 from pycast.optimization.baseoptimizationmethod import BaseOptimizationMethod
 
 class GridSearch(BaseOptimizationMethod):
+
     """Implements the grid search method for parameter optimization.
 
     GridSearch is the brute force method.
@@ -59,7 +60,7 @@ class GridSearch(BaseOptimizationMethod):
         for forecastingMethod in forecastingMethods:
             results.append([forecastingMethod] + self.optimize_forecasting_method(timeSeries, forecastingMethod))
 
-        ## get the forecasting method with the smallest error
+        # get the forecasting method with the smallest error
         bestForecastingMethod = min(results, key=lambda item: item[1].get_error(self._startingPercentage, self._endPercentage))
 
         for parameter in bestForecastingMethod[2]:
@@ -90,7 +91,7 @@ class GridSearch(BaseOptimizationMethod):
             endValue += precision
 
         while startValue < endValue:
-            ## fix the parameter precision
+            # fix the parameter precision
             parameterValue = startValue
 
             yield parameterValue
@@ -112,10 +113,10 @@ class GridSearch(BaseOptimizationMethod):
         for tuneableParameter in tuneableParameters:
             remainingParameters.append([tuneableParameter, [item for item in self._generate_next_parameter_value(tuneableParameter, forecastingMethod)]])
 
-        ## Collect the forecasting results
+        # Collect the forecasting results
         forecastingResults = self.optimization_loop(timeSeries, forecastingMethod, remainingParameters)
 
-        ### Debugging GridSearchTest.inner_optimization_result_test
+        # Debugging GridSearchTest.inner_optimization_result_test
         #print ""
         #print "GridSearch"
         #print "Instance    /    SMAPE / Alpha"
@@ -127,10 +128,10 @@ class GridSearch(BaseOptimizationMethod):
         #)
         #print ""
 
-        ## Collect the parameters that resulted in the smallest error
+        # Collect the parameters that resulted in the smallest error
         bestForecastingResult = min(forecastingResults, key=lambda item: item[0].get_error(self._startingPercentage, self._endPercentage))
 
-        ## return the determined parameters
+        # return the determined parameters
         return bestForecastingResult
 
     def optimization_loop(self, timeSeries, forecastingMethod, remainingParameters, currentParameterValues=None):
@@ -153,42 +154,42 @@ class GridSearch(BaseOptimizationMethod):
         if currentParameterValues is None:
             currentParameterValues = {}
 
-        ## The most inner loop is reached
+        # The most inner loop is reached
         if 0 == len(remainingParameters):
-            ## set the forecasting parameters
+            # set the forecasting parameters
             for parameter in currentParameterValues:
                 forecastingMethod.set_parameter(parameter, currentParameterValues[parameter])
 
-            ## calculate the forecast
+            # calculate the forecast
             forecast = timeSeries.apply(forecastingMethod)
 
-            ## create and initialize the ErrorMeasure
+            # create and initialize the ErrorMeasure
             error = self._errorClass(**self._errorMeasureKWArgs)
 
-            ## when the error could not be calculated, return an empty result
+            # when the error could not be calculated, return an empty result
             if not error.initialize(timeSeries, forecast):
                 return []
 
-            ## Debugging GridSearchTest.inner_optimization_result_test
+            # Debugging GridSearchTest.inner_optimization_result_test
             #print "Instance / SMAPE / Alpha: %s / %s / %s" % (
             #    str(error)[-12:-1],
             #    str(error.get_error(self._startingPercentage, self._endPercentage))[:8],
             #    currentParameterValues["smoothingFactor"]
             #)
 
-            ## return the result
+            # return the result
             return [[error, dict(currentParameterValues)]]
 
-        ## If this is not the most inner loop than extract an additional parameter
+        # If this is not the most inner loop than extract an additional parameter
         localParameter       = remainingParameters[-1]
         localParameterName   = localParameter[0]
         localParameterValues = localParameter[1]
 
 
-        ## initialize the result
+        # initialize the result
         results = []
 
-        ## check the next level for each existing parameter
+        # check the next level for each existing parameter
         for value in localParameterValues:
             currentParameterValues[localParameterName] = value
             remainingParameters = remainingParameters[:-1]

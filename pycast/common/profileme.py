@@ -28,10 +28,12 @@ except ImportError:   # pragma: no cover
     import profile    # pragma: no cover
 
 class _ProfileDecorator(object):
+
     """Decorator class that build a wrapper around any function.
 
     :warning: The decorator does not take recursive calls into account!
     """
+
     def __init__(self, filelocation):
         """Initializes the ProfileMe decorator.
 
@@ -54,15 +56,15 @@ class _ProfileDecorator(object):
 
             It automatically created a performance profile for the corresponding function call.
             """
-            ## create the profiler and execute the called function
+            # create the profiler and execute the called function
             profiler = profile.Profile()
             result   = profiler.runcall(func, *args, **kwargs)
 
-            ## store the performance profile
+            # store the performance profile
             filename = "%s" % (self._filelocation)
             profiler.dump_stats(filename)
 
-            ## return the result
+            # return the result
             return result
 
         self._func = func
@@ -73,6 +75,6 @@ class _ProfileDecorator(object):
 
         return wrapped_func
 
-## This is the "real decorator"
-### Usage: @profileMe
+# This is the "real decorator"
+# Usage: @profileMe
 profileMe = _ProfileDecorator

@@ -25,6 +25,7 @@
 from pycast.errors.baseerrormeasure import BaseErrorMeasure
 
 class MeanSquaredError(BaseErrorMeasure):
+
     """Implements the mean squared error measure.
 
     Explanation:
@@ -48,7 +49,7 @@ class MeanSquaredError(BaseErrorMeasure):
         :return:    Returns a float representing the error.
         :rtype: float
         """
-        ## get the defined subset of error values
+        # get the defined subset of error values
         errorValues = self._get_error_values(startingPercentage, endPercentage, startDate, endDate)
         return float(sum(errorValues)) / float(len(errorValues))
 

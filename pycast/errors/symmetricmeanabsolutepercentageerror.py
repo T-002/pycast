@@ -25,6 +25,7 @@
 from pycast.errors.baseerrormeasure import BaseErrorMeasure
 
 class SymmetricMeanAbsolutePercentageError(BaseErrorMeasure):
+
     """Implements the symmetric mean absolute percentage error whose values are
     between 0 and 200%.
 
@@ -51,7 +52,7 @@ class SymmetricMeanAbsolutePercentageError(BaseErrorMeasure):
         :return:    Returns a float representing the error.
         :rtype: float
         """
-        ## get the defined subset of error values
+        # get the defined subset of error values
         errorValues = self._get_error_values(startingPercentage, endPercentage, startDate, endDate)
 
         return float(sum(errorValues)) / float(len(errorValues))
@@ -69,7 +70,7 @@ class SymmetricMeanAbsolutePercentageError(BaseErrorMeasure):
         originalValue = originalValue[0]
         calculatedValue = calculatedValue[0]
 
-        ## error is zero
+        # error is zero
         if not originalValue and not calculatedValue:
             return 0.0
 
@@ -78,7 +79,7 @@ class SymmetricMeanAbsolutePercentageError(BaseErrorMeasure):
 #        originalValue = originalValue[0]
 #
 #
-#        ## error is zero
+#        # error is zero
 #        if originalValue == calculatedValue:
 #            return 0.0
 #

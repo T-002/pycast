@@ -22,16 +22,17 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## required external modules
+# required external modules
 import unittest
 
-## required modules from pycast
+# required modules from pycast
 from pycast.errors.baseerrormeasure import BaseErrorMeasure
 from pycast.common.timeseries import TimeSeries
 from pycast.common.pycastobject import PyCastObject
 from pycast.errors.meansquarederror import MeanSquaredError
 
 class BaseErrorMeasureTest(unittest.TestCase):
+
     """Test class for the BaseErrorMeasure interface."""
 
     def initialization_test(self):
@@ -78,14 +79,14 @@ class BaseErrorMeasureTest(unittest.TestCase):
         def return_zero(ignoreMe, ignoreMeToo):
             return 0
 
-        ## remove the NotImplementedErrors for initialization
+        # remove the NotImplementedErrors for initialization
         bem.local_error = return_zero
         bem._calculate   = return_zero
 
-        ## correct initialize call
+        # correct initialize call
         bem.initialize(tsOrg, tsCalc)
 
-        ## incorrect initialize call
+        # incorrect initialize call
         for cnt in xrange(10):
             try:
                 bem.initialize(tsOrg, tsCalc)
@@ -128,7 +129,7 @@ class BaseErrorMeasureTest(unittest.TestCase):
         def return_zero(ignoreMe, ignoreMeToo, andMe=None, andMeToo=None):
             return 0
 
-        ## remove the NotImplementedErrors for initialization
+        # remove the NotImplementedErrors for initialization
         bem.local_error = return_zero
         bem._calculate   = return_zero
         bem.initialize(tsOrg, tsCalc)
@@ -213,7 +214,7 @@ class BaseErrorMeasureTest(unittest.TestCase):
         bem.local_error = lambda a,b: 1
 
         mse = MeanSquaredError(80.0)
-        ## only 50% of the original TimeSeries have a corresponding partner
+        # only 50% of the original TimeSeries have a corresponding partner
         if mse.initialize(tsOrg, tsCalc):
             assert False    # pragma: no cover
 

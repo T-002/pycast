@@ -22,13 +22,14 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## required external modules
+# required external modules
 import unittest
 
-## required modules from pycast
+# required modules from pycast
 from pycast.common.helper import *
 
 class HelperTest(unittest.TestCase):
+
     """Test class containing all tests for pycasts helper module."""
 
     def linear_interpolation_test(self):

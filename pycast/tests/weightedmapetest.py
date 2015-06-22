@@ -22,15 +22,17 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## required external modules
+# required external modules
 import unittest
 
-## required modules from pycast
+# required modules from pycast
 from pycast.errors.weightedmeanabsolutepercentageerror import WeightedMeanAbsolutePercentageError
 from pycast.common.timeseries import TimeSeries
 
 class WeightedMeanAbsolutePercentageErrorTest(unittest.TestCase):
+
     """Test class containing all tests for WeightedMeanAbsolutePercentageError."""
+
     def local_error_test(self):
         orgValues = [11, 33.1, 2.3, 6.54, 123.1, 12.54, 12.9]
         calValues = [24, 1.23, 342, 1.21, 4.112, 9.543, 3.54]

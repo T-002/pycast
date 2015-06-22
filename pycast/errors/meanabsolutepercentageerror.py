@@ -44,7 +44,7 @@ class MeanAbsolutePercentageError(BaseErrorMeasure):
         :return:    Returns a float representing the error.
         :rtype: float
         """
-        ## get the defined subset of error values
+        # get the defined subset of error values
         errorValues = self._get_error_values(startingPercentage, endPercentage, startDate, endDate)
         errorValues = filter(lambda item: item is not None, errorValues)
 

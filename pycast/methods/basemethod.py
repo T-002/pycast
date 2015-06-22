@@ -26,6 +26,7 @@ from pycast.common.timeseries import TimeSeries
 from pycast.common.pycastobject import PyCastObject
 
 class BaseMethod(PyCastObject):
+
     """Baseclass for all smoothing and forecasting methods."""
 
     _interval_definitions = { True: ["[", "]"], False: ["(", ")"]}
@@ -75,7 +76,7 @@ class BaseMethod(PyCastObject):
         """
         parameterIntervals = {}
 
-        ## YOUR METHOD SPECIFIC CODE HERE!
+        # YOUR METHOD SPECIFIC CODE HERE!
         if self.__class__.__name__ not in ["BaseMethod", "BaseForecastingMethod"]:
             raise NotImplementedError
 
@@ -124,7 +125,7 @@ class BaseMethod(PyCastObject):
             :py:const:`False` otherwise.
         :rtype: boolean
         """
-        ## return True, if not interval is defined for the parameter
+        # return True, if not interval is defined for the parameter
         if parameter not in self._parameterIntervals:
             return True
 
@@ -151,7 +152,7 @@ class BaseMethod(PyCastObject):
         :return:    Returns a string containing hte message.
         :rtype: string
         """
-        ## return if not interval is defined for the parameter
+        # return if not interval is defined for the parameter
         if parameter not in self._parameterIntervals:
             return
 
@@ -274,11 +275,11 @@ class BaseForecastingMethod(BaseMethod):
         :param string name:    Name of the parameter.
         :param numeric value:    Value of the parameter.
         """
-        ## set the furecast until variable to None if necessary
+        # set the furecast until variable to None if necessary
         if name == "valuesToForecast":
             self._forecastUntil = None
 
-        ## continue with the parents implementation
+        # continue with the parents implementation
         return super(BaseForecastingMethod, self).set_parameter(name, value)
 
     def forecast_until(self, timestamp, tsformat=None):
@@ -305,11 +306,11 @@ class BaseForecastingMethod(BaseMethod):
 
         :raise:    Raises a :py:exc:`ValueError` if the TimeSeries is either not normalized or sorted.
         """
-        ## do not set anything, if it is not required
+        # do not set anything, if it is not required
         if self._forecastUntil is None:
             return
 
-        ## check the TimeSeries for correctness
+        # check the TimeSeries for correctness
         if not timeSeries.is_sorted():
             raise ValueError("timeSeries has to be sorted.")
         if not timeSeries.is_normalized():

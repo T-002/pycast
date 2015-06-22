@@ -22,7 +22,7 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## required external modules
+# required external modules
 import unittest
 import re
 import os
@@ -30,12 +30,13 @@ import random
 
 from copy import copy
 
-## required modules from pycast
+# required modules from pycast
 from pycast.common.timeseries import TimeSeries, FusionMethods
 from pycast.methods.basemethod import BaseMethod
 from pycast.common.pycastobject import PyCastObject
 
 class TimeSeriesMiscellaneousTest(unittest.TestCase):
+
     """Test class containing tests for miscallaneous TimeSeries functions."""
 
     def setUp(self):
@@ -310,7 +311,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         data  = [1,2,3,4,5,6,0,7]
         data2 = [1,3,5,65,3,2,1,34,0.5]
 
-        assert FusionMethods["sum"](data)  == 28
+        assert FusionMethods["sum"](data) == 28
         assert FusionMethods["sum"](data2) == 114.5
 
     def median_fusion_method_test(self):

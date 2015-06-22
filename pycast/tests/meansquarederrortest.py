@@ -22,14 +22,15 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## required external modules
+# required external modules
 import unittest
 
-## required modules from pycast
+# required modules from pycast
 from pycast.errors.meansquarederror import MeanSquaredError
 from pycast.common.timeseries import TimeSeries
 
 class MeanSquaredErrorTest(unittest.TestCase):
+
     """Testing MeanSquaredError."""
 
     def setUp(self):
@@ -83,7 +84,7 @@ class MeanSquaredErrorTest(unittest.TestCase):
 #
 #        mse = MeanSquaredError(60.0)
 #
-#        ## only 50% of the original TimeSeries have a corresponding partner
+#        # only 50% of the original TimeSeries have a corresponding partner
 #        if mse.initialize(tsOrg, tsCalc):
 #            assert False    # pragma: no cover
 #

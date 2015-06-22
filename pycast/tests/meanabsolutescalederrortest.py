@@ -22,10 +22,10 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## required external modules
+# required external modules
 import unittest
 
-## required modules from pycast
+# required modules from pycast
 from pycast.errors.meanabsolutescalederror import MeanAbsoluteScaledError
 from pycast.common.timeseries import TimeSeries
 
@@ -67,8 +67,8 @@ class MeanAbsoluteScaledErrorTest(unittest.TestCase):
     def calculate_historic_means_test(self):
         """Test the calculation of the historic means."""
         dataOrg = [[1.0, 10], [2.0, 12], [3.0, 14], [4.0, 13], [5.0, 17], [6.0, 20], [7.0, 23], [8.0, 26], [9.0, 29], [10.0, 31], [11.0, 26], [12.0, 21], [13.0, 18], [14.0, 14], [15.0, 13], [16.0, 19], [17.0, 24], [18.0, 28], [19.0, 30], [20.0, 32]]
-        ##                           2          2          1          4          3          3          3          3           2           5           5           3           4           1           6           5           4           2           2
-        ## Sum(History)                                                         12         13         14         16          14          16          18          18          19          18          19          19          20          18          19
+        #                           2          2          1          4          3          3          3          3           2           5           5           3           4           1           6           5           4           2           2
+        # Sum(History)                                                         12         13         14         16          14          16          18          18          19          18          19          19          20          18          19
         correctResult = [                                                      2.4,       2.6,       2.8,       3.2,        2.8,        3.2,        3.6,        3.6,        3.8,        3.6,        3.8,        3.8,        4.0,        3.6]
 
         tsOrg = TimeSeries.from_twodim_list(dataOrg)
@@ -85,7 +85,7 @@ class MeanAbsoluteScaledErrorTest(unittest.TestCase):
         historyLength = 5
         em = MeanAbsoluteScaledError(historyLength=historyLength)
 
-        ## A history length of 5 implies that the first 6 values have to be ignored for error calculation
+        # A history length of 5 implies that the first 6 values have to be ignored for error calculation
         historyLength += 1
         dataOrg = dataOrg[historyLength:]
         dataFor = dataFor[historyLength:]
@@ -135,13 +135,13 @@ class MeanAbsoluteScaledErrorTest(unittest.TestCase):
         """
         dataOrg = [[1.0, 10], [2.0, 12], [3.0, 14], [4.0, 13], [5.0, 17], [6.0, 20], [7.0, 23], [8.0, 26], [9.0, 29], [10.0, 31], [11.0, 26], [12.0, 21], [13.0, 18], [14.0, 14], [15.0, 13], [16.0, 19], [17.0, 24], [18.0, 28], [19.0, 30], [20.0, 32]]
         dataFor = [[1.0, 11], [2.0, 13], [3.0, 14], [4.0, 11], [5.0, 13], [6.0, 18], [7.0, 20], [8.0, 26], [9.0, 21], [10.0, 34], [11.0, 23], [12.0, 23], [13.0, 15], [14.0, 12], [15.0, 14], [16.0, 17], [17.0, 25], [18.0, 22], [19.0, 14], [20.0, 30]]
-        ##                           2          2          1          4          3          3          3          3           2           5           5           3           4           1           6           5           4           2           2
-        ## Sum(History)                                                         12         13         14         16          14          16          18          18          19          18          19          19          20          18          19
-        ## Mean(History) ##         ##         ##         ##         ##        2.4        2.6        2.8        3.2         2.8         3.2         3.6         3.6         3.8         3.6         3.8         3.8         4.0         3.6         3.8
-        ## AD                                                                               3          0          8           3           3           2           3           2           1           2           1           6          16           2
-        ## Sum(AD)                                                                          3          3         11          14          17          19          22          24          25          27          28          34          50          52
-        ## MAD                                                                              3        1.5      3.666         3.5         3.4       3.166       3.142           3       2.777         2.7       2.545       2.833       3.571       3.714
-        ## MASE (0% - 100%)                                                              1.25      0.625      1.527       1.458       1.416       1.319       1.309        1.25       1.157       1.125        1.06        1.18       1.602       1.547
+        #                           2          2          1          4          3          3          3          3           2           5           5           3           4           1           6           5           4           2           2
+        # Sum(History)                                                         12         13         14         16          14          16          18          18          19          18          19          19          20          18          19
+        # Mean(History) #         #         #         #         #        2.4        2.6        2.8        3.2         2.8         3.2         3.6         3.6         3.8         3.6         3.8         3.8         4.0         3.6         3.8
+        # AD                                                                               3          0          8           3           3           2           3           2           1           2           1           6          16           2
+        # Sum(AD)                                                                          3          3         11          14          17          19          22          24          25          27          28          34          50          52
+        # MAD                                                                              3        1.5      3.666         3.5         3.4       3.166       3.142           3       2.777         2.7       2.545       2.833       3.571       3.714
+        # MASE (0% - 100%)                                                              1.25      0.625      1.527       1.458       1.416       1.319       1.309        1.25       1.157       1.125        1.06        1.18       1.602       1.547
 
         tsOrg = TimeSeries.from_twodim_list(dataOrg)
         tsFor = TimeSeries.from_twodim_list(dataFor)
@@ -150,13 +150,13 @@ class MeanAbsoluteScaledErrorTest(unittest.TestCase):
         em = MeanAbsoluteScaledError(historyLength=historyLength)
         em.initialize(tsOrg, tsFor)
 
-        ## check for error calculation depending on a specific endpoint
+        # check for error calculation depending on a specific endpoint
         correctResult = [1.25, 0.625, 1.527, 1.458, 1.416, 1.319, 1.309, 1.25, 1.157, 1.125, "1.060", "1.180", 1.602, 1.547]
         percentage = 100.0 / len(correctResult) + 0.2
         for errVal in xrange(14):
             endPercentage = percentage * (errVal + 1)
 
-            ## set maximum percentage
+            # set maximum percentage
             if endPercentage > 100.0:
                 endPercentage = 100.0
 

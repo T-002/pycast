@@ -25,6 +25,7 @@
 """Module contains the parent class of all pycast objects."""
 
 class PyCastObject(object):
+
     """The base class for all pycast objects.
 
     This class is used to introduce a common interface for potential
@@ -32,8 +33,8 @@ class PyCastObject(object):
     tasks.
     """
 
-    ## stores, if pycast should only create optimized instances.
-    ### default = False
+    # stores, if pycast should only create optimized instances.
+    # default = False
     _globalOptimize = False
 
     def __init__(self):

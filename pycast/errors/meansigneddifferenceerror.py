@@ -25,6 +25,7 @@
 from pycast.errors.baseerrormeasure import BaseErrorMeasure
 
 class MeanSignedDifferenceError(BaseErrorMeasure):
+
     """Implements the mean signed difference error measure."""
 
     def _calculate(self, startingPercentage, endPercentage, startDate, endDate):
@@ -44,7 +45,7 @@ class MeanSignedDifferenceError(BaseErrorMeasure):
         :return:    Returns a float representing the error.
         :rtype: float
         """
-        ## get the defined subset of error values
+        # get the defined subset of error values
         errorValues = self._get_error_values(startingPercentage, endPercentage, startDate, endDate)
 
         return sum(errorValues) / float(len(errorValues))

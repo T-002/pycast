@@ -26,6 +26,7 @@ import math
 from pycast.errors.meanabsolutepercentageerror import MeanAbsolutePercentageError
 
 class WeightedMeanAbsolutePercentageError(MeanAbsolutePercentageError):
+
     """Implements a weighted alternative of the MeanAbsolutePercentageError."""
 
     def local_error(self, originalValue, calculatedValue):

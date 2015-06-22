@@ -26,6 +26,7 @@ from pycast.methods.basemethod import BaseMethod
 from pycast.common.timeseries import TimeSeries
 
 class SimpleMovingAverage(BaseMethod):
+
     """Implements the simple moving average.
 
     The SMA algorithm will calculate the average value at time t based on the

@@ -22,7 +22,7 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## This module contains helper functions that will be moved later
+# This module contains helper functions that will be moved later
 
 def linear_interpolation(first, last, steps):
     """Interpolates all missing values using linear interpolation.

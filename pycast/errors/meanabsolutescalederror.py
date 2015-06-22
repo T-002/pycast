@@ -25,6 +25,7 @@
 from pycast.errors.baseerrormeasure import BaseErrorMeasure
 
 class MeanAbsoluteScaledError(BaseErrorMeasure):
+
     """Implements the mean absolute scaled error.
 
     R J Hyndman and A B Koehler, "Another look at measures of forecast accuracy"
@@ -67,12 +68,12 @@ class MeanAbsoluteScaledError(BaseErrorMeasure):
         :return:    Returns a list containing the historic means.
         :rtype: list
         """
-        ## calculate the history values
+        # calculate the history values
         historyLength = self._historyLength
         historicMeans = []
         append        = historicMeans.append
 
-        ## not most optimized loop in case of calculation operations
+        # not most optimized loop in case of calculation operations
         for startIdx in xrange(len(timeSeries) - historyLength - 1):
             value = 0
             for idx in xrange(startIdx, startIdx + historyLength):
@@ -97,39 +98,39 @@ class MeanAbsoluteScaledError(BaseErrorMeasure):
 
         :raise:    Raises a :py:exc:`StandardError` if the error measure is initialized multiple times.
         """
-        ## ErrorMeasure was already initialized.
+        # ErrorMeasure was already initialized.
         if 0 < len(self._errorValues):
             raise StandardError("An ErrorMeasure can only be initialized once.")
 
-        ## calculating the number of datapoints used within the history
+        # calculating the number of datapoints used within the history
         if isinstance(self._historyLength, float):
             self._historyLength = int((self._historyLength * len(originalTimeSeries)) / 100.0)
 
-        ## sort the TimeSeries to reduce the required comparison operations
+        # sort the TimeSeries to reduce the required comparison operations
         originalTimeSeries.sort_timeseries()
         calculatedTimeSeries.sort_timeseries()
 
         self._historicMeans = self._get_historic_means(originalTimeSeries)
 
-        ## Performance optimization
+        # Performance optimization
         append      = self._errorValues.append
         appendDates = self._errorDates.append
         local_error = self.local_error
         minCalcIdx  = self._historyLength + 1
 
-        ## calculate all valid local errors
+        # calculate all valid local errors
         for orgPair in originalTimeSeries[minCalcIdx:]:
             for calcIdx in xrange(minCalcIdx, len(calculatedTimeSeries)):
                 calcPair = calculatedTimeSeries[calcIdx]
 
-                ## Skip values that can not be compared
+                # Skip values that can not be compared
                 if calcPair[0] != orgPair[0]:
                     continue
 
                 append(local_error(orgPair[1:], calcPair[1:]))
                 appendDates(orgPair[0])
 
-        ## return False, if the error cannot be calculated
+        # return False, if the error cannot be calculated
         if len(filter(lambda item: item is not None, self._errorValues)) < self._minimalErrorCalculationPercentage * len(originalTimeSeries):
             self._errorValues = []
             self._errorDates = []
@@ -155,15 +156,15 @@ class MeanAbsoluteScaledError(BaseErrorMeasure):
         :return:    Returns a float representing the error.
         :rtype: float
         """
-        ## get the defined subset of error values
+        # get the defined subset of error values
         errorValues = self._get_error_values(startingPercentage, endPercentage, startDate, endDate)
 
-        ## get the historic mean
+        # get the historic mean
         if startDate is not None:
             possibleDates = filter(lambda date: date >= startDate, self._errorDates)
 
-            ## This piece of code is not required, because _get_error_values already ensured that the startDate
-            ## was correct. Otherwise it would have thrown an exception.
+            # This piece of code is not required, because _get_error_values already ensured that the startDate
+            # was correct. Otherwise it would have thrown an exception.
             #if 0 == len(possibleDates):
             #    raise ValueError("%s does not represent a valid startDate." % startDate)
 
