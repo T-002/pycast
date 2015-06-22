@@ -1,8 +1,8 @@
 # !/usr/bin/env python
 #  -*- coding: UTF-8 -*-
- 
+
 # Copyright (c) 2012-2015 Christian Schwarz
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
 # "Software"), to deal in the Software without restriction, including
@@ -10,10 +10,10 @@
 # distribute, sublicense, and/or sell copies of the Software, and to
 # permit persons to whom the Software is furnished to do so, subject to
 # the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -186,7 +186,7 @@ class Matrix(PyCastObject):
 
         if isinstance(timeSeries, MultiDimensionalTimeSeries):
             width = timeSeries.dimension_count()
-            
+
         matrixData = [[] for dummy in xrange(width)]
 
         for entry in timeSeries:
@@ -461,7 +461,7 @@ class Matrix(PyCastObject):
         """
         blocksize = self.get_array()[0][0].get_width()
         width = self.get_width() * blocksize
-        
+
         columnsNew = [[] for dummy in xrange(width)]
 
         for row in self.get_array():

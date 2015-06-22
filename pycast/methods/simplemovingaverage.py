@@ -1,8 +1,8 @@
 # !/usr/bin/env python
 #  -*- coding: UTF-8 -*-
- 
+
 # Copyright (c) 2012-2015 Christian Schwarz
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
 # "Software"), to deal in the Software without restriction, including
@@ -10,10 +10,10 @@
 # distribute, sublicense, and/or sell copies of the Software, and to
 # permit persons to whom the Software is furnished to do so, subject to
 # the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -39,7 +39,7 @@ class SimpleMovingAverage(BaseMethod):
         """Initializes the SimpleMovingAverage.
 
         :param integer windowsize:    Size of the SimpleMovingAverages window.
-        
+
         :raise:    Raises a :py:exc:`ValueError` if windowsize is an even or not larger than zero.
         """
         if windowsize <= 0:
@@ -82,7 +82,7 @@ class SimpleMovingAverage(BaseMethod):
 
         :return:    TimeSeries object containing the smooth moving average.
         :rtype:     TimeSeries
-        
+
         :raise:   Raises a :py:exc:`ValueError` wif the defined windowsize is larger than the number of elements
             in timeSeries
 
@@ -92,11 +92,11 @@ class SimpleMovingAverage(BaseMethod):
 
         if len (timeSeries) < windowsize:
             raise ValueError("windowsize is larger than the number of elements in timeSeries.")
-        
+
         tsLength      = len(timeSeries)
         nbrOfLoopRuns = tsLength - windowsize + 1
 
-        res = TimeSeries()        
+        res = TimeSeries()
         for idx in xrange(nbrOfLoopRuns):
             end = idx + windowsize
             data = timeSeries[idx:end]

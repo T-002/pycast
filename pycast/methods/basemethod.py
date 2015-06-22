@@ -1,8 +1,8 @@
 # !/usr/bin/env python
 #  -*- coding: UTF-8 -*-
- 
+
 # Copyright (c) 2012-2015 Christian Schwarz
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
 # "Software"), to deal in the Software without restriction, including
@@ -10,10 +10,10 @@
 # distribute, sublicense, and/or sell copies of the Software, and to
 # permit persons to whom the Software is furnished to do so, subject to
 # the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -23,7 +23,6 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from pycast.common.timeseries import TimeSeries
-
 from pycast.common.pycastobject import PyCastObject
 
 class BaseMethod(PyCastObject):
@@ -154,13 +153,13 @@ class BaseMethod(PyCastObject):
         """
         ## return if not interval is defined for the parameter
         if parameter not in self._parameterIntervals:
-            return 
+            return
 
         interval = self._parameterIntervals[parameter]
         return "%s has to be in %s%s, %s%s. Current value is %s." % (
-            parameter, 
-            BaseMethod._interval_definitions[interval[2]][0], 
-            interval[0], interval[1], 
+            parameter,
+            BaseMethod._interval_definitions[interval[2]][0],
+            interval[0], interval[1],
             BaseMethod._interval_definitions[interval[3]][1],
             value
         )
@@ -178,7 +177,7 @@ class BaseMethod(PyCastObject):
         #    print "Parameter %s already existed. It's old value will be replaced with %s" % (name, value)
 
         self._parameters[name] = value
-    
+
     def get_parameter(self, name):
         """Returns a forecasting parameter.
 
@@ -211,7 +210,7 @@ class BaseMethod(PyCastObject):
         """Returns if the method can already be executed.
 
         :return:    Returns :py:const:`True` if all required parameters where already set, False otherwise.
-        :rtype: boolean 
+        :rtype: boolean
         """
         missingParams = filter(lambda rp: rp not in self._parameters, self._requiredParameters)
         return len(missingParams) == 0

@@ -1,8 +1,8 @@
 # !/usr/bin/env python
 #  -*- coding: UTF-8 -*-
- 
+
 # Copyright (c) 2012-2015 Christian Schwarz
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
 # "Software"), to deal in the Software without restriction, including
@@ -10,10 +10,10 @@
 # distribute, sublicense, and/or sell copies of the Software, and to
 # permit persons to whom the Software is furnished to do so, subject to
 # the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -78,7 +78,7 @@ class ExponentialSmoothing(BaseForecastingMethod):
         :return:    TimeSeries object containing the smoothed TimeSeries,
            including the forecasted values.
         :rtype:     TimeSeries
-        
+
         :note:    The first normalized value is chosen as the starting point.
         """
         ## determine the number of values to forecast, if necessary
@@ -92,7 +92,7 @@ class ExponentialSmoothing(BaseForecastingMethod):
         resultList  = []
         estimator   = None
         lastT       = None
-        
+
         ## "It's always about performance!"
         append = resultList.append
 
@@ -141,7 +141,7 @@ class ExponentialSmoothing(BaseForecastingMethod):
 
                 ## set variables for next iteration
                 lastT         = resultList[-1]
-        
+
         ## return a TimeSeries, containing the result
         return TimeSeries.from_twodim_list(resultList)
 
@@ -205,7 +205,7 @@ class HoltMethod(BaseForecastingMethod):
         :return:    TimeSeries object containing the smoothed TimeSeries,
             including the forecasted values.
         :rtype:     TimeSeries
-        
+
         :note: The first normalized value is chosen as the starting point.
         """
         ## determine the number of values to forecast, if necessary
@@ -239,7 +239,7 @@ class HoltMethod(BaseForecastingMethod):
             if 0 == len(resultList):
                 append([t[0], estimator])
                 trend         = t[1] - lastT[1]
-                
+
                 ## store current values for next iteration
                 lastT         = t
                 lastEstimator = estimator
@@ -272,7 +272,7 @@ class HoltMethod(BaseForecastingMethod):
 
         ## return a TimeSeries, containing the result
         return TimeSeries.from_twodim_list(resultList)
-    
+
 ## TODO:A second method, referred to as either Brown's linear exponential smoothing (LES) or Brown's double exponential smoothing works as follows.[9]
 
 class HoltWintersMethod(BaseForecastingMethod):
@@ -290,7 +290,7 @@ class HoltWintersMethod(BaseForecastingMethod):
         :param float trendSmoothingFactor:    Defines the beta for the Holt-Winters algorithm..
             Valid values are (0.0, 1.0).
         :param float seasonSmoothingFactor:    Defines the gamma for the Holt-Winters algorithm.
-            Valid values are (0.0, 1.0). 
+            Valid values are (0.0, 1.0).
         :param integer seasonLength:    The expected length for the seasons. Please use a good estimate here!
         :param integer valuesToForecast:    Defines the number of forecasted values that will be part of the result.
         """
@@ -344,7 +344,7 @@ class HoltWintersMethod(BaseForecastingMethod):
         :return:    TimeSeries object containing the exponentially smoothed TimeSeries,
             including the forecasted values.
         :rtype:     TimeSeries
-        
+
         :note: Currently the first normalized value is simply chosen as the starting point.
         """
         ## determine the number of values to forecast, if necessary
@@ -373,24 +373,24 @@ class HoltWintersMethod(BaseForecastingMethod):
                 continue
 
             lastSeasonValue = seasonValues[idx % seasonLength]
-            
+
             estimator = alpha * x_t/lastSeasonValue + (1 - alpha) * (lastEstimator + lastTrend)
             lastTrend = beta * (estimator - lastEstimator) + (1 - beta) * lastTrend
             seasonValues[idx % seasonLength] = gamma * x_t/estimator + (1 - gamma) * lastSeasonValue
-            
+
             lastEstimator = estimator
             resultList.append([t, estimator])
 
         #Forecasting. Determine the time difference between two points for extrapolation
         currentTime        = resultList[-1][0]
         normalizedTimeDiff = currentTime - resultList[-2][0]
-        
+
         for m in xrange(1, self._parameters["valuesToForecast"] + 1):
             currentTime += normalizedTimeDiff
             lastSeasonValue = seasonValues[(len(timeSeries) + m - 2) % seasonLength]
             forecast = (lastEstimator + m * lastTrend) * lastSeasonValue
             resultList.append([currentTime, forecast])
-        
+
         return TimeSeries.from_twodim_list(resultList)
 
     def initSeasonFactors(self, timeSeries):
@@ -411,7 +411,7 @@ class HoltWintersMethod(BaseForecastingMethod):
         seasonValues = []
         completeCycles = len(timeSeries) / seasonLength
         A = {} #cache values for A_j
-        
+
         for i in xrange(seasonLength):
             c_i = 0
             for j in xrange(completeCycles):
@@ -424,7 +424,7 @@ class HoltWintersMethod(BaseForecastingMethod):
 
     def initialTrendSmoothingFactors(self, timeSeries):
         """ Calculate the initial Trend smoothing Factor b0.
-        
+
         Explanation:
             http://en.wikipedia.org/wiki/Exponential_smoothing#Triple_exponential_smoothing
 

@@ -1,8 +1,8 @@
 # !/usr/bin/env python
 #  -*- coding: UTF-8 -*-
- 
+
 # Copyright (c) 2012-2015 Christian Schwarz
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
 # "Software"), to deal in the Software without restriction, including
@@ -10,10 +10,10 @@
 # distribute, sublicense, and/or sell copies of the Software, and to
 # permit persons to whom the Software is furnished to do so, subject to
 # the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -74,21 +74,21 @@ class BaseErrorMeasureTest(unittest.TestCase):
 
         bem_calculate  = bem._calculate
         bem_local_error = bem.local_error
-        
+
         def return_zero(ignoreMe, ignoreMeToo):
             return 0
 
         ## remove the NotImplementedErrors for initialization
         bem.local_error = return_zero
         bem._calculate   = return_zero
-        
+
         ## correct initialize call
         bem.initialize(tsOrg, tsCalc)
 
         ## incorrect initialize call
         for cnt in xrange(10):
             try:
-                bem.initialize(tsOrg, tsCalc)        
+                bem.initialize(tsOrg, tsCalc)
             except StandardError:
                 pass
             else:
@@ -124,7 +124,7 @@ class BaseErrorMeasureTest(unittest.TestCase):
 
         bem_calculate  = bem._calculate
         bem_local_error = bem.local_error
-        
+
         def return_zero(ignoreMe, ignoreMeToo, andMe=None, andMeToo=None):
             return 0
 

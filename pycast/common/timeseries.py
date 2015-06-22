@@ -1,8 +1,8 @@
 # !/usr/bin/env python
 #  -*- coding: UTF-8 -*-
- 
+
 # Copyright (c) 2012-2015 Christian Schwarz
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
 # "Software"), to deal in the Software without restriction, including
@@ -10,10 +10,10 @@
 # distribute, sublicense, and/or sell copies of the Software, and to
 # permit persons to whom the Software is furnished to do so, subject to
 # the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -93,7 +93,7 @@ class TimeSeries(PyCastObject):
         """Sets the TimeSeries global time format.
 
         :param string tsformat:    Format of the timestamp. This is used to convert the
-            timestamp from UNIX epochs when the TimeSeries gets serialized by :py:meth:`TimeSeries.to_json` and 
+            timestamp from UNIX epochs when the TimeSeries gets serialized by :py:meth:`TimeSeries.to_json` and
             :py:meth:`TimeSeries.to_gnuplot_datafile`. For valid examples take a look into the :py:func:`time.strptime`
             documentation.
         """
@@ -136,7 +136,7 @@ class TimeSeries(PyCastObject):
         :rtype:     TimeSeries
         """
         ts = TimeSeries.from_twodim_list(self._timeseriesData)
-        
+
         ts._normalizationLevel   = self._normalizationLevel
         ts._normalized           = self._normalized
         ts._sorted               = self._sorted
@@ -188,7 +188,7 @@ class TimeSeries(PyCastObject):
 
         ## set the normalization level
         ts._normalized = ts.is_normalized()
-        ts.sort_timeseries()  
+        ts.sort_timeseries()
 
         return ts
 
@@ -212,12 +212,12 @@ class TimeSeries(PyCastObject):
         while 0 < len(data):
             for entry in data:
                 self.add_entry(str(entry[0]), entry[1])
-            
+
             data = sqlcursor.fetchmany()
 
         ## set the normalization level
         self._normalized = self._check_normalization
-        
+
         ## return the number of tuples added to the timeseries.
         return tuples
 
@@ -225,7 +225,7 @@ class TimeSeries(PyCastObject):
         """Returns a string representation of the TimeSeries.
 
         :return:    Returns a string representing the TimeSeries in the format:
-            
+
             "TimeSeries([timestamp, data], [timestamp, data], [timestamp, data])".
         :rtype:     string
         """
@@ -339,7 +339,7 @@ class TimeSeries(PyCastObject):
 
         :param float timestamp:    Timestamp as UNIX-epochs.
         :param string tsformat:    Format of the given timestamp. This is used to convert the
-            timestamp from UNIX epochs. For valid examples take a look into the 
+            timestamp from UNIX epochs. For valid examples take a look into the
             :py:func:`time.strptime` documentation.
 
         :return:    Returns the timestamp as defined in format.
@@ -368,7 +368,7 @@ class TimeSeries(PyCastObject):
         """Sorts the data points within the TimeSeries according to their occurrence inline.
 
         :param boolean ascending: Determines if the TimeSeries will be ordered ascending or
-            descending. If this is set to descending once, the ordered parameter defined in 
+            descending. If this is set to descending once, the ordered parameter defined in
             :py:meth:`TimeSeries.__init__` will be set to False FOREVER.
 
         :return:    Returns :py:obj:`self` for convenience.
@@ -477,17 +477,17 @@ class TimeSeries(PyCastObject):
         for idx in xrange(bucketcnt):
             ## get the bucket to avoid multiple calls of buckets.__getitem__()
             bucket = buckets[idx]
-            
+
             ## get the range for the given bucket
             bucketend   = bucket[0] + buckethalfwidth
-            
+
             while tsdEndIdx < tsdlength and self._timeseriesData[tsdEndIdx][0] < bucketend:
                 tsdEndIdx += 1
 
             ## continue, if no valid data entries exist
             if tsdStartIdx == tsdEndIdx:
                 continue
-        
+
             ## use the given fusion method to calculate the fusioned value
             values = [i[1] for i in self._timeseriesData[tsdStartIdx:tsdEndIdx]]
             bucket.append(fusionMethod(values))
@@ -576,13 +576,13 @@ class TimeSeries(PyCastObject):
         :param BaseMethod method: Method that should be used with the TimeSeries.
             For more information about the methods take a look into their corresponding documentation.
 
-        :raise:    Raises a StandardError when the TimeSeries was not normalized and hte method requires a 
+        :raise:    Raises a StandardError when the TimeSeries was not normalized and hte method requires a
             normalized TimeSeries
         """
         ## check, if the methods requirements are fullfilled
         if method.has_to_be_normalized() and not self._normalized:
             raise StandardError("method requires a normalized TimeSeries instance.")
-        
+
         if method.has_to_be_sorted():
             self.sort_timeseries()
 
@@ -608,12 +608,12 @@ class TimeSeries(PyCastObject):
 
         sample      = cls.from_twodim_list(values)
         rest_values = self._timeseriesData[:]
-        
+
         for value in values:
             rest_values.remove(value)
-        
+
         rest = cls.from_twodim_list(rest_values)
-        
+
         return sample, rest
 
 class MultiDimensionalTimeSeries(TimeSeries):
@@ -637,7 +637,7 @@ class MultiDimensionalTimeSeries(TimeSeries):
         :raise:    Raises a :py:exc:`ValueError` if the number of dimensions is smaller than 1.
         """
         super(MultiDimensionalTimeSeries, self).__init__(isNormalized, isSorted)
-        
+
         dimensions = int(dimensions)
         if dimensions < 1:
             raise ValueError("A MultiDimensionalTimeSeries has to have at least one dimension!.")
@@ -744,7 +744,7 @@ class MultiDimensionalTimeSeries(TimeSeries):
 
         ## set the normalization level
         ts._normalized = ts.is_normalized()
-        ts.sort_timeseries()  
+        ts.sort_timeseries()
 
         return ts
 
@@ -808,7 +808,7 @@ class MultiDimensionalTimeSeries(TimeSeries):
         :rtype:     MultiDimensionalTimeSeries
         """
         ts = MultiDimensionalTimeSeries.from_twodim_list(self._timeseriesData, dimensions=self._dimensionCount)
-        
+
         ts._normalizationLevel   = self._normalizationLevel
         ts._normalized           = self._normalized
         ts._sorted               = self._sorted
@@ -837,12 +837,12 @@ class MultiDimensionalTimeSeries(TimeSeries):
         while 0 < len(data):
             for entry in data:
                 self.add_entry(str(entry[0]), [item for item in entry[1:]])
-            
+
             data = sqlcursor.fetchmany()
 
         ## set the normalization level
         self._normalized = self._check_normalization()
-        
+
         ## return the number of tuples added to the timeseries.
         return tuples
 
@@ -879,7 +879,7 @@ class MultiDimensionalTimeSeries(TimeSeries):
 
     def normalize(self, normalizationLevel="minute", fusionMethod="mean", interpolationMethod="linear"):
         """This is a dummy function, doing nothing.
-         
+
         :raise: Raises a :py:exc:`NotImplementedError`.
 
         :note: MutliDimensionalTimeSeries cannot be normalized currently.

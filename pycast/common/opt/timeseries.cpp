@@ -49,7 +49,7 @@ namespace common {
 				/********  END STANDARD CODE  ********/
 
 				int timeseriesLength = PyObject_Length(self);
-				double inVals[timeseriesLength]; 
+				double inVals[timeseriesLength];
 				
 				PyObject* tuple;
 				PyObject* timestamp;
@@ -92,7 +92,7 @@ namespace common {
 				err |= clSetKernelArg(kernel,  2, sizeof(cl_mem), (void *)&flagMem);
 				assert(err == CL_SUCCESS);
 
-				// Run the calculation by enqueuing it and forcing the 
+				// Run the calculation by enqueuing it and forcing the
 				// command queue to complete the task
 				size_t global_work_size = timeseriesLength -1;
 				err = clEnqueueNDRangeKernel(commandQueue, kernel, 1, NULL, &global_work_size, NULL, 0, NULL, NULL);
@@ -100,7 +100,7 @@ namespace common {
 				
 				clFinish(commandQueue);
 			
-				// Once finished read back the results from the answer 
+				// Once finished read back the results from the answer
 				// array into the results array
 				err = clEnqueueReadBuffer(commandQueue, flagMem, CL_TRUE, 0, sizeof(outFlag), outFlag, 0, NULL, NULL);
 				

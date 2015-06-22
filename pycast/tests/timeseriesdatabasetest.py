@@ -1,8 +1,8 @@
 # !/usr/bin/env python
 #  -*- coding: UTF-8 -*-
- 
+
 # Copyright (c) 2012-2015 Christian Schwarz
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
 # "Software"), to deal in the Software without restriction, including
@@ -10,10 +10,10 @@
 # distribute, sublicense, and/or sell copies of the Software, and to
 # permit persons to whom the Software is furnished to do so, subject to
 # the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -78,7 +78,7 @@ class DatabaseConnectorTest(unittest.TestCase):
 
         ## create the tuples
         for item in xrange(numberOfTuples):
-            timestamp += random.random() 
+            timestamp += random.random()
             value     = random.random() * 1000
             junkOne   = random.random()
             junkTwo   = random.choice(junk_two)
@@ -92,7 +92,7 @@ class DatabaseConnectorTest(unittest.TestCase):
     def select_to_many_attributes_test(self):
         """SELECT timestamp, value, junk, FROM TestTable
 
-        This function tests if statements like 
+        This function tests if statements like
 
         SELECT timestamp, value, junk, ... FROM
 
@@ -114,7 +114,7 @@ class DatabaseConnectorTest(unittest.TestCase):
     def select_star_test(self):
         """SELECT * FROM TestTable
 
-        This function tests if statements like 
+        This function tests if statements like
 
         SELECT * FROM
 

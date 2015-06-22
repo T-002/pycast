@@ -1,8 +1,8 @@
 # !/usr/bin/env python
 #  -*- coding: UTF-8 -*-
- 
+
 # Copyright (c) 2012-2015 Christian Schwarz
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
 # "Software"), to deal in the Software without restriction, including
@@ -10,10 +10,10 @@
 # distribute, sublicense, and/or sell copies of the Software, and to
 # permit persons to whom the Software is furnished to do so, subject to
 # the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -45,7 +45,7 @@ class MeanAbsoluteDeviationErrorTest(unittest.TestCase):
 #        dataPtsOrg  = [ 2.30,  .373, .583, 1.880, 500]
 #        dataPtsCalc = [-1.21, -.445, .466,  .226, 300]
 #        localErrors = [ 3.51,  .818, .117, 1.654, 200]
-    
+
         mad = MeanAbsoluteDeviationError()
 
         for idx in xrange(len(self.dataOrg)):
@@ -62,7 +62,7 @@ class MeanAbsoluteDeviationErrorTest(unittest.TestCase):
 
         tsOrg  = TimeSeries()
         tsCalc = TimeSeries()
-        
+
         for idx in xrange(len(self.dataOrg)):
             tsOrg.add_entry(float(idx),  self.dataOrg[idx])
             tsCalc.add_entry(float(idx), self.dataCalc[idx])

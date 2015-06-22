@@ -19,7 +19,7 @@
 //OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 //WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-__kernel 
+__kernel
 void matrix_multiplication(
    __global float* input_m1,
    __global float* input_m2,
@@ -27,14 +27,14 @@ void matrix_multiplication(
    int width_m1,
    int width_m2)
 {
-   
+
    int row = get_global_id(0);
    int col = get_global_id(1);
    float value = 0;
-   
+
    for(int i = 0; i < width_m1; ++i){
       value = value + ((float)input_m1[row*width_m1+i] * (float)input_m2[width_m2*i+col]);
    }
-   
+
    output[row*width_m2+col] = value;
 }
