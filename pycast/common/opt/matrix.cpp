@@ -60,7 +60,7 @@ namespace common {
         }
 
         namespace Matrix {
-            
+
             void
             copy_matrix(int height, int width, PyObject* matrix, float* matrix_as_list){
                 float value;
@@ -81,7 +81,7 @@ namespace common {
                 #ifndef __APPLE__
                     typedef std::chrono::high_resolution_clock Clock;
                     typedef std::chrono::milliseconds milliseconds;
-    
+
                     Clock::time_point start_c = Clock::now();
                 #endif
 
@@ -89,17 +89,17 @@ namespace common {
                 cl_context    context = OpenCLProvider::get_context();
                 if (!context)
                     return NULL;
-                    
-                
+
+
                 cl_command_queue commandQueue = OpenCLProvider::get_command_queue();
                 if (!commandQueue)
                     return NULL;
 
                 char kernelfile[] = "pycast/common/opt/kernels/matrix_multiplication.cl";
                 char kernelfunc[] = "matrix_multiplication";
-                
+
                 cl_kernel kernel  = OpenCLProvider::get_kernel_from_file(kernelfile, kernelfunc);
-                
+
                 if (!kernel)
                     return NULL;
                 /********  END STANDARD CODE  ********/
@@ -111,9 +111,9 @@ namespace common {
                 int size_A = width * number_of_rows;
                 int size_B = number_of_cols * width;
 
-                float* A = (float*) malloc(sizeof(float) * size_A);                     
+                float* A = (float*) malloc(sizeof(float) * size_A);
                 copy_matrix(number_of_rows, width, self, A);
-                float* B = (float*) malloc(sizeof(float) * size_B);                     
+                float* B = (float*) malloc(sizeof(float) * size_B);
                 copy_matrix(width, number_of_cols, matrix, B);
                 float* C = (float*) malloc(sizeof(float) * number_of_entries);
 
@@ -132,7 +132,7 @@ namespace common {
 
                 input_m1 = clCreateBuffer(context,  CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,  sizeof(float) * size_A, A, NULL);
                 input_m2 = clCreateBuffer(context,  CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,  sizeof(float) * size_B, B, NULL);
-                output = clCreateBuffer(context, CL_MEM_WRITE_ONLY, sizeof(float) * number_of_entries, NULL, NULL); 
+                output = clCreateBuffer(context, CL_MEM_WRITE_ONLY, sizeof(float) * number_of_entries, NULL, NULL);
 
                 #ifndef __APPLE__
                     Clock::time_point end_create_buffer = Clock::now();
@@ -149,7 +149,7 @@ namespace common {
                 err |= clSetKernelArg(kernel, 4, sizeof(int), &number_of_cols);
                 assert(err == CL_SUCCESS);
 
-                #ifndef __APPLE__                    
+                #ifndef __APPLE__
                     Clock::time_point end_set_kernel = Clock::now();
                     milliseconds ms_set_kernel = std::chrono::duration_cast<milliseconds>(end_set_kernel - start_set_kernel);
                     // printf("Set Kernel Args: %li ms \n", ms_set_kernel.count());
@@ -205,7 +205,7 @@ namespace common {
                 cl_ulong start, end;
                 clGetEventProfilingInfo(GPUExecution, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, NULL);
                 clGetEventProfilingInfo(GPUExecution, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, NULL);
-                
+
                 #ifndef __APPLE__
                     double elapsedTime = (double)1.0e-9 * (end - start);
                     // printf("Kernel execution time: %f s \n", elapsedTime);

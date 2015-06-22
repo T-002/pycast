@@ -1,37 +1,42 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
+# !/usr/bin/env python
+#  -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2015 Christian Schwarz
+# Copyright (c) 2012-2015 Christian Schwarz
 #
-#Permission is hereby granted, free of charge, to any person obtaining
-#a copy of this software and associated documentation files (the
-#"Software"), to deal in the Software without restriction, including
-#without limitation the rights to use, copy, modify, merge, publish,
-#distribute, sublicense, and/or sell copies of the Software, and to
-#permit persons to whom the Software is furnished to do so, subject to
-#the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
 #
-#The above copyright notice and this permission notice shall be
-#included in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
 #
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-#EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-#MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-#NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-#LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-#OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-#WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## required external modules
-import unittest, re, os, random
+# required external modules
+import unittest
+import re
+import os
+import random
+
 from copy import copy
 
-## required modules from pycast
+# required modules from pycast
 from pycast.common.timeseries import TimeSeries, FusionMethods
 from pycast.methods.basemethod import BaseMethod
 from pycast.common.pycastobject import PyCastObject
 
 class TimeSeriesMiscellaneousTest(unittest.TestCase):
+
     """Test class containing tests for miscallaneous TimeSeries functions."""
 
     def setUp(self):
@@ -96,7 +101,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         ts.add_entry(0.4, 0.4)
 
         matchres = re.match("TimeSeries\(\[(.*)\]\)", ts.__str__())
-        
+
         assert (None != matchres)
 
     def list_initialization_test(self):
@@ -136,7 +141,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
     def equality_test(self):
         """Test the == operator for TimeSeries instances."""
         data  = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
-        
+
         tsOne   = TimeSeries.from_twodim_list(data)
         tsTwo   = TimeSeries.from_twodim_list(data)
         tsThree = TimeSeries.from_twodim_list(data[:-2])
@@ -148,19 +153,19 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
 
         assert (tsOne == tsTwo)
         assert (tsOne != tsThree)
-        assert (tsTwo != tsThree) 
-        assert (tsOne != tsFour)  
-        assert (tsOne != tsFive)  
+        assert (tsTwo != tsThree)
+        assert (tsOne != tsFour)
+        assert (tsOne != tsFive)
         assert (tsThree != tsFour)
         assert (tsThree != tsFive)
-        assert (tsFour != tsFive) 
+        assert (tsFour != tsFive)
 
     def gnuplot_serialization_without_format_test(self):
         """Test serialization of timeSeries into gnuplot file."""
         data  = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
         tsOne = TimeSeries.from_twodim_list(data)
         tsOne.to_gnuplot_datafile("temp_plot.dat")
-        
+
         assert os.path.isfile("temp_plot.dat")
 
     def gnuplot_serialization_with_format_test(self):
@@ -169,7 +174,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         tsOne = TimeSeries.from_twodim_list(data)
         tsOne.set_timeformat("%Y-%m-%d_%H:%M:%S")
         tsOne.to_gnuplot_datafile("temp_plot.dat")
-        
+
         assert os.path.isfile("temp_plot.dat")
 
     def gnuplot_serialization_exception_handling_test(self):
@@ -182,7 +187,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         """Tests the sort_timeseries function."""
         data = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
         ts   = TimeSeries.from_twodim_list(data)
-        
+
         ts.sort_timeseries()
         ts.sort_timeseries(False)
 
@@ -193,7 +198,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         """Test the sorted_timeseries function."""
         data  = [[0.0, 0.0], [0.1, 0.1], [0.2, 0.2], [0.3, 0.3], [0.4, 0.4], [0.5, 0.5]]
         tsOne = TimeSeries.from_twodim_list(data)
-        
+
         tsTwo = tsOne.sorted_timeseries()
 
         if not (tsOne == tsTwo): raise AssertionError
@@ -255,7 +260,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
 
         tsOne   = TimeSeries.from_twodim_list(dataOne)
         tsTwo   = TimeSeries.from_twodim_list(dataTwo)
-        
+
         tsOne.normalize("second")
 
         if not len(tsOne) == len(tsTwo): raise AssertionError
@@ -268,10 +273,10 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
 
         tsOne   = TimeSeries.from_twodim_list(dataOne)
         tsTwo   = TimeSeries.from_twodim_list(dataTwo)
-        
+
         tsOne.normalize("second")
         tsOne.normalize("second")
-        
+
         if not len(tsOne) == len(tsTwo):  raise AssertionError
         if not tsOne == tsTwo:            raise AssertionError
 
@@ -305,10 +310,10 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         """Testing the sum fusion method."""
         data  = [1,2,3,4,5,6,0,7]
         data2 = [1,3,5,65,3,2,1,34,0.5]
-        
-        assert FusionMethods["sum"](data)  == 28
+
+        assert FusionMethods["sum"](data) == 28
         assert FusionMethods["sum"](data2) == 114.5
-    
+
     def median_fusion_method_test(self):
         """Testing the median fusion method."""
         data0 = [3]
@@ -320,7 +325,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         assert FusionMethods["median"](data1) == 4
         assert FusionMethods["median"](data2) == 4
         assert FusionMethods["median"](data3) == 3
-    
+
     def mean_fusion_method_test(self):
         """Testing the average fusion method."""
         data0 = [3]
@@ -339,7 +344,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         tsClone = copy(ts)
 
         assert tsClone == ts
-        
+
         ts[0][0] = 0.0
         assert ts != tsClone
 
@@ -392,7 +397,7 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
         add up to the entire timeSeries"""
         data = [[0.0, 0.0], [1.0, 0.1], [2.0, 0.2], [3.0, 0.3], [4.0, 0.4]]
         ts   = TimeSeries.from_twodim_list(data)
-        
+
         for illegalValue in (-3.1, 0.0, 1.0, 1.3, 4.2):
             try:
                 ts.sample(illegalValue)
@@ -402,6 +407,6 @@ class TimeSeriesMiscellaneousTest(unittest.TestCase):
                 assert False, "ValueError not raised. Percentage was %s." % illegalValue    # pragma: no cover
 
         sample, rest = ts.sample(0.4)
-        
+
         self.assertEquals(len(sample), 2)
         self.assertEquals(sample + rest, ts)

@@ -1,31 +1,32 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
+# !/usr/bin/env python
+#  -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2015 Christian Schwarz
+# Copyright (c) 2012-2015 Christian Schwarz
 #
-#Permission is hereby granted, free of charge, to any person obtaining
-#a copy of this software and associated documentation files (the
-#"Software"), to deal in the Software without restriction, including
-#without limitation the rights to use, copy, modify, merge, publish,
-#distribute, sublicense, and/or sell copies of the Software, and to
-#permit persons to whom the Software is furnished to do so, subject to
-#the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
 #
-#The above copyright notice and this permission notice shall be
-#included in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
 #
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-#EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-#MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-#NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-#LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-#OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-#WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from pycast.methods import BaseMethod
+from pycast.methods.basemethod import BaseMethod
 from pycast.common.timeseries import TimeSeries
 
 class SimpleMovingAverage(BaseMethod):
+
     """Implements the simple moving average.
 
     The SMA algorithm will calculate the average value at time t based on the
@@ -39,7 +40,7 @@ class SimpleMovingAverage(BaseMethod):
         """Initializes the SimpleMovingAverage.
 
         :param integer windowsize:    Size of the SimpleMovingAverages window.
-        
+
         :raise:    Raises a :py:exc:`ValueError` if windowsize is an even or not larger than zero.
         """
         if windowsize <= 0:
@@ -82,7 +83,7 @@ class SimpleMovingAverage(BaseMethod):
 
         :return:    TimeSeries object containing the smooth moving average.
         :rtype:     TimeSeries
-        
+
         :raise:   Raises a :py:exc:`ValueError` wif the defined windowsize is larger than the number of elements
             in timeSeries
 
@@ -93,12 +94,10 @@ class SimpleMovingAverage(BaseMethod):
         if len (timeSeries) < windowsize:
             raise ValueError("windowsize is larger than the number of elements in timeSeries.")
 
-        minIdx = len(timeSeries) / 2
-        
         tsLength      = len(timeSeries)
         nbrOfLoopRuns = tsLength - windowsize + 1
 
-        res = TimeSeries()        
+        res = TimeSeries()
         for idx in xrange(nbrOfLoopRuns):
             end = idx + windowsize
             data = timeSeries[idx:end]

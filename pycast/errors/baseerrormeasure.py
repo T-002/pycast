@@ -1,31 +1,32 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
+# !/usr/bin/env python
+#  -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2015 Christian Schwarz
+# Copyright (c) 2012-2015 Christian Schwarz
 #
-#Permission is hereby granted, free of charge, to any person obtaining
-#a copy of this software and associated documentation files (the
-#"Software"), to deal in the Software without restriction, including
-#without limitation the rights to use, copy, modify, merge, publish,
-#distribute, sublicense, and/or sell copies of the Software, and to
-#permit persons to whom the Software is furnished to do so, subject to
-#the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
 #
-#The above copyright notice and this permission notice shall be
-#included in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
 #
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-#EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-#MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-#NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-#LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-#OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-#WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from pycast.common import PyCastObject
+from pycast.common.pycastobject import PyCastObject
 from pycast.common.decorators import optimized
 
 class BaseErrorMeasure(PyCastObject):
+
     """Baseclass for all error measures."""
 
     def __init__(self, minimalErrorCalculationPercentage=60):
@@ -45,7 +46,7 @@ class BaseErrorMeasure(PyCastObject):
             raise ValueError("minimalErrorCalculationPercentage has to be in [0.0, 100.0].")
 
         self._minimalErrorCalculationPercentage = minimalErrorCalculationPercentage / 100.0
-        
+
         self._errorValues = []
         self._errorDates  = []
 
@@ -65,35 +66,38 @@ class BaseErrorMeasure(PyCastObject):
 
         :raise:    Raises a :py:exc:`StandardError` if the error measure is initialized multiple times.
         """
-        ## ErrorMeasure was already initialized.
+        # ErrorMeasure was already initialized.
         if 0 < len(self._errorValues):
             raise StandardError("An ErrorMeasure can only be initialized once.")
-        
-        ## sort the TimeSeries to reduce the required comparison operations
+
+        # sort the TimeSeries to reduce the required comparison operations
         originalTimeSeries.sort_timeseries()
         calculatedTimeSeries.sort_timeseries()
-        
-        ## Performance optimization
+
+        # Performance optimization
         append      = self._errorValues.append
         appendDate  = self._errorDates.append
         local_error = self.local_error
 
         minCalcIdx  = 0
 
-        ## calculate all valid local errors
+        # calculate all valid local errors
         for orgPair in originalTimeSeries:
             for calcIdx in xrange(minCalcIdx, len(calculatedTimeSeries)):
                 calcPair = calculatedTimeSeries[calcIdx]
 
-                ## Skip values that can not be compared
+                # Skip values that can not be compared
                 if calcPair[0] != orgPair[0]:
                     continue
 
                 append(local_error(orgPair[1:], calcPair[1:]))
                 appendDate(orgPair[0])
 
-        ## return False, if the error cannot be calculated
-        if len(filter(lambda item: item != None, self._errorValues)) < self._minimalErrorCalculationPercentage * len(originalTimeSeries):
+        # return False, if the error cannot be calculated
+        calculatedErrors    = len(filter(lambda item: item is not None, self._errorValues))
+        minCalculatedErrors = self._minimalErrorCalculationPercentage * len(originalTimeSeries)
+
+        if  calculatedErrors < minCalculatedErrors:
             self._errorValues = []
             self._errorDates = []
             return False
@@ -106,7 +110,7 @@ class BaseErrorMeasure(PyCastObject):
         Both parameters will be correct at this time.
 
         :param float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
-            It represents the value, where the error calculation should be started. 
+            It represents the value, where the error calculation should be started.
             25.0 for example means that the first 25% of all calculated errors will be ignored.
         :param float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
             It represents the value, after which all error values will be ignored. 90.0 for example means that
@@ -119,16 +123,16 @@ class BaseErrorMeasure(PyCastObject):
 
         :raise:    Raises a ValueError if startDate or endDate do not represent correct boundaries for error calculation.
         """
-        if None != startDate:
+        if startDate is not None:
             possibleDates = filter(lambda date: date >= startDate, self._errorDates)
             if 0 == len(possibleDates):
                 raise ValueError("%s does not represent a valid startDate." % startDate)
-            
+
             startIdx = self._errorDates.index(min(possibleDates))
         else:
             startIdx = int((startingPercentage * len(self._errorValues)) / 100.0)
 
-        if None != endDate:
+        if endDate is not None:
             possibleDates = filter(lambda date: date <= endDate, self._errorDates)
             if 0 == len(possibleDates):
                 raise ValueError("%s does not represent a valid endDate." % endDate)
@@ -140,11 +144,11 @@ class BaseErrorMeasure(PyCastObject):
         return self._errorValues[startIdx:endIdx]
 
     def get_error(self, startingPercentage=0.0, endPercentage=100.0, startDate=None, endDate=None):
-        """Calculates the error for the given interval (startingPercentage, endPercentage) between the TimeSeries 
+        """Calculates the error for the given interval (startingPercentage, endPercentage) between the TimeSeries
         given during :py:meth:`BaseErrorMeasure.initialize`.
 
         :param float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
-            It represents the value, where the error calculation should be started. 
+            It represents the value, where the error calculation should be started.
             25.0 for example means that the first 25% of all calculated errors will be ignored.
         :param float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
             It represents the value, after which all error values will be ignored. 90.0 for example means that
@@ -156,18 +160,18 @@ class BaseErrorMeasure(PyCastObject):
         :rtype: float
 
         :raise:    Raises a :py:exc:`ValueError` in one of the following cases:
-            
+
             - startingPercentage not in [0.0, 100.0]
             - endPercentage      not in [0.0, 100.0]
             - endPercentage < startingPercentage
 
         :raise:    Raises a :py:exc:`StandardError` if :py:meth:`BaseErrorMeasure.initialize` was not successfull before.
         """
-        ## not initialized:
+        # not initialized:
         if len(self._errorValues) == 0:
             raise StandardError("The last call of initialize(...) was not successfull.")
 
-        ## check for wrong parameters
+        # check for wrong parameters
         if not (0.0 <= startingPercentage <= 100.0):
             raise ValueError("startingPercentage has to be in [0.0, 100.0].")
         if not (0.0 <= endPercentage <= 100.0):
@@ -176,14 +180,14 @@ class BaseErrorMeasure(PyCastObject):
             raise ValueError("endPercentage has to be greater or equal than startingPercentage.")
 
         return self._calculate(startingPercentage, endPercentage, startDate, endDate)
-    
+
     def _calculate(self, startingPercentage, endPercentage, startDate, endDate):
         """This is the error calculation function that gets called by :py:meth:`BaseErrorMeasure.get_error`.
 
         Both parameters will be correct at this time.
 
         :param float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
-            It represents the value, where the error calculation should be started. 
+            It represents the value, where the error calculation should be started.
             25.0 for example means that the first 25% of all calculated errors will be ignored.
         :param float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
             It represents the value, after which all error values will be ignored. 90.0 for example means that
@@ -249,7 +253,7 @@ class BaseErrorMeasure(PyCastObject):
 
         overIdx  = int(len(overestimations) * confidenceLevel) - 1
         underIdx = int(len(underestimations) * confidenceLevel) - 1
-        
+
         overestimation  = 0.0
         underestimation = 0.0
 

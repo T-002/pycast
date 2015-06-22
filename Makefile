@@ -160,7 +160,7 @@ doctest:
 	      "results in $(BUILDDIR)/doctest/output.txt."
 
 test:
-	nosetests -c nose.cfg
+	nosetests -c nose.cfg --all-modules
 
 release: test
 	# only build a release, if all tests were sucessfull

@@ -5,6 +5,10 @@ pycast aims to provide a python module supporting basic and
 advanced smoothing and forecasting methods that can be used
 on time series data.
 
+.. image:: https://landscape.io/github/T-002/pycast/master/landscape.svg?style=flat
+   :target: https://landscape.io/github/T-002/pycast/master
+   :alt: Code Health
+
 License
 -------
 Copyright (c) 2012-2015 Christian Schwarz

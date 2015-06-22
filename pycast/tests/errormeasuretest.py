@@ -1,37 +1,38 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
+# !/usr/bin/env python
+#  -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2015 Christian Schwarz
+# Copyright (c) 2012-2015 Christian Schwarz
 #
-#Permission is hereby granted, free of charge, to any person obtaining
-#a copy of this software and associated documentation files (the
-#"Software"), to deal in the Software without restriction, including
-#without limitation the rights to use, copy, modify, merge, publish,
-#distribute, sublicense, and/or sell copies of the Software, and to
-#permit persons to whom the Software is furnished to do so, subject to
-#the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
 #
-#The above copyright notice and this permission notice shall be
-#included in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
 #
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-#EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-#MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-#NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-#LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-#OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-#WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## required external modules
+# required external modules
 import unittest
 
-## required modules from pycast
-from pycast.errors import BaseErrorMeasure
+# required modules from pycast
+from pycast.errors.baseerrormeasure import BaseErrorMeasure
 from pycast.common.timeseries import TimeSeries
 from pycast.common.pycastobject import PyCastObject
 from pycast.errors.meansquarederror import MeanSquaredError
 
 class BaseErrorMeasureTest(unittest.TestCase):
+
     """Test class for the BaseErrorMeasure interface."""
 
     def initialization_test(self):
@@ -74,21 +75,21 @@ class BaseErrorMeasureTest(unittest.TestCase):
 
         bem_calculate  = bem._calculate
         bem_local_error = bem.local_error
-        
+
         def return_zero(ignoreMe, ignoreMeToo):
             return 0
 
-        ## remove the NotImplementedErrors for initialization
+        # remove the NotImplementedErrors for initialization
         bem.local_error = return_zero
         bem._calculate   = return_zero
-        
-        ## correct initialize call
+
+        # correct initialize call
         bem.initialize(tsOrg, tsCalc)
 
-        ## incorrect initialize call
+        # incorrect initialize call
         for cnt in xrange(10):
             try:
-                bem.initialize(tsOrg, tsCalc)        
+                bem.initialize(tsOrg, tsCalc)
             except StandardError:
                 pass
             else:
@@ -124,11 +125,11 @@ class BaseErrorMeasureTest(unittest.TestCase):
 
         bem_calculate  = bem._calculate
         bem_local_error = bem.local_error
-        
+
         def return_zero(ignoreMe, ignoreMeToo, andMe=None, andMeToo=None):
             return 0
 
-        ## remove the NotImplementedErrors for initialization
+        # remove the NotImplementedErrors for initialization
         bem.local_error = return_zero
         bem._calculate   = return_zero
         bem.initialize(tsOrg, tsCalc)
@@ -213,7 +214,7 @@ class BaseErrorMeasureTest(unittest.TestCase):
         bem.local_error = lambda a,b: 1
 
         mse = MeanSquaredError(80.0)
-        ## only 50% of the original TimeSeries have a corresponding partner
+        # only 50% of the original TimeSeries have a corresponding partner
         if mse.initialize(tsOrg, tsCalc):
             assert False    # pragma: no cover
 

@@ -44,20 +44,20 @@ namespace errors {
                 PyObject* _errorDates = PyList_New(PyObject_Length(originalTimeSeries));
                 PyObject* iterator1 = PyObject_GetIter(originalTimeSeries);
 
-                while ((orgPair = PyIter_Next(iterator1))) {   
-                    
+                while ((orgPair = PyIter_Next(iterator1))) {
+
                     PyObject* iterator2 = PyObject_GetIter(calculatedTimesSeries);
-                    
+
                     while ((calcPair = PyIter_Next(iterator2))) {
                         if (PyFloat_AsDouble(PySequence_GetItem(orgPair, 0)) != PyFloat_AsDouble(PySequence_GetItem(calcPair, 0)))
                             continue;
-                        
-                        local_error = PyObject_CallMethodObjArgs(self, PyString_FromString("local_error"), 
+
+                        local_error = PyObject_CallMethodObjArgs(self, PyString_FromString("local_error"),
                                                                        PyList_GetSlice(orgPair, 1, PyList_Size(orgPair)),
                                                                        PyList_GetSlice(calcPair, 1, PyList_Size(calcPair)),
                                                                        NULL
                                                                 );
-                        
+
                         //NotImplemented Exception
                         if(!local_error) {
                             PyErr_SetString(PyExc_NotImplementedError, "");
@@ -80,10 +80,10 @@ namespace errors {
                 //Cut off trailing zeroes
                 _errorValues = PyList_GetSlice(_errorValues, 0, index);
                 _errorDates = PyList_GetSlice(_errorDates, 0, index);
-                                
+
                 //return False, if the error cannot be calculated
                 double _minimalErrorCalculationPercentage = PyFloat_AsDouble(PyObject_GetAttrString(self, "_minimalErrorCalculationPercentage"));
-                
+
                 if(PyList_Size(_errorValues) < (_minimalErrorCalculationPercentage * PyObject_Length(originalTimeSeries)))
                     Py_RETURN_FALSE;
 

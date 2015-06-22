@@ -1,38 +1,40 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
+# !/usr/bin/env python
+#  -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2015 Christian Schwarz
+# Copyright (c) 2012-2015 Christian Schwarz
 #
-#Permission is hereby granted, free of charge, to any person obtaining
-#a copy of this software and associated documentation files (the
-#"Software"), to deal in the Software without restriction, including
-#without limitation the rights to use, copy, modify, merge, publish,
-#distribute, sublicense, and/or sell copies of the Software, and to
-#permit persons to whom the Software is furnished to do so, subject to
-#the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
 #
-#The above copyright notice and this permission notice shall be
-#included in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
 #
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-#EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-#MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-#NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-#LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-#OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-#WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## required external modules
+# required external modules
 import unittest
 
-## required modules from pycast
-from pycast.errors            import SymmetricMeanAbsolutePercentageError as SMAPE
+# required modules from pycast
+from pycast.errors.symmetricmeanabsolutepercentageerror import SymmetricMeanAbsolutePercentageError as SMAPE
 from pycast.common.timeseries import TimeSeries
-from pycast.methods           import BaseForecastingMethod, ExponentialSmoothing, HoltMethod
+from pycast.methods.basemethod           import BaseForecastingMethod
+from pycast.methods.exponentialsmoothing import ExponentialSmoothing, HoltMethod
 
-from pycast.optimization import GridSearch
+from pycast.optimization.gridsearch import GridSearch
 
 class GridSearchTest(unittest.TestCase):
+
     """Test class for the GridSearch."""
 
     def setUp(self):
@@ -54,7 +56,7 @@ class GridSearchTest(unittest.TestCase):
 
     def create_generator_test(self):
         """Test the parameter generation function."""
-        ## initialize a correct result
+        # initialize a correct result
         precision = 10**-2
         values_one = [i * precision for i in xrange(1,100)]
         values_two = [i * precision for i in xrange(201)]
@@ -87,7 +89,7 @@ class GridSearchTest(unittest.TestCase):
 
         try:
             GridSearch(SMAPE, -1).optimize(self.timeSeries, [self.bfm])
-        ## we looped down to the NotImplemetedError of BaseMethod.execute
+        # we looped down to the NotImplemetedError of BaseMethod.execute
         except NotImplementedError:
             pass
         else:
@@ -99,7 +101,7 @@ class GridSearchTest(unittest.TestCase):
 
         try:
             GridSearch(SMAPE, -1).optimize_forecasting_method(self.timeSeries, self.bfm)
-        ## we looped down to the NotImplemetedError of BaseMethod.execute
+        # we looped down to the NotImplemetedError of BaseMethod.execute
         except NotImplementedError:
             pass
         else:
@@ -113,19 +115,19 @@ class GridSearchTest(unittest.TestCase):
 
         try:
             GridSearch(SMAPE, -5).optimize_forecasting_method(self.timeSeries, self.bfm)
-        ## we looped down to the NotImplemetedError of BaseMethod.execute
+        # we looped down to the NotImplemetedError of BaseMethod.execute
         except NotImplementedError:
             pass
         else:
             assert False    # pragma: no cover
-    
+
     def inner_optimization_result_test(self):
         """Test for the correct result of a GridSearch optimization."""
         fm = ExponentialSmoothing()
         startingPercentage =   0.0
         endPercentage      = 100.0
 
-        ## manually select the best alpha
+        # manually select the best alpha
         self.timeSeries.normalize("second")
         results = []
         for smoothingFactor in [alpha / 100.0 for alpha in xrange(1, 100)]:    # pragma: no cover
@@ -137,27 +139,27 @@ class GridSearchTest(unittest.TestCase):
 
         bestManualResult = min(results, key=lambda item: item[0].get_error(startingPercentage, endPercentage))
 
-        ### Debugging
+        # Debugging
         #print ""
         #for item in results:
         #    print "Manual: %s / %s" % (str(item[0].get_error(startingPercentage, endPercentage))[:8], item[1])
         #print ""
 
-        ## automatically determine the best alpha using GridSearch
+        # automatically determine the best alpha using GridSearch
         gridSearch = GridSearch(SMAPE, precision=-2)
-        ## used, because we test a submethod here
+        # used, because we test a submethod here
         gridSearch._startingPercentage = startingPercentage
         gridSearch._endPercentage      = endPercentage
         result     = gridSearch.optimize_forecasting_method(self.timeSeries, fm)
 
-        ## the grid search should have determined the same alpha
+        # the grid search should have determined the same alpha
         bestManualAlpha     = bestManualResult[1]
         errorManualResult     = bestManualResult[0].get_error()
 
         bestGridSearchAlpha   = result[1]["smoothingFactor"]
         errorGridSearchResult = result[0].get_error()
 
-        ## Debugging
+        # Debugging
         #print ""
         #print "GridSearch Result"
         #print "Manual:     SMAPE / Alpha: %s / %s" % (str(errorManualResult)[:8],     bestManualAlpha)
@@ -165,7 +167,7 @@ class GridSearchTest(unittest.TestCase):
         #print ""
 
         assert str(errorManualResult)[:8] >= str(errorGridSearchResult)[:8]
-        assert str(bestManualAlpha)[:5]   == str(bestGridSearchAlpha)[:5]
+        assert str(bestManualAlpha)[:5] == str(bestGridSearchAlpha)[:5]
 
     def inner_optimization_result_accuracy_test(self):
         """Test for the correct result of a GridSearch optimization."""
@@ -173,7 +175,7 @@ class GridSearchTest(unittest.TestCase):
         startingPercentage =   0.0
         endPercentage      = 100.0
 
-        ## manually select the best alpha
+        # manually select the best alpha
         self.timeSeries.normalize("second")
         results = []
         for smoothingFactor in [alpha / 100.0 for alpha in xrange(1, 100)]:    # pragma: no cover
@@ -185,16 +187,16 @@ class GridSearchTest(unittest.TestCase):
 
         bestManualResult = min(results, key=lambda item: item[0].get_error(startingPercentage, endPercentage))
 
-        ## automatically determine the best alpha using GridSearch
+        # automatically determine the best alpha using GridSearch
         gridSearch = GridSearch(SMAPE, precision=-4)
-       
-        ## used, because we test a submethod here
+
+        # used, because we test a submethod here
         gridSearch._startingPercentage = startingPercentage
         gridSearch._endPercentage      = endPercentage
 
         result     = gridSearch.optimize_forecasting_method(self.timeSeries, fm)
 
-        ## the grid search should have determined the same alpha
+        # the grid search should have determined the same alpha
         bestManualAlpha     = bestManualResult[1]
         errorManualResult     = bestManualResult[0].get_error()
 
@@ -210,7 +212,7 @@ class GridSearchTest(unittest.TestCase):
 
         self.timeSeries.normalize("second")
 
-        ## automatically determine the best alpha using GridSearch
+        # automatically determine the best alpha using GridSearch
         gridSearch = GridSearch(SMAPE, precision=-2)
         result     = gridSearch.optimize(self.timeSeries, [fm1, fm2])
 
