@@ -26,7 +26,7 @@ from setuptools     import find_packages
 
 setup(
     name             = "pycast",
-    version          = "v0.1.5-alpha",
+    version          = "v0.1.5.1-alpha",
     author           = "Christian Schwarz",
     author_email     = "christianschw4rz@gmail.com",
     packages         = find_packages(exclude=["tests"]),

@@ -1,7 +1,7 @@
 pycast
 ======
 
-pycast aims to provide a python module supporting basic and 
+pycast aims to provide a python module supporting basic and
 advanced smoothing and forecasting methods that can be used
 on time series data.
 
