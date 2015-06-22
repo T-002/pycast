@@ -39,7 +39,7 @@ class BaseMethod(PyCastObject):
         :param boolean hasToBeNormalized:    Defines if the TimeSeries has to be normalized or not.
         """
 
-        if requiredParameters == None:
+        if requiredParameters is None:
             requiredParameters = []
 
         super(BaseMethod, self).__init__()
@@ -102,7 +102,7 @@ class BaseMethod(PyCastObject):
                     :py:const:`False` otherwise.
         :rtype: list
         """
-        if not parameter in self._parameterIntervals:
+        if parameter not in self._parameterIntervals:
             return None
 
         return self._parameterIntervals[parameter]
@@ -131,13 +131,13 @@ class BaseMethod(PyCastObject):
 
         interval = self._parameterIntervals[parameter]
 
-        if True == interval[2] and True == interval[3]:
+        if interval[2] and interval[3]:
             return interval[0] <= value <= interval[1]
 
-        if False == interval[2] and True == interval[3]:
+        if not interval[2] and interval[3]:
             return interval[0] <  value <= interval[1]
 
-        if True == interval[2] and False == interval[3]:
+        if interval[2] and not interval[3]:
             return interval[0] <= value <  interval[1]
 
         #if False == interval[2] and False == interval[3]:
@@ -153,11 +153,17 @@ class BaseMethod(PyCastObject):
         :rtype: string
         """
         ## return if not interval is defined for the parameter
-        if not parameter in self._parameterIntervals:
+        if parameter not in self._parameterIntervals:
             return 
 
         interval = self._parameterIntervals[parameter]
-        return "%s has to be in %s%s, %s%s. Current value is %s." % (parameter, BaseMethod._interval_definitions[interval[2]][0], interval[0], interval[1], BaseMethod._interval_definitions[interval[3]][1], value)
+        return "%s has to be in %s%s, %s%s. Current value is %s." % (
+            parameter, 
+            BaseMethod._interval_definitions[interval[2]][0], 
+            interval[0], interval[1], 
+            BaseMethod._interval_definitions[interval[3]][1],
+            value
+        )
 
     def set_parameter(self, name, value):
         """Sets a parameter for the BaseMethod.
@@ -237,10 +243,10 @@ class BaseForecastingMethod(BaseMethod):
         :raise: Raises a :py:exc:`ValueError` when valuesToForecast is smaller than zero.
         """
 
-        if requiredParameters == None:
+        if requiredParameters is None:
             requiredParameters = []
 
-        if not "valuesToForecast" in requiredParameters:
+        if "valuesToForecast" not in requiredParameters:
             requiredParameters.append("valuesToForecast")
         if valuesToForecast < 0:
             raise ValueError("valuesToForecast has to be larger than zero.")
@@ -276,18 +282,18 @@ class BaseForecastingMethod(BaseMethod):
         ## continue with the parents implementation
         return super(BaseForecastingMethod, self).set_parameter(name, value)
 
-    def forecast_until(self, timestamp, format=None):
+    def forecast_until(self, timestamp, tsformat=None):
         """Sets the forecasting goal (timestamp wise).
 
         This function enables the automatic determination of valuesToForecast.
 
         :param timestamp:    timestamp containing the end date of the forecast.
-        :param string format:    Format of the timestamp. This is used to convert the
+        :param string tsformat:    Format of the timestamp. This is used to convert the
             timestamp from UNIX epochs, if necessary. For valid examples
             take a look into the :py:func:`time.strptime` documentation.
         """
-        if None != format:
-            timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, format)
+        if None != tsformat:
+            timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, tsformat)
 
         self._forecastUntil = timestamp
 
@@ -301,7 +307,7 @@ class BaseForecastingMethod(BaseMethod):
         :raise:    Raises a :py:exc:`ValueError` if the TimeSeries is either not normalized or sorted.
         """
         ## do not set anything, if it is not required
-        if None == self._forecastUntil:
+        if self._forecastUntil is None:
             return
 
         ## check the TimeSeries for correctness

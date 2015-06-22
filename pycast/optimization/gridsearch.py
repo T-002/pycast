@@ -49,7 +49,7 @@ class GridSearch(BaseOptimizationMethod):
         :raise:    Raises a :py:exc:`ValueError` ValueError if no forecastingMethods is empty.
         """
 
-        if forecastingMethods == None or len(forecastingMethods) == 0:
+        if forecastingMethods is None or len(forecastingMethods) == 0:
             raise ValueError("forecastingMethods cannot be empty.")
 
         self._startingPercentage = startingPercentage
@@ -120,7 +120,11 @@ class GridSearch(BaseOptimizationMethod):
         #print "GridSearch"
         #print "Instance    /    SMAPE / Alpha"
         #for item in forecastingResults:
-        #    print "%s / %s / %s" % (str(item[0])[-12:-1], str(item[0].get_error(self._startingPercentage, self._endPercentage))[:8], item[1]["smoothingFactor"])
+        #    print "%s / %s / %s" % (
+        #    str(item[0])[-12:-1],
+        #    str(item[0].get_error(self._startingPercentage, self._endPercentage))[:8],
+        #    item[1]["smoothingFactor"]
+        #)
         #print ""
 
         ## Collect the parameters that resulted in the smallest error
@@ -146,7 +150,7 @@ class GridSearch(BaseOptimizationMethod):
         :rtype: list
         """
 
-        if currentParameterValues == None:
+        if currentParameterValues is None:
             currentParameterValues = {}
 
         ## The most inner loop is reached
@@ -166,7 +170,11 @@ class GridSearch(BaseOptimizationMethod):
                 return []
 
             ## Debugging GridSearchTest.inner_optimization_result_test
-            #print "Instance / SMAPE / Alpha: %s / %s / %s" % (str(error)[-12:-1], str(error.get_error(self._startingPercentage, self._endPercentage))[:8], currentParameterValues["smoothingFactor"])
+            #print "Instance / SMAPE / Alpha: %s / %s / %s" % (
+            #    str(error)[-12:-1], 
+            #    str(error.get_error(self._startingPercentage, self._endPercentage))[:8], 
+            #    currentParameterValues["smoothingFactor"]
+            #)
 
             ## return the result
             return [[error, dict(currentParameterValues)]]

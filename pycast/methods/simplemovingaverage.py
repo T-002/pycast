@@ -92,8 +92,6 @@ class SimpleMovingAverage(BaseMethod):
 
         if len (timeSeries) < windowsize:
             raise ValueError("windowsize is larger than the number of elements in timeSeries.")
-
-        minIdx = len(timeSeries) / 2
         
         tsLength      = len(timeSeries)
         nbrOfLoopRuns = tsLength - windowsize + 1

@@ -245,7 +245,7 @@ class Matrix(PyCastObject):
                                     rows together (rowBased=True) or columns
                                     (rowBased=False).
         """
-        resultMatrix = Matrix(columns, rows, matrix_list, rowBased=True)
+        resultMatrix = Matrix(columns, rows, matrix_list, rowBased)
         return resultMatrix
 
     def set_value(self, column, row, value):

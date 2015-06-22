@@ -22,8 +22,6 @@
 #OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-import math
 from pycast.errors.meanabsolutepercentageerror import MeanAbsolutePercentageError
 
 class GeometricMeanAbsolutePercentageError(MeanAbsolutePercentageError):
@@ -48,7 +46,7 @@ class GeometricMeanAbsolutePercentageError(MeanAbsolutePercentageError):
         """
         ## get the defined subset of error values
         errorValues = self._get_error_values(startingPercentage, endPercentage, startDate, endDate)
-        errorValues = filter(lambda item: item != None, errorValues)
+        errorValues = filter(lambda item: item is None, errorValues)
         
         share = 1.0 / float(len(errorValues))
 

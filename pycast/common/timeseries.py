@@ -45,7 +45,7 @@ NormalizationLevels = {
 FusionMethods = {
     "mean":       lambda l: sum(l) / float(len(l)),    # pragma: no cover
     "median":     lambda l: sorted(l)[len(l)//2],      # pragma: no cover
-    "sum":        lambda l: sum(l)                     # pragma: no cover
+    "sum":        sum(l)                               # pragma: no cover
 }
 
 ## Interpolation methods that can be used for interpolation missing data points.
@@ -85,15 +85,15 @@ class TimeSeries(PyCastObject):
 
         self._timestampFormat = None
 
-    def set_timeformat(self, format=None):
+    def set_timeformat(self, tsformat=None):
         """Sets the TimeSeries global time format.
 
-        :param string format:    Format of the timestamp. This is used to convert the
+        :param string tsformat:    Format of the timestamp. This is used to convert the
             timestamp from UNIX epochs when the TimeSeries gets serialized by :py:meth:`TimeSeries.to_json` and 
             :py:meth:`TimeSeries.to_gnuplot_datafile`. For valid examples take a look into the :py:func:`time.strptime`
             documentation.
         """
-        self._timestampFormat = format
+        self._timestampFormat = tsformat
 
     def to_gnuplot_datafile(self, datafilepath):
         """Dumps the TimeSeries into a gnuplot compatible data file.
@@ -106,22 +106,19 @@ class TimeSeries(PyCastObject):
         """
         try:
             datafile = file(datafilepath, "wb")
-        except:
+        except Exception:
             return False
 
-        format = self._timestampFormat
-        
-        formatval = format
-        if format is None:
-            formatval = _STR_EPOCHS
+        if self._timestampFormat is None:
+            self._timestampFormat = _STR_EPOCHS
 
-        datafile.write("## time_as_<%s> value\n" % formatval)
+        datafile.write("## time_as_<%s> value\n" % self._timestampFormat)
 
         convert = TimeSeries.convert_epoch_to_timestamp
         for datapoint in self._timeseriesData:
             timestamp, value = datapoint
-            if format is not None:
-                timestamp = convert(timestamp, format)
+            if self._timestampFormat is not None:
+                timestamp = convert(timestamp, self._timestampFormat)
 
             datafile.write("%s %s\n" % (timestamp, value))
 
@@ -151,27 +148,27 @@ class TimeSeries(PyCastObject):
         :return:    Returns a two dimensional list containing [timestamp, value] pairs.
         :rtype:     list
         """
-        format = self._timestampFormat
+        tsformat = self._timestampFormat
 
-        if format is None:
+        if tsformat is None:
             return self._timeseriesData
 
         datalist = []
         append   = datalist.append
         convert  = TimeSeries.convert_epoch_to_timestamp
         for entry in self._timeseriesData:
-            append([convert(entry[0], format), entry[1]])
+            append([convert(entry[0], tsformat), entry[1]])
 
         return datalist
 
     @classmethod
-    def from_twodim_list(cls, datalist, format=None):
+    def from_twodim_list(cls, datalist, tsformat=None):
         """Creates a new TimeSeries instance from the data stored inside a two dimensional list.
 
         :param list datalist:    List containing multiple iterables with at least two values.
             The first item will always be used as timestamp in the predefined format,
             the second represents the value. All other items in those sublists will be ignored.
-        :param string format:    Format of the given timestamp. This is used to convert the
+        :param string tsformat:    Format of the given timestamp. This is used to convert the
             timestamp into UNIX epochs, if necessary. For valid examples take a look into
             the :py:func:`time.strptime` documentation.
 
@@ -180,13 +177,13 @@ class TimeSeries(PyCastObject):
         """
         ## create and fill the given TimeSeries
         ts = TimeSeries()
-        ts.set_timeformat(format)
+        ts.set_timeformat(tsformat)
 
         for entry in datalist:
             ts.add_entry(*entry[:2])
 
         ## set the normalization level
-        ts._normalized = ts._check_normalization()
+        ts._normalized = ts.is_normalized()
         ts.sort_timeseries()  
 
         return ts
@@ -318,11 +315,11 @@ class TimeSeries(PyCastObject):
         self._timeseriesData[index] = value
 
     @classmethod
-    def convert_timestamp_to_epoch(cls, timestamp, format):
+    def convert_timestamp_to_epoch(cls, timestamp, tsformat):
         """Converts the given timestamp into a float representing UNIX-epochs.
 
         :param string timestamp: Timestamp in the defined format.
-        :param string format:    Format of the given timestamp. This is used to convert the
+        :param string tsformat:    Format of the given timestamp. This is used to convert the
             timestamp into UNIX epochs. For valid examples take a look into
             the :py:func:`time.strptime` documentation.
 
@@ -330,21 +327,21 @@ class TimeSeries(PyCastObject):
         :return:    Returns an float, representing the UNIX-epochs for the given timestamp.
         :rtype: float
         """
-        return time.mktime(time.strptime(timestamp, format))
+        return time.mktime(time.strptime(timestamp, tsformat))
 
     @classmethod
-    def convert_epoch_to_timestamp(cls, timestamp, format):
+    def convert_epoch_to_timestamp(cls, timestamp, tsformat):
         """Converts the given float representing UNIX-epochs into an actual timestamp.
 
         :param float timestamp:    Timestamp as UNIX-epochs.
-        :param string format:    Format of the given timestamp. This is used to convert the
+        :param string tsformat:    Format of the given timestamp. This is used to convert the
             timestamp from UNIX epochs. For valid examples take a look into the 
             :py:func:`time.strptime` documentation.
 
         :return:    Returns the timestamp as defined in format.
         :rtype: string
         """
-        return time.strftime(format, time.gmtime(timestamp))
+        return time.strftime(tsformat, time.gmtime(timestamp))
 
     def add_entry(self, timestamp, data):
         """Adds a new data entry to the TimeSeries.
@@ -357,9 +354,9 @@ class TimeSeries(PyCastObject):
         self._normalized = self._predefinedNormalized
         self._sorted     = self._predefinedSorted
 
-        format = self._timestampFormat
-        if format is not None:
-            timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, format)
+        tsformat = self._timestampFormat
+        if tsformat is not None:
+            timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, tsformat)
 
         self._timeseriesData.append([float(timestamp), float(data)])
 
@@ -449,7 +446,7 @@ class TimeSeries(PyCastObject):
             return
 
         ## get the defined methods and parameter
-        normalizationLevelString = normalizationLevel
+        self._normalizationLevel = normalizationLevel
         normalizationLevel       = NormalizationLevels[normalizationLevel]
         fusionMethod             = FusionMethods[fusionMethod]
         interpolationMethod      = InterpolationMethods[interpolationMethod]
@@ -461,7 +458,7 @@ class TimeSeries(PyCastObject):
         start           = self._timeseriesData[0][0]
         end             = self._timeseriesData[-1][0]
         span            = end - start
-        bucketcnt       = int(span / normalizationLevel)+ 1
+        bucketcnt       = int(span / normalizationLevel) + 1
 
         buckethalfwidth = normalizationLevel / 2.0
         bucketstart     = start + buckethalfwidth
@@ -525,7 +522,6 @@ class TimeSeries(PyCastObject):
 
         ## at the end set self._normalized to True
         self._normalized = True
-        self._normalizationLevel = normalizationLevelString
 
     def is_normalized(self):
         """Returns if the TimeSeries is normalized.
@@ -533,6 +529,9 @@ class TimeSeries(PyCastObject):
         :return:    Returns :py:const:`True` if the TimeSeries is normalized, :py:const:`False` otherwise.
         :rtype: boolean
         """
+        if not self._normalized:
+            return self._check_normalization()
+
         return self._normalized
 
     def _check_normalization(self):
@@ -669,9 +668,9 @@ class MultiDimensionalTimeSeries(TimeSeries):
         self._normalized = self._predefinedNormalized
         self._sorted     = self._predefinedSorted
 
-        format = self._timestampFormat
-        if format is not None:
-            timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, format)
+        tsformat = self._timestampFormat
+        if tsformat is not None:
+            timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, tsformat)
 
         self._timeseriesData.append([float(timestamp)] + [float(dimensionValue) for dimensionValue in data])
 
@@ -704,23 +703,21 @@ class MultiDimensionalTimeSeries(TimeSeries):
         """Serializes the MultiDimensionalTimeSeries data into a two dimensional list of [timestamp, [values]] pairs.
 
         :return:    Returns a two dimensional list containing [timestamp, [values]] pairs.
-        :rtype: list
+        :rtype:     list
         """
-        format = self._timestampFormat
-
-        if format is None:
+        if self._timestampFormat is None:
             return self._timeseriesData
 
         datalist = []
         append   = datalist.append
         convert  = TimeSeries.convert_epoch_to_timestamp
         for entry in self._timeseriesData:
-            append([convert(entry[0], format), entry[1:]])
+            append([convert(entry[0], self._timestampFormat), entry[1:]])
 
         return datalist
 
     @classmethod
-    def from_twodim_list(cls, datalist, format=None, dimensions=1):
+    def from_twodim_list(cls, datalist, tsformat=None, dimensions=1):
         """Creates a new MultiDimensionalTimeSeries instance from the data stored inside a two dimensional list.
 
         :param list datalist:    List containing multiple iterables with at least two values.
@@ -736,13 +733,13 @@ class MultiDimensionalTimeSeries(TimeSeries):
         """
         ## create and fill the given TimeSeries
         ts = MultiDimensionalTimeSeries(dimensions=dimensions)
-        ts.set_timeformat(format)
+        ts.set_timeformat(tsformat)
 
         for entry in datalist:
             ts.add_entry(entry[0], entry[1])
 
         ## set the normalization level
-        ts._normalized = ts._check_normalization()
+        ts._normalized = ts.is_normalized()
         ts.sort_timeseries()  
 
         return ts
@@ -856,16 +853,13 @@ class MultiDimensionalTimeSeries(TimeSeries):
         """
         try:
             datafile = file(datafilepath, "wb")
-        except:
+        except Exception:
             return False
 
-        format = self._timestampFormat
-        
-        formatval = format
-        if format is None:
-            formatval = _STR_EPOCHS
+        if self._timestampFormat is None:
+            self._timestampFormat = _STR_EPOCHS
 
-        datafile.write("## time_as_<%s> value..." % formatval)
+        datafile.write("## time_as_<%s> value..." % self._timestampFormat)
 
         convert = TimeSeries.convert_epoch_to_timestamp
         for datapoint in self._timeseriesData:

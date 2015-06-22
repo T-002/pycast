@@ -44,7 +44,7 @@ class BaseOptimizationMethod(PyCastObject):
         :raise:    Raises a :py:exc:`ValueError` if precision is not in [-7, 0].
         """
 
-        if errorMeasureInitializationParameters == None:
+        if errorMeasureInitializationParameters is None:
             errorMeasureInitializationParameters = {}
 
         if not isinstance(errorMeasureClass, (type, types.ClassType)):
@@ -60,11 +60,18 @@ class BaseOptimizationMethod(PyCastObject):
         self._errorClass = errorMeasureClass
         self._errorMeasureKWArgs = errorMeasureInitializationParameters
 
-    def optimize(self, timeSeries, forecastingMethods=None):
+    def optimize(self, timeSeries, forecastingMethods=None, startingPercentage=0.0, endPercentage=100.0):
         """Runs the optimization on the given TimeSeries.
 
         :param TimeSeries timeSeries:    TimeSeries instance that requires an optimized forecast.
         :param list forecastingMethods:    List of forecastingMethods that will be used for optimization.
+        :param float startingPercentage: Defines the start of the interval. This has to be a value in [0.0, 100.0].
+            It represents the value, where the error calculation should be started. 
+            25.0 for example means that the first 25% of all calculated errors will be ignored.
+        :param float endPercentage:    Defines the end of the interval. This has to be a value in [0.0, 100.0].
+            It represents the value, after which all error values will be ignored. 90.0 for example means that
+            the last 10% of all local errors will be ignored.
+
 
         :return:    Returns the optimized forecasting method with the smallest error.
         :rtype:     (BaseForecastingMethod, Dictionary)
@@ -72,5 +79,7 @@ class BaseOptimizationMethod(PyCastObject):
         :raise:    Raises a :py:exc:`ValueError` ValueError if no forecastingMethods is empty.
         """
         ## no forecasting methods provided
-        if forecastingMethods == None or len(forecastingMethods) == 0:
+        if forecastingMethods is None or len(forecastingMethods) == 0:
             raise ValueError("forecastingMethods cannot be empty.")
+
+        raise NotImplementedError("Add an implementation here.\nTimeSeries data: %s" % timeSeries)
