@@ -1,0 +1,3 @@
+doc-warnings: yes
+test-warnings: yes
+strictness: veryhigh
