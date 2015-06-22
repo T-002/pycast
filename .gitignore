@@ -15,3 +15,4 @@ build
 dist
 docs/build/html.zip
 pycast.egg-info
+pycast/tests/docs
