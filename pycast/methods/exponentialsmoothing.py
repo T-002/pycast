@@ -27,6 +27,7 @@ from pycast.common.timeseries import TimeSeries
 
 class ExponentialSmoothing(BaseForecastingMethod):
 
+
     """Implements an exponential smoothing algorithm.
 
     Explanation:
@@ -147,6 +148,8 @@ class ExponentialSmoothing(BaseForecastingMethod):
         return TimeSeries.from_twodim_list(resultList)
 
 class HoltMethod(BaseForecastingMethod):
+
+
     """Implements the Holt algorithm.
 
     Explanation:
@@ -277,6 +280,8 @@ class HoltMethod(BaseForecastingMethod):
 # TODO:A second method, referred to as either Brown's linear exponential smoothing (LES) or Brown's double exponential smoothing works as follows.[9]
 
 class HoltWintersMethod(BaseForecastingMethod):
+
+
     """Implements the Holt-Winters algorithm.
 
     Explanation:
@@ -342,6 +347,8 @@ class HoltWintersMethod(BaseForecastingMethod):
     def execute(self, timeSeries):
         """Creates a new TimeSeries containing the smoothed values.
 
+        :param TimeSeries timeSeries: TimeSeries containing hte data.
+
         :return:    TimeSeries object containing the exponentially smoothed TimeSeries,
             including the forecasted values.
         :rtype:     TimeSeries
@@ -382,17 +389,37 @@ class HoltWintersMethod(BaseForecastingMethod):
             lastEstimator = estimator
             resultList.append([t, estimator])
 
+        resultList += self._calculate_forecast(timeSeries, resultList, seasonValues, [lastEstimator, lastSeasonValue, lastTrend])
+        return TimeSeries.from_twodim_list(resultList)
+
+    def _calculate_forecast(self, originalTimeSeries, smoothedData, seasonValues, lastSmoothingParams):
+        """Calculates the actual forecasted based on the input data.
+
+        :param TimeSeries timeSeries: TimeSeries containing hte data.
+        :param list smoothedData: Contains the smoothed time series data.
+        :param list seasonValues: Contains the seasonal values for the forecast.
+        :param list lastSmoothingParams: List containing the last [estimator, season value, trend] calculated during
+        smoothing the TimeSeries.
+
+        :return: Returns a list containing forecasted values
+        """
+        forecastResults = []
+
+        lastEstimator, lastSeasonValue, lastTrend = lastSmoothingParams
+
+        seasonLength = self.get_parameter("seasonLength")
+
         #Forecasting. Determine the time difference between two points for extrapolation
-        currentTime        = resultList[-1][0]
-        normalizedTimeDiff = currentTime - resultList[-2][0]
+        currentTime        = smoothedData[-1][0]
+        normalizedTimeDiff = currentTime - smoothedData[-2][0]
 
         for m in xrange(1, self._parameters["valuesToForecast"] + 1):
             currentTime += normalizedTimeDiff
-            lastSeasonValue = seasonValues[(len(timeSeries) + m - 2) % seasonLength]
+            lastSeasonValue = seasonValues[(len(originalTimeSeries) + m - 2) % seasonLength]
             forecast = (lastEstimator + m * lastTrend) * lastSeasonValue
-            resultList.append([currentTime, forecast])
+            forecastResults.append([currentTime, forecast])
 
-        return TimeSeries.from_twodim_list(resultList)
+        return forecastResults
 
     def initSeasonFactors(self, timeSeries):
         """ Computes the initial season smoothing factors.
