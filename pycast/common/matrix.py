@@ -1,5 +1,27 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
+# !/usr/bin/env python
+#  -*- coding: UTF-8 -*-
+
+# Copyright (c) 2012-2015 Christian Schwarz
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
 # General imports
 import copy
@@ -11,13 +33,32 @@ from pycastobject import PyCastObject
 from decorators import optimized
 from timeseries import MultiDimensionalTimeSeries
 
+def sign(a, b):
+    """Return a with the algebraic sign of b"""
+    return (b/abs(b)) * a
+
+def pythag(a, b):
+    """Computer c = (a^2 + b^2)^0.5 without destructive underflow or overflow
+
+    It solves the Pythagorean theorem a^2 + b^2 = c^2
+    """
+    absA = abs(a)
+    absB = abs(b)
+    if absA > absB:
+        return absA * sqrt(1.0 + (absB / float(absA)) ** 2)
+    elif absB == 0.0:
+        return 0.0
+    else:
+        return absB * sqrt(1.0 + (absA / float(absB)) ** 2)
 
 class Matrix(PyCastObject):
+
     """A Matrix instance stores all relevant data of a matrix.
 
     It provides a number of Matrix operations, such as multiplication,
     transformation and inversion.
     """
+
     # default number of digits after decimal point which are printed
     defaultStringPrecision = 3
 
@@ -143,21 +184,21 @@ class Matrix(PyCastObject):
 
         :raise:     Raises an :py:exc:`ValueError`, if the timeSeries is empty.
         """
-        array = []
+        width = 1
+
         if isinstance(timeSeries, MultiDimensionalTimeSeries):
             width = timeSeries.dimension_count()
-        else:
-            width = 1
-        for j in xrange(width):
-            array.append([])
+
+        matrixData = [[] for dummy in xrange(width)]
+
         for entry in timeSeries:
             for col in xrange(1, len(entry)):
-                array[col - 1].append(entry[col])
-        if not array[0]:
+                matrixData[col - 1].append(entry[col])
+        if not matrixData[0]:
             raise ValueError("Cannot create Matrix from empty Timeseries")
-        mtrx = Matrix.from_two_dim_array(len(array), len(array[0]), array)
+        mtrx = Matrix.from_two_dim_array(len(matrixData), len(matrixData[0]), matrixData)
 
-        # mtrx.initialize(array, rowBased=False)
+        # mtrx.initialize(matrixData, rowBased=False)
         return mtrx
 
     @classmethod
@@ -245,7 +286,7 @@ class Matrix(PyCastObject):
                                     rows together (rowBased=True) or columns
                                     (rowBased=False).
         """
-        resultMatrix = Matrix(columns, rows, matrix_list, rowBased=True)
+        resultMatrix = Matrix(columns, rows, matrix_list, rowBased)
         return resultMatrix
 
     def set_value(self, column, row, value):
@@ -304,7 +345,8 @@ class Matrix(PyCastObject):
         if self._columns != self._rows:
             raise ValueError("A square matrix is needed")
         mArray = self.get_array(False)
-        appList = [0 for i in xrange(self._columns)]
+        appList = [0] * self._columns
+
         # add identity matrix to array in order to use gauss jordan algorithm
         for col in xrange(self._columns):
             mArray.append(appList[:])
@@ -328,7 +370,7 @@ class Matrix(PyCastObject):
         :rtype:     Matrix
         """
         mtrx = Matrix.from_two_dim_array(self._columns, self._rows, self.matrix)
-        ## copy of immmutable Boolean.
+        # copy of immmutable Boolean.
         mtrx.optimizationEnabled = self.optimizationEnabled
 
         return mtrx
@@ -421,9 +463,9 @@ class Matrix(PyCastObject):
         """
         blocksize = self.get_array()[0][0].get_width()
         width = self.get_width() * blocksize
-        columnsNew = []
-        for i in range(width):
-            columnsNew.append([])
+
+        columnsNew = [[] for dummy in xrange(width)]
+
         for row in self.get_array():
             index = 0
             for submatrix in row:
@@ -504,7 +546,7 @@ class Matrix(PyCastObject):
         # Start with complete matrix and remove in each iteration
         # the first row and the first column
         for offset in xrange(height):
-            ## Switch lines, if current first value is 0
+            # Switch lines, if current first value is 0
             if mArray[offset][offset] == 0:
                 for i in xrange(offset + 1, height):
                     if mArray[offset][i] != 0:
@@ -764,7 +806,7 @@ class Matrix(PyCastObject):
                         a[k][j] += (s * rv1[k])
             anorm = max(anorm, (abs(w[i]) + abs(rv1[i])))
 
-        ## Accumulation of right hand transformations
+        # Accumulation of right hand transformations
         for i in xrange(n - 1, -1, -1):
             if g != 0.0:
                 for j in xrange(l, n):
@@ -780,7 +822,7 @@ class Matrix(PyCastObject):
             g = rv1[i]
             l = i
 
-        ## Accumulation of left hand transformations
+        # Accumulation of left hand transformations
         for i in xrange(n - 1, -1, -1):
             l = i + 1
             g = w[i]
@@ -804,7 +846,7 @@ class Matrix(PyCastObject):
         # Diagonalization of the bidiagonal form.
         # Loop over singular values and over allowed iterations
         for k in xrange(n - 1, -1, -1):
-            for its in xrange(maxIteration):
+            for dummy in xrange(maxIteration):
                 for l in xrange(k, -1, -1):
                     convergenceTest = False
                     if abs(rv1[l]) <= eps:
@@ -960,26 +1002,3 @@ class Vector(Matrix):
         for row in xrange(self.get_height()):
             self.set_value(0, row, self.get_value(0, row) / length)
         return self
-
-
-# Helper functions used in the singular value decomposition of a Matrix
-def sign(a, b):
-    """Return a with the algebraic sign of b"""
-    if b < 0:
-        return -abs(a)
-    else:
-        return abs(a)
-
-
-def pythag(a, b):
-    """Computer c = (a^2 + b^2)^0.5 without destructive underflow or overflow
-
-    It solves the Pythagorean theorem a^2 + b^2 = c^2"""
-    absA = abs(a)
-    absB = abs(b)
-    if absA > absB:
-        return absA * sqrt(1.0 + (absB / float(absA)) ** 2)
-    elif absB == 0.0:
-        return 0.0
-    else:
-        return absB * sqrt(1.0 + (absA / float(absB)) ** 2)

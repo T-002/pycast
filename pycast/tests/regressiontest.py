@@ -1,39 +1,39 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
+# !/usr/bin/env python
+#  -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2015 Christian Schwarz
+# Copyright (c) 2012-2015 Christian Schwarz
 #
-#Permission is hereby granted, free of charge, to any person obtaining
-#a copy of this software and associated documentation files (the
-#"Software"), to deal in the Software without restriction, including
-#without limitation the rights to use, copy, modify, merge, publish,
-#distribute, sublicense, and/or sell copies of the Software, and to
-#permit persons to whom the Software is furnished to do so, subject to
-#the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
 #
-#The above copyright notice and this permission notice shall be
-#included in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
 #
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-#EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-#MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-#NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-#LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-#OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-#WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-## required external modules
+# required external modules
 import unittest
 from mock import patch
 
-## required modules from pycast
+# required modules from pycast
 from pycast.common.timeseries import TimeSeries
 from pycast.common.matrix import Matrix
-from pycast.methods import Regression, LinearRegression
+from pycast.methods.regression import Regression, LinearRegression
 
 
 class RegressionTest(unittest.TestCase):
+
     """Test class for the Regression method."""
 
     def calculate_parameters_two_empty_list_test(self):
@@ -54,7 +54,7 @@ class RegressionTest(unittest.TestCase):
 
     def calculate_parameters_test(self):
         """Test the calculation of the parameters for the regression line."""
-        ## Initialize the source
+        # Initialize the source
         data1 = [
                     [1, 10.00], [7, 22.01], [2, 12.40], [3, 17.38], [4, 16.66],
                     [5, 20.12], [6, 23.45], [8, 24.34], [9, 12.12]
@@ -66,10 +66,10 @@ class RegressionTest(unittest.TestCase):
         tsSrc1 = TimeSeries.from_twodim_list(data1)
         tsSrc2 = TimeSeries.from_twodim_list(data2)
 
-        ## Initialize a correct result.
+        # Initialize a correct result.
         expRes  = (5.546941864140029, 0.6850537379535376)
 
-        ## Initialize the method
+        # Initialize the method
         reg = Regression()
         res = reg.calculate_parameters(tsSrc1, tsSrc2)
 
@@ -77,7 +77,7 @@ class RegressionTest(unittest.TestCase):
 
     def calculate_parameters_without_match_test(self):
         """Test for ValueError, if the input timeseries have no macthing dates"""
-        ## Initialize input
+        # Initialize input
         data1  = [[1, 12.42], [6, 12.32], [8, 12.45]]
         data2  = [[2, 32.45], [4, 23.12], [7, 65.34]]
         tsOne = TimeSeries.from_twodim_list(data1)
@@ -89,7 +89,7 @@ class RegressionTest(unittest.TestCase):
 
     def calculate_parameter_duplicate_dates_test(self):
         """Test for ValueError if dates in timeseries are not distinct"""
-        ## Initialize input
+        # Initialize input
         data1 = [[1, 12.23], [4, 23.34]]
         data2 = [[1, 34.23], [1, 16.23]]
         tsSrc1 = TimeSeries.from_twodim_list(data1)
@@ -100,7 +100,7 @@ class RegressionTest(unittest.TestCase):
 
     def calculate_parameter_with_short_timeseries_test(self):
         """Test for ValueError if Timeseries has only one matching date"""
-        ## Initialize input
+        # Initialize input
         data1 = [[1, 12.23], [4, 23.34]]
         data2 = [[1, 34.23]]
         tsSrc1 = TimeSeries.from_twodim_list(data1)
@@ -111,13 +111,13 @@ class RegressionTest(unittest.TestCase):
 
     def match_time_series_test(self):
         """Test if two timeseries are matched correctly"""
-        ## Initialize input
+        # Initialize input
         data1  = [[1, 12.42], [4, 34.23], [7, 12.32], [8, 12.45]]
         data2  = [[2, 32.45], [7, 65.34], [4, 23.12], [5, 32.45]]
         tsSrc1 = TimeSeries.from_twodim_list(data1)
         tsSrc2 = TimeSeries.from_twodim_list(data2)
 
-        ## Initialize a correct result
+        # Initialize a correct result
         dstX   = [[4, 34.23], [7, 12.32]]
         dstY   = [[4, 23.12], [7, 65.34]]
 
@@ -176,7 +176,7 @@ class LinearRegressionTest(unittest.TestCase):
 
     def lstsq_test(self):
         """Test the least square method"""
-        ## Initialize input matrices
+        # Initialize input matrices
         volumes  = [
                         [24], [20], [20], [20], [21], [30],
                         [40], [20], [20], [20], [19], [35]
@@ -208,7 +208,7 @@ class LinearRegressionTest(unittest.TestCase):
         proMatrix = Matrix(5, 12)
         proMatrix.initialize(promoted)
 
-        ## Execute least square method and compare result
+        # Execute least square method and compare result
         resMatrix = LinearRegression.lstsq(proMatrix, volMatrix)
         for row in range(resMatrix.get_height()):
             for col in range(resMatrix.get_width()):
@@ -216,7 +216,7 @@ class LinearRegressionTest(unittest.TestCase):
 
     def lstsq_wrong_input_size_test(self):
         """Test for value error in lstsq method, if height of input matrices, does not match"""
-        ## Initialize input matrices
+        # Initialize input matrices
         volumes  = [[24], [20], [20], [20], [21], [30]]
         promoted = [
                         [1, 0, 0, 0, 1],
@@ -232,7 +232,7 @@ class LinearRegressionTest(unittest.TestCase):
 
     def lstsq_matrix_test(self):
         """Test least square solution using a matrix with zero column"""
-        ## Initialize input matrices
+        # Initialize input matrices
         volumes   = [
                         [24], [20], [20], [20], [21], [30],
                         [40], [20], [20], [20], [19], [35]
@@ -255,7 +255,7 @@ class LinearRegressionTest(unittest.TestCase):
         volMatrix.initialize(volumes)
         proMatrix = Matrix(5, 12)
         proMatrix.initialize(promoted)
-        ## expected result calculated with scipy.lstsq()
+        # expected result calculated with scipy.lstsq()
         exRes = [
                     [2.00000000e+01],
                     [2.18197426e-16],
@@ -263,10 +263,10 @@ class LinearRegressionTest(unittest.TestCase):
                     [2.00000000e+01],
                     [4.00000000e+00]
                 ]
-        ## Calculate least square solution
+        # Calculate least square solution
         res = LinearRegression.lstsq(proMatrix, volMatrix)
 
-        ## Compare if the values of the result are almost equal with the expected ones.
+        # Compare if the values of the result are almost equal with the expected ones.
         for row in xrange(len(exRes)):
             for col in xrange(len(exRes[0])):
                 self.assertAlmostEqual(exRes[row][col], res.get_value(col, row), self.precision)

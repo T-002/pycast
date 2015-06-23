@@ -1,37 +1,37 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
+# !/usr/bin/env python
+#  -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2015 Christian Schwarz
+# Copyright (c) 2012-2015 Christian Schwarz
 #
-#Permission is hereby granted, free of charge, to any person obtaining
-#a copy of this software and associated documentation files (the
-#"Software"), to deal in the Software without restriction, including
-#without limitation the rights to use, copy, modify, merge, publish,
-#distribute, sublicense, and/or sell copies of the Software, and to
-#permit persons to whom the Software is furnished to do so, subject to
-#the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
 #
-#The above copyright notice and this permission notice shall be
-#included in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
 #
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-#EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-#MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-#NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-#LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-#OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-#WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-## required external modules
+# required external modules
 import unittest
 
-## required modules from pycast
-from pycast.errors import MeanAbsoluteDeviationError
+# required modules from pycast
+from pycast.errors.meanabsolutedeviationerror import MeanAbsoluteDeviationError
 from pycast.common.timeseries import TimeSeries
 
 
 class MeanAbsoluteDeviationErrorTest(unittest.TestCase):
+
     """Testing Mean Absolute Deviation error."""
 
 
@@ -46,14 +46,14 @@ class MeanAbsoluteDeviationErrorTest(unittest.TestCase):
 #        dataPtsOrg  = [ 2.30,  .373, .583, 1.880, 500]
 #        dataPtsCalc = [-1.21, -.445, .466,  .226, 300]
 #        localErrors = [ 3.51,  .818, .117, 1.654, 200]
-    
+
         mad = MeanAbsoluteDeviationError()
 
         for idx in xrange(len(self.dataOrg)):
             le = mad.local_error([self.dataOrg[idx]], [self.dataCalc[idx]])
             ple = localErrors[idx]
 
-            ## compare the strings due to accuracy
+            # compare the strings due to accuracy
             self.assertEqual(str(le), str(ple))
 
     def error_calculation_test(self):
@@ -63,7 +63,7 @@ class MeanAbsoluteDeviationErrorTest(unittest.TestCase):
 
         tsOrg  = TimeSeries()
         tsCalc = TimeSeries()
-        
+
         for idx in xrange(len(self.dataOrg)):
             tsOrg.add_entry(float(idx),  self.dataOrg[idx])
             tsCalc.add_entry(float(idx), self.dataCalc[idx])
@@ -71,5 +71,5 @@ class MeanAbsoluteDeviationErrorTest(unittest.TestCase):
         mad = MeanAbsoluteDeviationError()
         mad.initialize(tsOrg, tsCalc)
 
-        ## compare the strings due to accuracy
+        # compare the strings due to accuracy
         self.assertEqual("0.3454", str(mad.get_error())[:6])

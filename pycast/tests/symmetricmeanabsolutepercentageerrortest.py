@@ -1,37 +1,37 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
+# !/usr/bin/env python
+#  -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2015 Christian Schwarz
+# Copyright (c) 2012-2015 Christian Schwarz
 #
-#Permission is hereby granted, free of charge, to any person obtaining
-#a copy of this software and associated documentation files (the
-#"Software"), to deal in the Software without restriction, including
-#without limitation the rights to use, copy, modify, merge, publish,
-#distribute, sublicense, and/or sell copies of the Software, and to
-#permit persons to whom the Software is furnished to do so, subject to
-#the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
 #
-#The above copyright notice and this permission notice shall be
-#included in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
 #
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-#EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-#MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-#NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-#LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-#OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-#WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-## required external modules
+# required external modules
 import unittest
 
-## required modules from pycast
-from pycast.errors import SymmetricMeanAbsolutePercentageError
+# required modules from pycast
+from pycast.errors.symmetricmeanabsolutepercentageerror import SymmetricMeanAbsolutePercentageError
 from pycast.common.timeseries import TimeSeries
 
 
 class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
+
     """Testing symmetric mean absolute percentage error."""
 
     def setUp(self):
@@ -55,7 +55,7 @@ class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
         """Test the calculation of the SymmetricMeanAbsolutePercentageError."""
         tsOrg  = TimeSeries()
         tsCalc = TimeSeries()
-        
+
         for idx in xrange(len(self.dataOrg)):
             tsOrg.add_entry(float(idx),  self.dataOrg[idx])
             tsCalc.add_entry(float(idx), self.dataCalc[idx])
@@ -77,7 +77,7 @@ class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
 #            le = smape.local_error([dataPtsOrg[idx]], [dataPtsCalc[idx]])
 #            ple = localErrors[idx]
 #
-#            ## compare the strings due to accuracy
+#            # compare the strings due to accuracy
 #            assert str(le) == str(ple)
 
 #    def error_calculation_test(self):
@@ -87,7 +87,7 @@ class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
 #
 #        tsOrg  = TimeSeries()
 #        tsCalc = TimeSeries()
-#        
+#
 #        for idx in xrange(len(dataPtsOrg)):
 #            tsOrg.add_entry(float(idx),  dataPtsOrg[idx])
 #            tsCalc.add_entry(float(idx), dataPtsCalc[idx])
@@ -96,17 +96,17 @@ class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
 #        smape.initialize(tsOrg, tsCalc)
 #        print smape._errorValues
 #
-#        ## compare the strings due to accuracy
+#        # compare the strings due to accuracy
 #        assert "1.5706" == str(smape.get_error())[:6]
 
 #    def confidence_interval_test(self):
-#        """Test for None values in BaseErrorMeasure.confidence_interval"""  
+#        """Test for None values in BaseErrorMeasure.confidence_interval"""
 #        dataPtsOrg  = [2.30,     .373,           .583,          1.88,  1.44,         -0.0852, -.341,  .619,  .131,  1.27, 0]
 #        dataPtsCalc = [-1.21,   -.445,           .466,          .226, -.694,           -.575,  2.73, -1.49, -1.45, -.193, 0]
 #
 #        tsOrg  = TimeSeries()
 #        tsCalc = TimeSeries()
-#        
+#
 #        for idx in xrange(len(dataPtsOrg)):
 #            tsOrg.add_entry(float(idx),  dataPtsOrg[idx])
 #            tsCalc.add_entry(float(idx), dataPtsCalc[idx])
@@ -114,6 +114,6 @@ class SymmetricMeanAbsolutePercentageErrorTest(unittest.TestCase):
 #        smape = SymmetricMeanAbsolutePercentageError()
 #        smape.initialize(tsOrg, tsCalc)
 #
-#        print smape._errorValues 
+#        print smape._errorValues
 #
 #        self.assertEquals((0.0, 2.0), smape.confidence_interval(.5))

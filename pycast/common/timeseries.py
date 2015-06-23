@@ -1,35 +1,39 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
+# !/usr/bin/env python
+#  -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2015 Christian Schwarz
+# Copyright (c) 2012-2015 Christian Schwarz
 #
-#Permission is hereby granted, free of charge, to any person obtaining
-#a copy of this software and associated documentation files (the
-#"Software"), to deal in the Software without restriction, including
-#without limitation the rights to use, copy, modify, merge, publish,
-#distribute, sublicense, and/or sell copies of the Software, and to
-#permit persons to whom the Software is furnished to do so, subject to
-#the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
 #
-#The above copyright notice and this permission notice shall be
-#included in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
 #
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-#EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-#MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-#NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-#LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-#OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-#WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import time, random, os
+"""Module contains all components corresponding to TimeSeries data."""
 
-## some string constants
+import time
+import random
+import os
+
+# some string constants
 _STR_EPOCHS = "UNIX-epochs"
 
 os.environ['TZ'] = 'GMT'
 
-## Time series levels that can be used for normalization.
+# Time series levels that can be used for normalization.
 NormalizationLevels = {
     "second":  1,
     "minute":  1 * 60,
@@ -40,15 +44,15 @@ NormalizationLevels = {
     "4week":   1 * 60 * 60 * 24 * 7 * 4
 }
 
-## Fusion methods that can be used to fusionate multiple data points within
-## the same time bucket. This might sort the list it is used on.
+# Fusion methods that can be used to fusionate multiple data points within
+# the same time bucket. This might sort the list it is used on.
 FusionMethods = {
     "mean":       lambda l: sum(l) / float(len(l)),    # pragma: no cover
     "median":     lambda l: sorted(l)[len(l)//2],      # pragma: no cover
     "sum":        lambda l: sum(l)                     # pragma: no cover
 }
 
-## Interpolation methods that can be used for interpolation missing data points.
+# Interpolation methods that can be used for interpolation missing data points.
 from helper import linear_interpolation
 InterpolationMethods = {
     "linear": linear_interpolation
@@ -56,6 +60,7 @@ InterpolationMethods = {
 
 from pycastobject import PyCastObject
 class TimeSeries(PyCastObject):
+
     """A TimeSeries instance stores all relevant data for a real world time series.
 
     :warning: TimeSeries instances are NOT thread-safe.
@@ -85,15 +90,15 @@ class TimeSeries(PyCastObject):
 
         self._timestampFormat = None
 
-    def set_timeformat(self, format=None):
+    def set_timeformat(self, tsformat=None):
         """Sets the TimeSeries global time format.
 
-        :param string format:    Format of the timestamp. This is used to convert the
-            timestamp from UNIX epochs when the TimeSeries gets serialized by :py:meth:`TimeSeries.to_json` and 
+        :param string tsformat:    Format of the timestamp. This is used to convert the
+            timestamp from UNIX epochs when the TimeSeries gets serialized by :py:meth:`TimeSeries.to_json` and
             :py:meth:`TimeSeries.to_gnuplot_datafile`. For valid examples take a look into the :py:func:`time.strptime`
             documentation.
         """
-        self._timestampFormat = format
+        self._timestampFormat = tsformat
 
     def to_gnuplot_datafile(self, datafilepath):
         """Dumps the TimeSeries into a gnuplot compatible data file.
@@ -106,22 +111,19 @@ class TimeSeries(PyCastObject):
         """
         try:
             datafile = file(datafilepath, "wb")
-        except:
+        except Exception:
             return False
 
-        format = self._timestampFormat
-        
-        formatval = format
-        if None == format:
-            formatval = _STR_EPOCHS
+        if self._timestampFormat is None:
+            self._timestampFormat = _STR_EPOCHS
 
-        datafile.write("## time_as_<%s> value\n" % formatval)
+        datafile.write("# time_as_<%s> value\n" % self._timestampFormat)
 
         convert = TimeSeries.convert_epoch_to_timestamp
         for datapoint in self._timeseriesData:
             timestamp, value = datapoint
-            if None != format:
-                timestamp = convert(timestamp, format)
+            if self._timestampFormat is not None:
+                timestamp = convert(timestamp, self._timestampFormat)
 
             datafile.write("%s %s\n" % (timestamp, value))
 
@@ -135,7 +137,7 @@ class TimeSeries(PyCastObject):
         :rtype:     TimeSeries
         """
         ts = TimeSeries.from_twodim_list(self._timeseriesData)
-        
+
         ts._normalizationLevel   = self._normalizationLevel
         ts._normalized           = self._normalized
         ts._sorted               = self._sorted
@@ -151,43 +153,43 @@ class TimeSeries(PyCastObject):
         :return:    Returns a two dimensional list containing [timestamp, value] pairs.
         :rtype:     list
         """
-        format = self._timestampFormat
+        tsformat = self._timestampFormat
 
-        if None == format:
+        if tsformat is None:
             return self._timeseriesData
 
         datalist = []
         append   = datalist.append
         convert  = TimeSeries.convert_epoch_to_timestamp
         for entry in self._timeseriesData:
-            append([convert(entry[0], format), entry[1]])
+            append([convert(entry[0], tsformat), entry[1]])
 
         return datalist
 
     @classmethod
-    def from_twodim_list(cls, datalist, format=None):
+    def from_twodim_list(cls, datalist, tsformat=None):
         """Creates a new TimeSeries instance from the data stored inside a two dimensional list.
 
         :param list datalist:    List containing multiple iterables with at least two values.
             The first item will always be used as timestamp in the predefined format,
             the second represents the value. All other items in those sublists will be ignored.
-        :param string format:    Format of the given timestamp. This is used to convert the
+        :param string tsformat:    Format of the given timestamp. This is used to convert the
             timestamp into UNIX epochs, if necessary. For valid examples take a look into
             the :py:func:`time.strptime` documentation.
 
         :return:    Returns a TimeSeries instance containing the data from datalist.
         :rtype:     TimeSeries
         """
-        ## create and fill the given TimeSeries
+        # create and fill the given TimeSeries
         ts = TimeSeries()
-        ts.set_timeformat(format)
+        ts.set_timeformat(tsformat)
 
         for entry in datalist:
             ts.add_entry(*entry[:2])
 
-        ## set the normalization level
-        ts._normalized = ts._check_normalization()
-        ts.sort_timeseries()  
+        # set the normalization level
+        ts._normalized = ts.is_normalized()
+        ts.sort_timeseries()
 
         return ts
 
@@ -203,28 +205,28 @@ class TimeSeries(PyCastObject):
         :return:    Returns the number of entries added to the TimeSeries.
         :rtype:     integer
         """
-        ## initialize the result
+        # initialize the result
         tuples = 0
 
-        ## add the SQL result to the time series
+        # add the SQL result to the time series
         data = sqlcursor.fetchmany()
         while 0 < len(data):
             for entry in data:
                 self.add_entry(str(entry[0]), entry[1])
-            
+
             data = sqlcursor.fetchmany()
 
-        ## set the normalization level
+        # set the normalization level
         self._normalized = self._check_normalization
-        
-        ## return the number of tuples added to the timeseries.
+
+        # return the number of tuples added to the timeseries.
         return tuples
 
     def __str__(self):
         """Returns a string representation of the TimeSeries.
 
         :return:    Returns a string representing the TimeSeries in the format:
-            
+
             "TimeSeries([timestamp, data], [timestamp, data], [timestamp, data])".
         :rtype:     string
         """
@@ -262,24 +264,24 @@ class TimeSeries(PyCastObject):
         :return:    :py:const:`True` if the TimeSeries objects are equal, :py:const:`False` otherwise.
         :rtype:     boolean
         """
-        ## Compare the length of the time series
+        # Compare the length of the time series
         if len(self) != len(otherTimeSeries):
             return False
 
-        ## @todo: This can be really cost intensive!
+        # @todo: This can be really cost intensive!
         orgTS  = self.sorted_timeseries()
         compTS = otherTimeSeries.sorted_timeseries()
 
         for idx in xrange(len(orgTS)):
-            ## compare the timestamp
+            # compare the timestamp
             if orgTS[idx][0] != compTS[idx][0]:
                 return False
 
-            ## compare the data
+            # compare the data
             if orgTS[idx][1] != compTS[idx][1]:
                 return False
 
-        ## everything seams to be ok
+        # everything seams to be ok
         return True
 
     def __ne__(self, otherTimeSeries):
@@ -318,11 +320,11 @@ class TimeSeries(PyCastObject):
         self._timeseriesData[index] = value
 
     @classmethod
-    def convert_timestamp_to_epoch(cls, timestamp, format):
+    def convert_timestamp_to_epoch(cls, timestamp, tsformat):
         """Converts the given timestamp into a float representing UNIX-epochs.
 
         :param string timestamp: Timestamp in the defined format.
-        :param string format:    Format of the given timestamp. This is used to convert the
+        :param string tsformat:    Format of the given timestamp. This is used to convert the
             timestamp into UNIX epochs. For valid examples take a look into
             the :py:func:`time.strptime` documentation.
 
@@ -330,21 +332,21 @@ class TimeSeries(PyCastObject):
         :return:    Returns an float, representing the UNIX-epochs for the given timestamp.
         :rtype: float
         """
-        return time.mktime(time.strptime(timestamp, format))
+        return time.mktime(time.strptime(timestamp, tsformat))
 
     @classmethod
-    def convert_epoch_to_timestamp(cls, timestamp, format):
+    def convert_epoch_to_timestamp(cls, timestamp, tsformat):
         """Converts the given float representing UNIX-epochs into an actual timestamp.
 
         :param float timestamp:    Timestamp as UNIX-epochs.
-        :param string format:    Format of the given timestamp. This is used to convert the
-            timestamp from UNIX epochs. For valid examples take a look into the 
+        :param string tsformat:    Format of the given timestamp. This is used to convert the
+            timestamp from UNIX epochs. For valid examples take a look into the
             :py:func:`time.strptime` documentation.
 
         :return:    Returns the timestamp as defined in format.
         :rtype: string
         """
-        return time.strftime(format, time.gmtime(timestamp))
+        return time.strftime(tsformat, time.gmtime(timestamp))
 
     def add_entry(self, timestamp, data):
         """Adds a new data entry to the TimeSeries.
@@ -357,9 +359,9 @@ class TimeSeries(PyCastObject):
         self._normalized = self._predefinedNormalized
         self._sorted     = self._predefinedSorted
 
-        format = self._timestampFormat
-        if None != format:
-            timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, format)
+        tsformat = self._timestampFormat
+        if tsformat is not None:
+            timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, tsformat)
 
         self._timeseriesData.append([float(timestamp), float(data)])
 
@@ -367,7 +369,7 @@ class TimeSeries(PyCastObject):
         """Sorts the data points within the TimeSeries according to their occurrence inline.
 
         :param boolean ascending: Determines if the TimeSeries will be ordered ascending or
-            descending. If this is set to descending once, the ordered parameter defined in 
+            descending. If this is set to descending once, the ordered parameter defined in
             :py:meth:`TimeSeries.__init__` will be set to False FOREVER.
 
         :return:    Returns :py:obj:`self` for convenience.
@@ -400,7 +402,7 @@ class TimeSeries(PyCastObject):
         :rtype:     TimeSeries
         """
         sortorder = 1
-        if False == ascending:
+        if not ascending:
             sortorder = -1
 
         data = sorted(self._timeseriesData, key=lambda i: sortorder * i[0])
@@ -429,91 +431,91 @@ class TimeSeries(PyCastObject):
 
         :raise: Raises a :py:exc:`ValueError` if a normalizationLevel, fusionMethod or interpolationMethod hanve an unknown value.
         """
-        ## do not normalize the TimeSeries if it is already normalized, either by
-        ## definition or a prior call of normalize(*)
+        # do not normalize the TimeSeries if it is already normalized, either by
+        # definition or a prior call of normalize(*)
         if self._normalizationLevel == normalizationLevel:
             if self._normalized:    # pragma: no cover
                 return
 
-        ## check if all parameters are defined correctly
-        if not normalizationLevel in NormalizationLevels:
+        # check if all parameters are defined correctly
+        if normalizationLevel not in NormalizationLevels:
             raise ValueError("Normalization level %s is unknown." % normalizationLevel)
-        if not fusionMethod in FusionMethods:
+        if fusionMethod not in FusionMethods:
             raise ValueError("Fusion method %s is unknown." % fusionMethod)
-        if not interpolationMethod in InterpolationMethods:
+        if interpolationMethod not in InterpolationMethods:
             raise ValueError("Interpolation method %s is unknown." % interpolationMethod)
 
-        ## (nearly) empty TimeSeries instances do not require normalization
+        # (nearly) empty TimeSeries instances do not require normalization
         if len(self) < 2:
             self._normalized = True
             return
 
-        ## get the defined methods and parameter
-        normalizationLevelString = normalizationLevel
+        # get the defined methods and parameter
+        self._normalizationLevel = normalizationLevel
         normalizationLevel       = NormalizationLevels[normalizationLevel]
         fusionMethod             = FusionMethods[fusionMethod]
         interpolationMethod      = InterpolationMethods[interpolationMethod]
 
-        ## sort the TimeSeries
+        # sort the TimeSeries
         self.sort_timeseries()
 
-        ## prepare the required buckets
+        # prepare the required buckets
         start           = self._timeseriesData[0][0]
         end             = self._timeseriesData[-1][0]
         span            = end - start
-        bucketcnt       = int(span / normalizationLevel)+ 1
+        bucketcnt       = int(span / normalizationLevel) + 1
 
         buckethalfwidth = normalizationLevel / 2.0
         bucketstart     = start + buckethalfwidth
         buckets         = [[bucketstart + idx * normalizationLevel] for idx in xrange(bucketcnt)]
 
         # Step One: Populate buckets
-        ## Initialize the timeseries data iterators
+        # Initialize the timeseries data iterators
         tsdStartIdx = 0
         tsdEndIdx   = 0
         tsdlength   = len(self)
 
         for idx in xrange(bucketcnt):
-            ## get the bucket to avoid multiple calls of buckets.__getitem__()
+            # get the bucket to avoid multiple calls of buckets.__getitem__()
             bucket = buckets[idx]
-            
-            ## get the range for the given bucket
+
+            # get the range for the given bucket
             bucketend   = bucket[0] + buckethalfwidth
-            
+
             while tsdEndIdx < tsdlength and self._timeseriesData[tsdEndIdx][0] < bucketend:
                 tsdEndIdx += 1
 
-            ## continue, if no valid data entries exist
+            # continue, if no valid data entries exist
             if tsdStartIdx == tsdEndIdx:
                 continue
-        
-            ## use the given fusion method to calculate the fusioned value
+
+            # use the given fusion method to calculate the fusioned value
             values = [i[1] for i in self._timeseriesData[tsdStartIdx:tsdEndIdx]]
             bucket.append(fusionMethod(values))
 
-            ## set the new timeseries data index
+            # set the new timeseries data index
             tsdStartIdx = tsdEndIdx
 
-        ## Step Two: Fill missing buckets
+        # Step Two: Fill missing buckets
         missingCount   = 0
         lastIdx        = 0
         for idx in xrange(bucketcnt):
-            ## bucket is empty
+            # bucket is empty
             if 1 == len(buckets[idx]):
                 missingCount += 1
                 continue
 
-            ## This is the first bucket. The first bucket is not empty by definition!
+            # This is the first bucket. The first bucket is not empty by definition!
             if idx == 0:
                 lastIdx = idx
                 continue
 
-            ## update the lastIdx, if none was missing
+            # update the lastIdx, if none was missing
             if 0 == missingCount:
                 lastIdx = idx
                 continue
 
-            ## calculate and fill in missing values
+            # calculate and fill in missing values
             missingValues = interpolationMethod(buckets[lastIdx][1], buckets[idx][1], missingCount)
             for idx2 in xrange(1, missingCount + 1):
                 buckets[lastIdx + idx2].append(missingValues[idx2 - 1])
@@ -523,9 +525,8 @@ class TimeSeries(PyCastObject):
 
         self._timeseriesData = buckets
 
-        ## at the end set self._normalized to True
+        # at the end set self._normalized to True
         self._normalized = True
-        self._normalizationLevel = normalizationLevelString
 
     def is_normalized(self):
         """Returns if the TimeSeries is normalized.
@@ -533,6 +534,9 @@ class TimeSeries(PyCastObject):
         :return:    Returns :py:const:`True` if the TimeSeries is normalized, :py:const:`False` otherwise.
         :rtype: boolean
         """
+        if not self._normalized:
+            return self._check_normalization()
+
         return self._normalized
 
     def _check_normalization(self):
@@ -546,8 +550,8 @@ class TimeSeries(PyCastObject):
         for idx in xrange(len(self) - 1):
             distance = self[idx+1][0] - self[idx][0]
 
-            ## first run
-            if None == lastDistance:
+            # first run
+            if lastDistance is None:
                 lastDistance = distance
                 continue
 
@@ -573,13 +577,13 @@ class TimeSeries(PyCastObject):
         :param BaseMethod method: Method that should be used with the TimeSeries.
             For more information about the methods take a look into their corresponding documentation.
 
-        :raise:    Raises a StandardError when the TimeSeries was not normalized and hte method requires a 
+        :raise:    Raises a StandardError when the TimeSeries was not normalized and hte method requires a
             normalized TimeSeries
         """
-        ## check, if the methods requirements are fullfilled
+        # check, if the methods requirements are fullfilled
         if method.has_to_be_normalized() and not self._normalized:
             raise StandardError("method requires a normalized TimeSeries instance.")
-        
+
         if method.has_to_be_sorted():
             self.sort_timeseries()
 
@@ -605,12 +609,12 @@ class TimeSeries(PyCastObject):
 
         sample      = cls.from_twodim_list(values)
         rest_values = self._timeseriesData[:]
-        
+
         for value in values:
             rest_values.remove(value)
-        
+
         rest = cls.from_twodim_list(rest_values)
-        
+
         return sample, rest
 
 class MultiDimensionalTimeSeries(TimeSeries):
@@ -634,7 +638,7 @@ class MultiDimensionalTimeSeries(TimeSeries):
         :raise:    Raises a :py:exc:`ValueError` if the number of dimensions is smaller than 1.
         """
         super(MultiDimensionalTimeSeries, self).__init__(isNormalized, isSorted)
-        
+
         dimensions = int(dimensions)
         if dimensions < 1:
             raise ValueError("A MultiDimensionalTimeSeries has to have at least one dimension!.")
@@ -669,9 +673,9 @@ class MultiDimensionalTimeSeries(TimeSeries):
         self._normalized = self._predefinedNormalized
         self._sorted     = self._predefinedSorted
 
-        format = self._timestampFormat
-        if None != format:
-            timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, format)
+        tsformat = self._timestampFormat
+        if tsformat is not None:
+            timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, tsformat)
 
         self._timeseriesData.append([float(timestamp)] + [float(dimensionValue) for dimensionValue in data])
 
@@ -687,7 +691,7 @@ class MultiDimensionalTimeSeries(TimeSeries):
         :rtype:     TimeSeries
         """
         sortorder = 1
-        if False == ascending:
+        if not ascending:
             sortorder = -1
 
         data = sorted(self._timeseriesData, key=lambda i: sortorder * i[0])
@@ -704,23 +708,21 @@ class MultiDimensionalTimeSeries(TimeSeries):
         """Serializes the MultiDimensionalTimeSeries data into a two dimensional list of [timestamp, [values]] pairs.
 
         :return:    Returns a two dimensional list containing [timestamp, [values]] pairs.
-        :rtype: list
+        :rtype:     list
         """
-        format = self._timestampFormat
-
-        if None == format:
+        if self._timestampFormat is None:
             return self._timeseriesData
 
         datalist = []
         append   = datalist.append
         convert  = TimeSeries.convert_epoch_to_timestamp
         for entry in self._timeseriesData:
-            append([convert(entry[0], format), entry[1:]])
+            append([convert(entry[0], self._timestampFormat), entry[1:]])
 
         return datalist
 
     @classmethod
-    def from_twodim_list(cls, datalist, format=None, dimensions=1):
+    def from_twodim_list(cls, datalist, tsformat=None, dimensions=1):
         """Creates a new MultiDimensionalTimeSeries instance from the data stored inside a two dimensional list.
 
         :param list datalist:    List containing multiple iterables with at least two values.
@@ -734,16 +736,16 @@ class MultiDimensionalTimeSeries(TimeSeries):
         :return:    Returns a MultiDimensionalTimeSeries instance containing the data from datalist.
         :rtype:     MultiDimensionalTimeSeries
         """
-        ## create and fill the given TimeSeries
+        # create and fill the given TimeSeries
         ts = MultiDimensionalTimeSeries(dimensions=dimensions)
-        ts.set_timeformat(format)
+        ts.set_timeformat(tsformat)
 
         for entry in datalist:
             ts.add_entry(entry[0], entry[1])
 
-        ## set the normalization level
-        ts._normalized = ts._check_normalization()
-        ts.sort_timeseries()  
+        # set the normalization level
+        ts._normalized = ts.is_normalized()
+        ts.sort_timeseries()
 
         return ts
 
@@ -776,28 +778,28 @@ class MultiDimensionalTimeSeries(TimeSeries):
         :return:    :py:const:`True` if the MultiDimensionalTimeSeries objects are equal, :py:const:`False` otherwise.
         :rtype: boolean
         """
-        ## Compare the length of the time series
+        # Compare the length of the time series
         if len(self) != len(otherTimeSeries):
             return False
 
-        ## compare the number of dimensions:
+        # compare the number of dimensions:
         if self._dimensionCount != otherTimeSeries.dimension_count():
             return False
 
-        ## @todo: This can be really cost intensive!
+        # @todo: This can be really cost intensive!
         orgTS  = self.sorted_timeseries()
         compTS = otherTimeSeries.sorted_timeseries()
 
         for idx in xrange(len(orgTS)):
-            ## compare the timestamp
+            # compare the timestamp
             if orgTS[idx][0] != compTS[idx][0]:
                 return False
 
-            ## compare the data
+            # compare the data
             if orgTS[idx][1:] != compTS[idx][1:]:
                 return False
 
-        ## everything seams to be ok
+        # everything seams to be ok
         return True
 
     def __copy__(self):
@@ -807,7 +809,7 @@ class MultiDimensionalTimeSeries(TimeSeries):
         :rtype:     MultiDimensionalTimeSeries
         """
         ts = MultiDimensionalTimeSeries.from_twodim_list(self._timeseriesData, dimensions=self._dimensionCount)
-        
+
         ts._normalizationLevel   = self._normalizationLevel
         ts._normalized           = self._normalized
         ts._sorted               = self._sorted
@@ -828,21 +830,21 @@ class MultiDimensionalTimeSeries(TimeSeries):
         :return:    Returns the number of entries added to the MultiDimensionalTimeSeries.
         :rtype: integer
         """
-        ## initialize the result
+        # initialize the result
         tuples = 0
 
-        ## add the SQL result to the timeseries
+        # add the SQL result to the timeseries
         data = sqlcursor.fetchmany()
         while 0 < len(data):
             for entry in data:
                 self.add_entry(str(entry[0]), [item for item in entry[1:]])
-            
+
             data = sqlcursor.fetchmany()
 
-        ## set the normalization level
+        # set the normalization level
         self._normalized = self._check_normalization()
-        
-        ## return the number of tuples added to the timeseries.
+
+        # return the number of tuples added to the timeseries.
         return tuples
 
     def to_gnuplot_datafile(self, datafilepath):
@@ -856,23 +858,20 @@ class MultiDimensionalTimeSeries(TimeSeries):
         """
         try:
             datafile = file(datafilepath, "wb")
-        except:
+        except Exception:
             return False
 
-        format = self._timestampFormat
-        
-        formatval = format
-        if None == format:
-            formatval = _STR_EPOCHS
+        if self._timestampFormat is None:
+            self._timestampFormat = _STR_EPOCHS
 
-        datafile.write("## time_as_<%s> value..." % formatval)
+        datafile.write("# time_as_<%s> value..." % self._timestampFormat)
 
         convert = TimeSeries.convert_epoch_to_timestamp
         for datapoint in self._timeseriesData:
             timestamp = datapoint[0]
             values = datapoint[1:]
-            if None != format:
-                timestamp = convert(timestamp, format)
+            if self._timestampFormat is not None:
+                timestamp = convert(timestamp, self._timestampFormat)
 
             datafile.write("%s %s" % (timestamp, " ".join([str(entry) for entry in values])))
 
@@ -881,7 +880,7 @@ class MultiDimensionalTimeSeries(TimeSeries):
 
     def normalize(self, normalizationLevel="minute", fusionMethod="mean", interpolationMethod="linear"):
         """This is a dummy function, doing nothing.
-         
+
         :raise: Raises a :py:exc:`NotImplementedError`.
 
         :note: MutliDimensionalTimeSeries cannot be normalized currently.

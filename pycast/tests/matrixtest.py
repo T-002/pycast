@@ -1,5 +1,26 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
+# !/usr/bin/env python
+#  -*- coding: UTF-8 -*-
+
+# Copyright (c) 2012-2015 Christian Schwarz
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import unittest
 import random
@@ -16,6 +37,7 @@ PRECISION = 4
 
 
 class MatrixTest(unittest.TestCase):
+
     """Test class for the matrix"""
 
     def init_test(self):
@@ -375,11 +397,11 @@ class MatrixTest(unittest.TestCase):
                 ]
         matrix = Matrix(cols, rows)
         matrix.initialize(data, rowBased=True)
-        ## Change value at specified column/row
+        # Change value at specified column/row
         matrix.set_value(1, 0, 10)
         matrix.set_value(2, 1, 9)
 
-        ## Test if the new value is set correctly
+        # Test if the new value is set correctly
         self.assertEqual(matrix.matrix[1][0], 10)
         self.assertEqual(matrix.matrix[2][1], 9)
 
@@ -704,7 +726,7 @@ class MatrixTest(unittest.TestCase):
                 ]
         mtrx = Matrix(cols, rows)
         mtrx.initialize(data, rowBased=True)
-        ## 2-dimensional list exRes[column][rows]
+        # 2-dimensional list exRes[column][rows]
         exRes = [
                     [1.0, 0.0, 0.0],
                     [0.0, 1.0, 0.0],
@@ -853,7 +875,7 @@ class MatrixTest(unittest.TestCase):
         # execute householder transformation
         u, bidiag, v = matrix.householder()
 
-        ## expect, that multiplication works correctly.
+        # expect, that multiplication works correctly.
         res = u * bidiag * v
         # res should be equal with c (except some rounding errors)
         for row in range(res.get_height()):
@@ -874,7 +896,7 @@ class MatrixTest(unittest.TestCase):
         # execute householder transformation
         u, bidiag, v = matrix.householder()
 
-        ## expect, that multiplication works correctly.
+        # expect, that multiplication works correctly.
         res = u * bidiag * v
         # res should be equal with c (except some rounding errors)
         for row in range(res.get_height()):
@@ -939,18 +961,18 @@ class MatrixTest(unittest.TestCase):
         matrix = Matrix(5, 8)
         matrix.initialize(a, rowBased=True)
         u, diag, v = matrix.svd()
-        ## u and v should be unitary matrices. Matrixmultiplication withs its
-        ## transformation should be the identity Matrix.
+        # u and v should be unitary matrices. Matrixmultiplication withs its
+        # transformation should be the identity Matrix.
         res = u.transform() * u
         res1 = v * v.transform()
         for row in range(res.get_height()):
             for col in range(res.get_width()):
                 if row == col:
-                    ## value should be 1 at diagonal
+                    # value should be 1 at diagonal
                     self.assertAlmostEqual(res.get_value(col, row), 1, PRECISION)
                     self.assertAlmostEqual(res1.get_value(col, row), 1, PRECISION)
                 else:
-                    ## value should be 0 otherwise.
+                    # value should be 0 otherwise.
                     self.assertAlmostEqual(res.get_value(col, row), 0, PRECISION)
                     self.assertAlmostEqual(res1.get_value(col, row), 0, PRECISION)
 

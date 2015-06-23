@@ -1,31 +1,32 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
+# !/usr/bin/env python
+#  -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2015 Christian Schwarz
+# Copyright (c) 2012-2015 Christian Schwarz
 #
-#Permission is hereby granted, free of charge, to any person obtaining
-#a copy of this software and associated documentation files (the
-#"Software"), to deal in the Software without restriction, including
-#without limitation the rights to use, copy, modify, merge, publish,
-#distribute, sublicense, and/or sell copies of the Software, and to
-#permit persons to whom the Software is furnished to do so, subject to
-#the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
 #
-#The above copyright notice and this permission notice shall be
-#included in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
 #
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-#EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-#MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-#NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-#LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-#OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-#WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from pycast.common.timeseries import TimeSeries
+from pycast.common.pycastobject import PyCastObject
 
-from pycast.common import PyCastObject
 class BaseMethod(PyCastObject):
+
     """Baseclass for all smoothing and forecasting methods."""
 
     _interval_definitions = { True: ["[", "]"], False: ["(", ")"]}
@@ -38,7 +39,7 @@ class BaseMethod(PyCastObject):
         :param boolean hasToBeNormalized:    Defines if the TimeSeries has to be normalized or not.
         """
 
-        if requiredParameters == None:
+        if requiredParameters is None:
             requiredParameters = []
 
         super(BaseMethod, self).__init__()
@@ -75,7 +76,7 @@ class BaseMethod(PyCastObject):
         """
         parameterIntervals = {}
 
-        ## YOUR METHOD SPECIFIC CODE HERE!
+        # YOUR METHOD SPECIFIC CODE HERE!
         if self.__class__.__name__ not in ["BaseMethod", "BaseForecastingMethod"]:
             raise NotImplementedError
 
@@ -101,7 +102,7 @@ class BaseMethod(PyCastObject):
                     :py:const:`False` otherwise.
         :rtype: list
         """
-        if not parameter in self._parameterIntervals:
+        if parameter not in self._parameterIntervals:
             return None
 
         return self._parameterIntervals[parameter]
@@ -124,19 +125,19 @@ class BaseMethod(PyCastObject):
             :py:const:`False` otherwise.
         :rtype: boolean
         """
-        ## return True, if not interval is defined for the parameter
-        if not parameter in self._parameterIntervals:
+        # return True, if not interval is defined for the parameter
+        if parameter not in self._parameterIntervals:
             return True
 
         interval = self._parameterIntervals[parameter]
 
-        if True == interval[2] and True == interval[3]:
+        if interval[2] and interval[3]:
             return interval[0] <= value <= interval[1]
 
-        if False == interval[2] and True == interval[3]:
+        if not interval[2] and interval[3]:
             return interval[0] <  value <= interval[1]
 
-        if True == interval[2] and False == interval[3]:
+        if interval[2] and not interval[3]:
             return interval[0] <= value <  interval[1]
 
         #if False == interval[2] and False == interval[3]:
@@ -151,12 +152,18 @@ class BaseMethod(PyCastObject):
         :return:    Returns a string containing hte message.
         :rtype: string
         """
-        ## return if not interval is defined for the parameter
-        if not parameter in self._parameterIntervals:
-            return 
+        # return if not interval is defined for the parameter
+        if parameter not in self._parameterIntervals:
+            return
 
         interval = self._parameterIntervals[parameter]
-        return "%s has to be in %s%s, %s%s. Current value is %s." % (parameter, BaseMethod._interval_definitions[interval[2]][0], interval[0], interval[1], BaseMethod._interval_definitions[interval[3]][1], value)
+        return "%s has to be in %s%s, %s%s. Current value is %s." % (
+            parameter,
+            BaseMethod._interval_definitions[interval[2]][0],
+            interval[0], interval[1],
+            BaseMethod._interval_definitions[interval[3]][1],
+            value
+        )
 
     def set_parameter(self, name, value):
         """Sets a parameter for the BaseMethod.
@@ -171,7 +178,7 @@ class BaseMethod(PyCastObject):
         #    print "Parameter %s already existed. It's old value will be replaced with %s" % (name, value)
 
         self._parameters[name] = value
-    
+
     def get_parameter(self, name):
         """Returns a forecasting parameter.
 
@@ -204,7 +211,7 @@ class BaseMethod(PyCastObject):
         """Returns if the method can already be executed.
 
         :return:    Returns :py:const:`True` if all required parameters where already set, False otherwise.
-        :rtype: boolean 
+        :rtype: boolean
         """
         missingParams = filter(lambda rp: rp not in self._parameters, self._requiredParameters)
         return len(missingParams) == 0
@@ -236,10 +243,10 @@ class BaseForecastingMethod(BaseMethod):
         :raise: Raises a :py:exc:`ValueError` when valuesToForecast is smaller than zero.
         """
 
-        if requiredParameters == None:
+        if requiredParameters is None:
             requiredParameters = []
 
-        if not "valuesToForecast" in requiredParameters:
+        if "valuesToForecast" not in requiredParameters:
             requiredParameters.append("valuesToForecast")
         if valuesToForecast < 0:
             raise ValueError("valuesToForecast has to be larger than zero.")
@@ -268,25 +275,25 @@ class BaseForecastingMethod(BaseMethod):
         :param string name:    Name of the parameter.
         :param numeric value:    Value of the parameter.
         """
-        ## set the furecast until variable to None if necessary
+        # set the furecast until variable to None if necessary
         if name == "valuesToForecast":
             self._forecastUntil = None
 
-        ## continue with the parents implementation
+        # continue with the parents implementation
         return super(BaseForecastingMethod, self).set_parameter(name, value)
 
-    def forecast_until(self, timestamp, format=None):
+    def forecast_until(self, timestamp, tsformat=None):
         """Sets the forecasting goal (timestamp wise).
 
         This function enables the automatic determination of valuesToForecast.
 
         :param timestamp:    timestamp containing the end date of the forecast.
-        :param string format:    Format of the timestamp. This is used to convert the
+        :param string tsformat:    Format of the timestamp. This is used to convert the
             timestamp from UNIX epochs, if necessary. For valid examples
             take a look into the :py:func:`time.strptime` documentation.
         """
-        if None != format:
-            timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, format)
+        if tsformat is not None:
+            timestamp = TimeSeries.convert_timestamp_to_epoch(timestamp, tsformat)
 
         self._forecastUntil = timestamp
 
@@ -299,11 +306,11 @@ class BaseForecastingMethod(BaseMethod):
 
         :raise:    Raises a :py:exc:`ValueError` if the TimeSeries is either not normalized or sorted.
         """
-        ## do not set anything, if it is not required
-        if None == self._forecastUntil:
+        # do not set anything, if it is not required
+        if self._forecastUntil is None:
             return
 
-        ## check the TimeSeries for correctness
+        # check the TimeSeries for correctness
         if not timeSeries.is_sorted():
             raise ValueError("timeSeries has to be sorted.")
         if not timeSeries.is_normalized():

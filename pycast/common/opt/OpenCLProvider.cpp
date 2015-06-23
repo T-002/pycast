@@ -168,9 +168,9 @@ namespace common {
 			if (err != CL_SUCCESS) {
 				PyErr_SetString(PyExc_RuntimeError, "[OpenCLProvider::get_kernel_from_file] Could not get the build kernel.");
 				return NULL;
-			} 
+			}
 			
-			// Now create the kernel "objects" that we want to use in the example file 
+			// Now create the kernel "objects" that we want to use in the example file
 			kernelMap->insert(std::pair<char*, cl_kernel>(kernelfile, kernel));
 		}
 		
@@ -179,19 +179,19 @@ namespace common {
 
 	char*
 	OpenCLProvider::load_program_source(char *kernelfile)
-	{ 
+	{
 		struct stat statbuf;
-		char *source; 
+		char *source;
 	
 		FILE *filehandle = fopen(kernelfile, "r");
 		if (!filehandle)
-			return NULL; 
+			return NULL;
 
 		stat(kernelfile, &statbuf);
 		source = (char *) malloc(statbuf.st_size + 1);
 		fread(source, statbuf.st_size, 1, filehandle);
-		source[statbuf.st_size] = '\0'; 
+		source[statbuf.st_size] = '\0';
 		
-		return source; 
-	} 
+		return source;
+	}
 }

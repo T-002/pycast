@@ -1,38 +1,39 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
+# !/usr/bin/env python
+#  -*- coding: UTF-8 -*-
 
-#Copyright (c) 2012-2015 Christian Schwarz
+# Copyright (c) 2012-2015 Christian Schwarz
 #
-#Permission is hereby granted, free of charge, to any person obtaining
-#a copy of this software and associated documentation files (the
-#"Software"), to deal in the Software without restriction, including
-#without limitation the rights to use, copy, modify, merge, publish,
-#distribute, sublicense, and/or sell copies of the Software, and to
-#permit persons to whom the Software is furnished to do so, subject to
-#the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
 #
-#The above copyright notice and this permission notice shall be
-#included in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
 #
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-#EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-#MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-#NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-#LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-#OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-#WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## required external modules
-import unittest, os, random
+# required external modules
+import unittest
+import random
 
-## required modules from pycast
+# required modules from pycast
 from pycast.common.timeseries import TimeSeries
-from pycast.methods import BaseMethod, BaseForecastingMethod
-from pycast.methods import SimpleMovingAverage
-from pycast.methods import ExponentialSmoothing, HoltMethod, HoltWintersMethod
-from pycast.errors import MeanSquaredError
+from pycast.methods.basemethod import BaseMethod, BaseForecastingMethod
+from pycast.methods.simplemovingaverage import SimpleMovingAverage
+from pycast.methods.exponentialsmoothing import ExponentialSmoothing, HoltMethod, HoltWintersMethod
 
 class BaseMethodTest(unittest.TestCase):
+
     """Test class containing all tests for pycast.method.basemethod."""
 
     def initialization_test(self):
@@ -41,8 +42,10 @@ class BaseMethodTest(unittest.TestCase):
         hasToBeNormalized = random.choice([True, False])
         b = BaseMethod(["param1", "param2"], hasToBeSorted=hasToBeSorted, hasToBeNormalized=hasToBeNormalized)
 
-        if not b.has_to_be_sorted()     == hasToBeSorted:     raise AssertionError
-        if not b.has_to_be_normalized() == hasToBeNormalized: raise AssertionError
+        if not b.has_to_be_sorted() == hasToBeSorted:
+            raise AssertionError
+        if not b.has_to_be_normalized() == hasToBeNormalized:
+            raise AssertionError
 
     def parameter_set_test(self):
         """Test if the parameters of a method are set correctly."""
@@ -59,7 +62,7 @@ class BaseMethodTest(unittest.TestCase):
             pass
 
         try:
-            method = IllegalMethodErrorClass()
+            IllegalMethodErrorClass()
         except NotImplementedError:
             pass
         else:
@@ -68,7 +71,7 @@ class BaseMethodTest(unittest.TestCase):
     def required_parameter_test(self):
         """Test for required parameters."""
         parameters = ["param1", "param2"]
-        
+
         b = BaseMethod(parameters)
 
         requiredParameters = b.get_required_parameters()
@@ -84,8 +87,8 @@ class BaseMethodTest(unittest.TestCase):
         parameters = ["param1", "param2", "param3", "param4"]
 
         b = BaseMethod(parameters)
-        
-        ## overwrite parameter validity dictionary for testing
+
+        # overwrite parameter validity dictionary for testing
         b._parameterIntervals = {
             "param1": [0.0, 1.0, False, False],
             "param2": [0.0, 1.0, False, True],
@@ -93,13 +96,13 @@ class BaseMethodTest(unittest.TestCase):
             "param4": [0.0, 1.0, True, True]
         }
 
-        ## definetely invalid parameters
+        # definetely invalid parameters
         for value in [-1.5, 3.2]:
             for parameter in parameters:
                 if b._in_valid_interval(parameter, value):
                     assert False    # pragma: no cover
 
-        ## definetly valid parameters
+        # definetly valid parameters
         for value in [0.3, 0.42]:
             for parameter in parameters:
                 if not b._in_valid_interval(parameter, value):
@@ -110,8 +113,8 @@ class BaseMethodTest(unittest.TestCase):
         parameters = ["param1", "param2", "param3", "param4"]
 
         b = BaseMethod(parameters)
-        
-        ## overwrite parameter validity dictionary for testing
+
+        # overwrite parameter validity dictionary for testing
         parameterIntervals = {
             "param1": [0.0, 1.0, False, False],
             "param2": [0.0, 1.0, False, True],
@@ -133,7 +136,7 @@ class BaseMethodTest(unittest.TestCase):
 
         b = BaseMethod(parameters)
 
-        ## overwrite parameter validity dictionary for testing
+        # overwrite parameter validity dictionary for testing
         b._parameterIntervals = {
             "param1": [0.0, 1.0, False, False],
             "param2": [0.0, 1.0, False, True],
@@ -141,11 +144,11 @@ class BaseMethodTest(unittest.TestCase):
             "param4": [0.0, 1.0, True, True]
         }
 
-        ## Unknown parameters should return no message
+        # Unknown parameters should return no message
         if None != b._get_value_error_message_for_invalid_prarameter("unknown", 0.0):
             assert False    # pragma: no cover
 
-        ## Known parameters should return a message
+        # Known parameters should return a message
         for parameter in parameters:
             if not isinstance(b._get_value_error_message_for_invalid_prarameter(parameter, 0.4), basestring):
                 assert False    # pragma: no cover
@@ -157,9 +160,9 @@ class BaseMethodTest(unittest.TestCase):
 
         param1 = b.get_parameter("param1")
         assert param1 == 42.23
-        
+
         try:
-            param2 = b.get_parameter("param2")
+            b.get_parameter("param2")
         except KeyError:
             pass
         else:
@@ -170,7 +173,7 @@ class BaseMethodTest(unittest.TestCase):
         b = BaseMethod(["param1", "param2"])
 
         if b.can_be_executed(): raise AssertionError
-        
+
         b.set_parameter("param1", 1)
         if b.can_be_executed(): raise AssertionError
 
@@ -222,7 +225,7 @@ class BaseForecastingMethodTest(unittest.TestCase):
 
     def get_optimizable_parameters_test(self):
         """Test get optimizable parameters."""
-        ## Initialize parameter lists
+        # Initialize parameter lists
         parameters = ["param1", "param2", "param3", "param4", "param5"]
         intervals = {
             "param3": [0.0, 1.0, True, True],
@@ -231,11 +234,11 @@ class BaseForecastingMethodTest(unittest.TestCase):
             "param6": [0.0, 1.0, True, True]
         }
 
-        ## initialize BaseForecastingMethod and set some parameter intervals
+        # initialize BaseForecastingMethod and set some parameter intervals
         bfm = BaseForecastingMethod(parameters, valuesToForecast=4, hasToBeNormalized=False, hasToBeSorted=True)
         bfm._parameterIntervals = intervals
 
-        ## check, if the BaseForecastingMethod returns the correct parameters
+        # check, if the BaseForecastingMethod returns the correct parameters
         correctResult = ["param3", "param4", "param5"]
         result = sorted(bfm.get_optimizable_parameters())
         assert correctResult == result
@@ -244,7 +247,7 @@ class BaseForecastingMethodTest(unittest.TestCase):
         """Test BaseForecastingMethod initialization for ValueError."""
         for valuesToForecast in xrange(-10,0):
             try:
-                bfm = BaseForecastingMethod(valuesToForecast=valuesToForecast)
+                BaseForecastingMethod(valuesToForecast=valuesToForecast)
             except ValueError:
                 pass
             else:
@@ -253,9 +256,9 @@ class BaseForecastingMethodTest(unittest.TestCase):
     def forecast_until_test(self):
         """Testing the forecast_until function."""
         for validts in (xrange(1,100)):
-            BaseForecastingMethod(["valuesToForecast"]).forecast_until(validts, format=None)
+            BaseForecastingMethod(["valuesToForecast"]).forecast_until(validts, tsformat=None)
 
-        BaseForecastingMethod(["valuesToForecast"]).forecast_until("2012", format="%Y")
+        BaseForecastingMethod(["valuesToForecast"]).forecast_until("2012", tsformat="%Y")
 
     def calculate_values_to_forecast_exception_test(self):
         """Test for correct handling of illegal TimeSeries instances.
@@ -266,7 +269,7 @@ class BaseForecastingMethodTest(unittest.TestCase):
         ts.add_entry(3, 1343)
         bfm  = BaseForecastingMethod()
 
-        ## nothing has to be done, because forecast_until was never called
+        # nothing has to be done, because forecast_until was never called
         bfm._calculate_values_to_forecast(ts)
 
         bfm.forecast_until(134)
@@ -308,7 +311,7 @@ class SimpleMovingAverageTest(unittest.TestCase):
     def initialization_test(self):
         """Test the initialization of the SimpleMovingAverage method."""
         sm = SimpleMovingAverage(3)
-        
+
         if not sm._parameters["windowsize"] == 3:   raise AssertionError
 
     def initialization_exception_Test(self):
@@ -342,7 +345,7 @@ class SimpleMovingAverageTest(unittest.TestCase):
         res = tsTwo.apply(sma)
 
         try:
-            res = tsOne.apply(sma)
+            tsOne.apply(sma)
         except ValueError:
             pass
         else:
@@ -350,17 +353,17 @@ class SimpleMovingAverageTest(unittest.TestCase):
 
     def execute_test(self):
         """Test the execution of SimpleMovingAverage."""
-        ## Initialize the source
+        # Initialize the source
         data  = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
         tsSrc = TimeSeries.from_twodim_list(data)
         tsSrc.normalize("second")
 
-        ## Initialize a correct result.
-        ### The numbers look a little bit odd, based on the binary translation problem
+        # Initialize a correct result.
+        # The numbers look a little bit odd, based on the binary translation problem
         data  = [[1.5, 0.10000000000000002],[2.5, 0.20000000000000004],[3.5, 0.3]]
         tsDst = TimeSeries.from_twodim_list(data)
 
-        ## Initialize the method
+        # Initialize the method
         sma = SimpleMovingAverage(3)
         res = tsSrc.apply(sma)
 
@@ -369,11 +372,11 @@ class SimpleMovingAverageTest(unittest.TestCase):
 
 class ExponentialSmoothingTest(unittest.TestCase):
     """Test class for the ExponentialSmoothing method."""
-    
+
     def initialization_test(self):
         """Test the initialization of the ExponentialSmoothing method."""
-        sm = ExponentialSmoothing(0.2, 0)
-        
+        ExponentialSmoothing(0.2, 0)
+
         for alpha in [-42.23, -0.1, 0.0, 1.0, 1.1, 3.1, 4.2]:
             try:
                 ExponentialSmoothing(alpha)
@@ -388,12 +391,12 @@ class ExponentialSmoothingTest(unittest.TestCase):
         tsSrc = TimeSeries.from_twodim_list(data)
         tsSrc.normalize("second")
 
-        ## Initialize a correct result.
-        ### The numbers look a little bit odd, based on the binary translation problem
+        # Initialize a correct result.
+        # The numbers look a little bit odd, based on the binary translation problem
         data  = [[1.5, 10.0],[2.5, 12.4],[3.5, 17.380000000000003],[4.5, 16.666],[5.5, 20.6662],[6.5, 23.46634],[7.5, 20.026438]]
         tsDst = TimeSeries.from_twodim_list(data)
 
-        ## Initialize the method
+        # Initialize the method
         es = ExponentialSmoothing(0.3, 0)
         res = tsSrc.apply(es)
 
@@ -402,7 +405,7 @@ class ExponentialSmoothingTest(unittest.TestCase):
         data.append([8.5, 18.8185066])
         tsDst = TimeSeries.from_twodim_list(data)
 
-        ## Initialize the method
+        # Initialize the method
         es = ExponentialSmoothing(0.3)
         res = tsSrc.apply(es)
 
@@ -413,12 +416,12 @@ class ExponentialSmoothingTest(unittest.TestCase):
         data  = [[0.0, 1000], [1, 1050], [2, 1120], [3, 980], [4, 110]]
         tsSrc = TimeSeries.from_twodim_list(data)
 
-        ## Initialize a correct result.
-        ### The numbers look a little bit odd, based on the binary translation problem
+        # Initialize a correct result.
+        # The numbers look a little bit odd, based on the binary translation problem
         data  = [[1.5, 1000],[2.5, 1030],[3.5, 1084],[4.5, 1021.6]]
         tsDst = TimeSeries.from_twodim_list(data)
 
-        ## Initialize the method
+        # Initialize the method
         tsSrc.normalize("second")
         #print tsSrc
         es = ExponentialSmoothing(0.6, 0)
@@ -432,20 +435,20 @@ class ExponentialSmoothingTest(unittest.TestCase):
         data  = [[0, 10.0], [1, 18.0], [2, 29.0], [3, 15.0], [4, 30.0], [5, 30.0], [6, 12.0], [7, 16.0]]
         tsSrc = TimeSeries.from_twodim_list(data)
         tsSrc.normalize("second")
-        
+
         es = ExponentialSmoothing(0.1, 7)
         res = tsSrc.apply(es)
 
-        ## test if the correct number of values have been forecasted
+        # test if the correct number of values have been forecasted
         assert len(tsSrc)  + 6 == len(res)
 
 class HoltMethodTest(unittest.TestCase):
     """Test class for the HoltMethod method."""
-    
+
     def initialization_test(self):
         """Test the initialization of the HoltMethod method."""
         HoltMethod(0.2, 0.3)
-        
+
         for alpha in [-0.1, 0.45,  1.1]:
             for beta in [-1.4, 3.2]:
                 try:
@@ -461,12 +464,12 @@ class HoltMethodTest(unittest.TestCase):
         tsSrc = TimeSeries.from_twodim_list(data)
         tsSrc.normalize("second")
 
-        ## Initialize a correct result.
-        ### The numbers look a little bit odd, based on the binary translation problem
+        # Initialize a correct result.
+        # The numbers look a little bit odd, based on the binary translation problem
         data  = [[1.5, 0.0],[2.5, 0.12000000000000002],[3.5, 0.24080000000000004],[4.5, 0.36099200000000004]]
         tsDst = TimeSeries.from_twodim_list(data)
 
-        ## Initialize the method
+        # Initialize the method
         hm = HoltMethod(0.2, 0.3, valuesToForecast=0)
         res = tsSrc.apply(hm)
 
@@ -482,12 +485,12 @@ class HoltMethodTest(unittest.TestCase):
         tsSrc = TimeSeries.from_twodim_list(data)
         tsSrc.normalize("second")
 
-        ## Initialize a correct result.
-        ### The numbers look a little bit odd, based on the binary translation problem
+        # Initialize a correct result.
+        # The numbers look a little bit odd, based on the binary translation problem
         data  = [[1.5, 152.0],[2.5, 172.8],[3.5, 195.07200000000003],[4.5, 218.30528000000004]]
         tsDst = TimeSeries.from_twodim_list(data)
 
-        ## Initialize the method
+        # Initialize the method
         hm = HoltMethod(0.2, 0.3, valuesToForecast=0)
         res = tsSrc.apply(hm)
 
@@ -498,11 +501,11 @@ class HoltMethodTest(unittest.TestCase):
         data  = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
         tsSrc = TimeSeries.from_twodim_list(data)
         tsSrc.normalize("second")
-        
+
         hm = HoltMethod(0.2, 0.3, 5)
         res = tsSrc.apply(hm)
 
-        ## test if the correct number of values have been forecasted
+        # test if the correct number of values have been forecasted
         assert len(tsSrc) + 4 == len(res)
 
     def second_forecasting_test(self):
@@ -510,11 +513,11 @@ class HoltMethodTest(unittest.TestCase):
        data  = [[0.0, 152], [1, 176], [2, 160], [3, 192], [4, 220]]
        tsSrc = TimeSeries.from_twodim_list(data)
        tsSrc.normalize("second")
-       
+
        hm  = HoltMethod(0.2, 0.3, 5)
        res = tsSrc.apply(hm)
 
-       ## test if the correct number of values have been forecasted
+       # test if the correct number of values have been forecasted
        assert len(tsSrc) + 4 == len(res)
 
        # Validate the first forecasted value
@@ -522,11 +525,11 @@ class HoltMethodTest(unittest.TestCase):
 
 class HoltWintersMethodTest(unittest.TestCase):
     """Test class for the HoltWintersMethod method."""
-    
+
     def initialization_test(self):
         """Test the initialization of the HoltWintersMethod method."""
         HoltWintersMethod(0.2, 0.3, 0.4, 5)
-        
+
         for alpha in [-0.1, 0.81, 1.1]:
             for beta in [-1.4, 0.12, 3.2]:
                 for gamma in [-0.05, 1.3]:
@@ -544,7 +547,7 @@ class HoltWintersMethodTest(unittest.TestCase):
         tsSrc = TimeSeries.from_twodim_list(data)
         try:
             tsSrc.apply(hwm)
-        except ValueError, e:
+        except ValueError:
             pass
         else:
             assert False, "HoltWinters should throw an Exception if applied to a Time Series shorter than the season length"    # pragma: no cover
@@ -556,7 +559,7 @@ class HoltWintersMethodTest(unittest.TestCase):
         tsSrc = TimeSeries.from_twodim_list(zip(range(len(data)),data))
         expected = [[0.0, 362.0],[1.0, 379.93673257607463],[2.0, 376.86173719924875],[3.0, 376.0203652542205],[4.0, 408.21988583215574],[5.0, 407.16235446485433],[6.0, 430.0950666716297],[7.0, 429.89797609228435],[8.0, 489.4888959723074],[9.0, 507.8407281475308],[10.0, 506.3556647249702],[11.0, 523.9422448655133],[12.0, 556.0311543025242],[13.0, 573.6520991970604],[14.0, 590.2149136780341],[15.0, 611.8813425659495],[16.0, 637.0393967524727],[17.0, 684.6600411792656],[18.0, 675.9589298142507],[19.0, 659.0266828674846],[20.0, 644.0903317144154],[21.0, 690.4507762388047],[22.0, 735.3219292023371],[23.0, 737.9752345691215]]
         hwm = HoltWintersMethod(.7556, 0.0000001, .9837, 4, valuesToForecast=0)
-        
+
         initialA_2 = hwm.computeA(2, tsSrc)
         assert  initialA_2 == 510.5, "Third initial A_2 should be 510.5, but it %d" % initialA_2
 
@@ -566,7 +569,7 @@ class HoltWintersMethodTest(unittest.TestCase):
         #correctness is not proven, but will be enough for regression testing
         resTS       = tsSrc.apply(hwm)
         expectedTS  = TimeSeries.from_twodim_list(expected)
-        
+
         assert len(resTS) == len(expectedTS)
         assert resTS == expectedTS, "Smoothing result not correct."
 
@@ -631,6 +634,6 @@ class HoltWintersMethodTest(unittest.TestCase):
                 pass
             else:
                 assert False    # pragma: no cover
-        
+
         for seasonLength in xrange(1,12414, 412):
             HoltWintersMethod(seasonLength=seasonLength)
