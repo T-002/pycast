@@ -87,5 +87,3 @@ class BaseOptimizationMethod(PyCastObject):
         message += "    TimeSeries data:    %s\n"
         message += "    Starting Percentage %s\n"
         message += "    End Percentage:     %s"
-
-        raise NotImplementedError(message % (timeSeries, startingPercentage, endPercentage))

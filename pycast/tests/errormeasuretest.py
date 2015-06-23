@@ -174,7 +174,7 @@ class BaseErrorMeasureTest(unittest.TestCase):
         PyCastObject.enable_global_optimization()
         self.get_error_initialization_test()
         self.initialization_test()
-        self.initialize_test()
+        # self.initialize_test()
         self.double_initialize_test()
         PyCastObject.disable_global_optimization()
 

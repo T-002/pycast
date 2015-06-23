@@ -256,9 +256,9 @@ class BaseForecastingMethodTest(unittest.TestCase):
     def forecast_until_test(self):
         """Testing the forecast_until function."""
         for validts in (xrange(1,100)):
-            BaseForecastingMethod(["valuesToForecast"]).forecast_until(validts, format=None)
+            BaseForecastingMethod(["valuesToForecast"]).forecast_until(validts, tsformat=None)
 
-        BaseForecastingMethod(["valuesToForecast"]).forecast_until("2012", format="%Y")
+        BaseForecastingMethod(["valuesToForecast"]).forecast_until("2012", tsformat="%Y")
 
     def calculate_values_to_forecast_exception_test(self):
         """Test for correct handling of illegal TimeSeries instances.
