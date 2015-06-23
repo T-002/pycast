@@ -87,3 +87,5 @@ class BaseOptimizationMethod(PyCastObject):
         message += "    TimeSeries data:    %s\n"
         message += "    Starting Percentage %s\n"
         message += "    End Percentage:     %s"
+        message =  message % (timeSeries, startingPercentage, endPercentage)
+        return message
