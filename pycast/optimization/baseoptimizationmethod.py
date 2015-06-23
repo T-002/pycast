@@ -82,10 +82,3 @@ class BaseOptimizationMethod(PyCastObject):
         # no forecasting methods provided
         if forecastingMethods is None or len(forecastingMethods) == 0:
             raise ValueError("forecastingMethods cannot be empty.")
-
-        message = "Add an implementation here.\n"
-        message += "    TimeSeries data:    %s\n"
-        message += "    Starting Percentage %s\n"
-        message += "    End Percentage:     %s"
-        message =  message % (timeSeries, startingPercentage, endPercentage)
-        return message
