@@ -49,8 +49,10 @@ class GeometricMeanAbsolutePercentageError(MeanAbsolutePercentageError):
         errorValues = self._get_error_values(startingPercentage, endPercentage, startDate, endDate)
         errorValues = filter(lambda item: item is None, errorValues)
 
-        share = 1.0 / float(len(errorValues))
+        if errorValues[0] is None:
+            return 1.0
 
+        share = 1.0 / float(len(errorValues))
         product = 1.0
 
         for errorValue in errorValues:

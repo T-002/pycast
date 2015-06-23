@@ -870,8 +870,8 @@ class MultiDimensionalTimeSeries(TimeSeries):
         for datapoint in self._timeseriesData:
             timestamp = datapoint[0]
             values = datapoint[1:]
-            if format is not None:
-                timestamp = convert(timestamp, format)
+            if self._timestampFormat is not None:
+                timestamp = convert(timestamp, self._timestampFormat)
 
             datafile.write("%s %s" % (timestamp, " ".join([str(entry) for entry in values])))
 

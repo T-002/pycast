@@ -173,7 +173,7 @@ class MultiDimensionalTimeSeriesTest(unittest.TestCase):
 
         tsOne.set_timeformat("%Y-%m-%d_%H:%M:%S")
         data = tsOne.to_twodim_list()
-        tsTwo = MultiDimensionalTimeSeries.from_twodim_list(data, format="%Y-%m-%d_%H:%M:%S")
+        tsTwo = MultiDimensionalTimeSeries.from_twodim_list(data, tsformat="%Y-%m-%d_%H:%M:%S")
 
         assert tsOne == tsTwo
 
