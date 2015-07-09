@@ -32,6 +32,12 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+Documentation
+-------------
+To get started with pycast, we recommend two things:
+   - build the documentation, or visit http://pythonhosted.org/pycast/
+   - take a look int o the examples (bin/examples)
+
 Contributors
 ------------
 Christian Schwarz,
