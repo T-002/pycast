@@ -1,7 +1,34 @@
-from itty import get, post, Response, serve_static_file, run_itty
+# !/usr/bin/env python
+#  -*- coding: UTF-8 -*-
 
-import json, sqlite3, sys, os
+# Copyright (c) 2012-2015 Christian Schwarz
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+import sys
 sys.path.append('../../../')
+
+import os
+import sqlite3
+import json
+import itty
 
 from pycast.methods.exponentialsmoothing import HoltWintersMethod
 from pycast.optimization import GridSearch
@@ -12,7 +39,7 @@ from pycast.common.json_encoder import PycastEncoder
 db = sqlite3.connect('energy.db')
 MY_ROOT = os.path.join(os.path.dirname(__file__), 'static')
 
-@get('/energyData')
+@itty.get('/energyData')
 def energy_data():
     """
         Connects to the database and loads Readings for device 8.
@@ -21,9 +48,9 @@ def energy_data():
     original = TimeSeries()
     original.initialize_from_sql_cursor(cur)
     original.normalize("day", fusionMethod = "sum")
-    return Response(json.dumps(original, cls=PycastEncoder), content_type='application/json') 
+    return itty.Response(json.dumps(original, cls=PycastEncoder), content_type='application/json')
 
-@post('/optimize')
+@itty.post('/optimize')
 def optimize(request):
     """
     Performs Holt Winters Parameter Optimization on the given post data.
@@ -40,12 +67,12 @@ def optimize(request):
     original = TimeSeries.from_twodim_list(data)
     original.normalize("day") #due to bug in TimeSeries.apply
     original.set_timeformat("%d.%m")
-    
+
     #optimize smoothing
     hwm = HoltWintersMethod(seasonLength = seasonLength, valuesToForecast = valuesToForecast)
     gridSearch = GridSearch(SMAPE)
     optimal_forecasting, error, optimal_params = gridSearch.optimize(original, [hwm])
-    
+
     #perform smoothing
     smoothed = optimal_forecasting.execute(original)
     smoothed.set_timeformat("%d.%m")
@@ -54,10 +81,9 @@ def optimize(request):
                 'smoothed': smoothed,
                 'error': round(error.get_error(), 3)
                 }
-    return Response(json.dumps(result, cls=PycastEncoder), content_type='application/json') 
-    
+    return itty.Response(json.dumps(result, cls=PycastEncoder), content_type='application/json')
 
-@post('/holtWinters')
+@itty.post('/holtWinters')
 def holtWinters(request):
     """
     Performs Holt Winters Smoothing on the given post data.
@@ -90,20 +116,20 @@ def holtWinters(request):
 
     error = SMAPE()
     error.initialize(original, smoothed)
-    
-    #process the result 
+
+    #process the result
     result = {  'original': original,
                 'smoothed': smoothed,
                 'error': round(error.get_error(), 3)
             }
-    return Response(json.dumps(result, cls=PycastEncoder), content_type='application/json')
+    return itty.Response(json.dumps(result, cls=PycastEncoder), content_type='application/json')
 
-@get('/')
+@itty.get('/')
 def index(request):
-    return serve_static_file(request, 'index.html', root=os.path.join(os.path.dirname(__file__), './'))
+    return itty.serve_static_file(request, 'index.html', root=os.path.join(os.path.dirname(__file__), './'))
 
-@get('/static/(?P<filename>.+)')
+@itty.get('/static/(?P<filename>.+)')
 def serve_static(request, filename):
-    return serve_static_file(request, filename, root=MY_ROOT)
+    return itty.serve_static_file(request, filename, root=MY_ROOT)
 
-run_itty()
+itty.run_itty()
