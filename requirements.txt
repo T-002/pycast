@@ -1,0 +1,8 @@
+pytest
+setuptools
+wheel
+sphinx
+sphinx_bootstrap_theme
+sphinxcontrib-napoleon
+sphinxcontrib-confluencebuilder
+thefuck
