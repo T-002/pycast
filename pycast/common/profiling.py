@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 #  -*- coding: UTF-8 -*-
 
-# Copyright (c) 2012-2015 Christian Schwarz
+# Copyright (c) 2012-2019 Christian Schwarz
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -27,29 +27,31 @@ try:
 except ImportError:   # pragma: no cover
     import profile    # pragma: no cover
 
-class _ProfileDecorator(object):
 
+class _ProfileDecorator(object):
     """Decorator class that build a wrapper around any function.
 
-    :warning: The decorator does not take recursive calls into account!
+    Warning:
+        The decorator does not take recursive calls into account!
     """
 
-    def __init__(self, filelocation):
+    def __init__(self, file_location: str):
         """Initializes the ProfileMe decorator.
 
-        :param function func:    Function that will be profiles.
-        :param string filelocation:    Location for the profiling results.
+        Args:
+            file_location (str): Location for the profiling results.
         """
         super(_ProfileDecorator, self).__init__()
-        self._filelocation = filelocation
+        self._file_location = file_location
 
     def __call__(self, func):
         """Returns a wrapped version of the called function.
 
-        :param function func:    Function that should be wrapped.
+        Args:
+            func (function): Function that should be wrapped.
 
-        :return:    Returns a wrapped version of the called function.
-        :rtype:     function
+        Returns:
+            function: Returns a wrapped version of the called function.
         """
         def wrapped_func(*args, **kwargs):
             """This function gets executed, if the wrapped function gets called.
@@ -58,10 +60,10 @@ class _ProfileDecorator(object):
             """
             # create the profiler and execute the called function
             profiler = profile.Profile()
-            result   = profiler.runcall(func, *args, **kwargs)
+            result = profiler.runcall(func, *args, **kwargs)
 
             # store the performance profile
-            filename = "%s" % (self._filelocation)
+            filename = self._file_location
             profiler.dump_stats(filename)
 
             # return the result
@@ -76,5 +78,5 @@ class _ProfileDecorator(object):
         return wrapped_func
 
 # This is the "real decorator"
-# Usage: @profileMe
-profileMe = _ProfileDecorator
+# Usage: @profile_me
+profile_me = _ProfileDecorator

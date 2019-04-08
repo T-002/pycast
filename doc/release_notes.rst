@@ -12,9 +12,15 @@ Things included in this version:
   * *CircleCI* - Switched to using CircleCI for automated CI testing
   * *py.test* - The test runner was updated to use py.test, even if not all old tests have been refactored
     to make use of the additional functionality.
+  * General PEP-8 compliance (except for line length of 80 characters)
 
 The following features have been removed from pycast:
-  * removed nosetests support
+  * removed *nosetests* support
+
+The following components got a larger refactoring/renaming:
+  * ``pycast.common.profileme`` got refactored. The functionality can now be found in
+    ``pycast.common.profiling``. The decorator got renamed to ``profile_me``.
+
 
 v0.1.5-alpha, 2015-06-22
 ------------------------
