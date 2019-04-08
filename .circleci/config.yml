@@ -16,6 +16,10 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install -r requirements.txt
+      - run:
+          name: Creating output directories
+          command: |
+            mkdir -p _build/tests
       - save_cache:
           key: pycast_{{ .Branch }}-{{ checksum "requirements.txt" }}
           paths:
