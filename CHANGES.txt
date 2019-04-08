@@ -1,3 +1,5 @@
 To get a detailed version history, please view:
 
     *doc/release_notes.rst*
+
+This document will be deprecated and removed in later versions.

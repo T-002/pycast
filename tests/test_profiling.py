@@ -72,7 +72,7 @@ class TestProfileMeDecorator(unittest.TestCase):
         self.assertEqual(42, return_42(), msg="Dummy function did not return the correct answer.")
         self.assertEqual("return_42", return_42.__name__)
 
-    def profile_doc_string_test(self):
+    def test_profile_doc_string(self):
         """Test the validity of __doc__ for any decorated function."""
         @profile_me(self.stat_file)
         def dummy_func():
