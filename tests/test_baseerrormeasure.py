@@ -166,77 +166,87 @@ class TestBaseErrorMeasure:
         self.test_double_initialization()
         PyCastObject.disable_global_optimization()
 
-
-
-
-
-
-    def confidence_interval_test(self):
+    def test_confidence_intervals(self,):
+        """Tests the retrieval of confidence interval values."""
         bem = BaseErrorMeasure()
-
         bem._errorValues = [10, -5, 3, -4, None, 0, 2, -3]
 
-        self.assertRaises(ValueError, bem.confidence_interval, -0.5)
-        self.assertRaises(ValueError, bem.confidence_interval, 2)
+        assert bem.confidence_interval(0.5) == (-3.0, 2.0)
+        assert bem.confidence_interval(0.1) == (0.0, 0.0)
 
-        self.assertEquals(bem.confidence_interval(0.5), (-3.0, 2.0))
-        self.assertEquals(bem.confidence_interval(0.1), (0.0, 0.0))
+    @pytest.mark.parametrize("interval", [-0.5, 2.42])
+    def test_confidence_intervals_with_invalid_borders(self, interval):
+        """Tests the retrieval of confidence interval values with invalid borders.
 
-    def get_error_values_test(self):
+        Args:
+            interval (float): Interval value to be tested.
+        """
+        bem = BaseErrorMeasure()
+        bem._errorValues = [10, -5, 3, -4, None, 0, 2, -3]
+
+        with pytest.raises(ValueError):
+            bem.confidence_interval(interval)
+
+    def test_get_error_values(self):
+        """Test the retrieval of error values."""
         bem = BaseErrorMeasure()
         bem._errorValues = [1, -1, 3, -5, 8]
-        bem._errorDates = [1,2,3,4,5]
+        bem._errorDates = [1, 2, 3, 4, 5]
 
-        self.assertEquals(bem._get_error_values(0,100, None, None), [1,-1,3,-5,8])
-        self.assertEquals(bem._get_error_values(0,100, 2, None), [-1,3,-5,8])
-        self.assertEquals(bem._get_error_values(0,100, None, 4), [1,-1,3,-5])
-        self.assertEquals(bem._get_error_values(0,100, 2, 4), [-1,3,-5])
-        self.assertRaises(ValueError, bem._get_error_values, 0, 100, None, 0)
+        assert bem._get_error_values(0,100, None, None) == [1,-1,3,-5,8]
+        assert bem._get_error_values(0,100, 2, None) == [-1,3,-5,8]
+        assert bem._get_error_values(0,100, None, 4) == [1,-1,3,-5]
+        assert bem._get_error_values(0,100, 2, 4) == [-1,3,-5]
 
-    def number_of_comparisons_test(self):
-        """ Test BaseErrorMeasure.initialize for behaviour if not enough dates match."""
-        dataOrg  = [[0,0],[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9]]
-        dataCalc = [[0,0],[1,1],[2,2],[3,3],[4,4],[5.1,5],[6.1,6],[7.1,7],[8.1,8],[9.1,9]]
+    def test_get_error_values_with_invalid_borders(self):
+        """Tests the retrieval of error values with invalid borders."""
+        bem = BaseErrorMeasure()
+        bem._errorValues = [1, -1, 3, -5, 8]
+        bem._errorDates = [1, 2, 3, 4, 5]
 
-        tsOrg  = TimeSeries.from_twodim_list(dataOrg)
-        tsCalc = TimeSeries.from_twodim_list(dataCalc)
+        with pytest.raises(ValueError):
+            bem._get_error_values(0, 100, None, 0)
+
+    def test_number_of_comparisons(self):
+        """Test BaseErrorMeasure.initialize for behaviour if enough dates match."""
+        data = [[0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [7, 7], [8, 8], [9, 9]]
+
+        timeseries = TimeSeries.from_twodim_list(data)
 
         bem = BaseErrorMeasure(60.0)
-
-        #prevent NotImplementedError
-        bem.local_error = lambda a,b: 1
-
         mse = MeanSquaredError(80.0)
+
+        # prevent NotImplementedError
+        bem.local_error = lambda a, b: 1
+
+        assert mse.initialize(timeseries, timeseries)
+
+    def test_number_of_comparisons_with_missing_data(self):
+        """Test BaseErrorMeasure.initialize for behaviour if not enough dates match."""
+        actual_data = [[0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [7, 7], [8, 8], [9, 9]]
+        calculated_data = [[0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5.1, 5], [6.1, 6], [7.1, 7], [8.1, 8], [9.1, 9]]
+
+        actual_timeseries  = TimeSeries.from_twodim_list(actual_data)
+        calculated_timeseries = TimeSeries.from_twodim_list(calculated_data)
+
+        bem = BaseErrorMeasure(60.0)
+        mse = MeanSquaredError(80.0)
+
+        # prevent NotImplementedError
+        bem.local_error = lambda a, b: 1
+
         # only 50% of the original TimeSeries have a corresponding partner
-        if mse.initialize(tsOrg, tsCalc):
-            assert False    # pragma: no cover
+        assert not mse.initialize(actual_timeseries, calculated_timeseries)
 
-        if not mse.initialize(tsOrg, tsOrg):
-            assert False    # pragma: no cover
-
-    def error_calculation_test(self):
+    def test_valid_error_calculation(self):
         """Test for a valid error calculation."""
-        dataOrg         = [[0,0], [1,1], [2,2], [3,3], [4,4], [5,5], [6,  6], [7,7], [8,8],   [9,9]]
-        dataCalc        = [[0,1], [1,3], [2,5], [3,0], [4,3], [5,5], [6.1,6], [7,3], [8.1,8], [9,8]]
-        # difference:         1      2      3      3      1      0       NA      4       NA      1
-        # local errors:       1      4      9      9      1      0       NA     16       NA      1
+        original_data = [[0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [7, 7], [8, 8],   [9, 9]]
+        calculated_data = [[0, 1], [1, 3], [2, 5], [3, 0], [4, 3], [5, 5], [6.1, 6], [7, 3], [8.1, 8], [9, 8]]
 
-        tsOrg  = TimeSeries.from_twodim_list(dataOrg)
-        tsCalc = TimeSeries.from_twodim_list(dataCalc)
-
-        tsOrg  = TimeSeries.from_twodim_list(dataOrg)
-        tsCalc = TimeSeries.from_twodim_list(dataCalc)
+        original_timeseries = TimeSeries.from_twodim_list(original_data)
+        calculated_timeseries = TimeSeries.from_twodim_list(calculated_data)
 
         mse = MeanSquaredError(80.0)
-        mse.initialize(tsOrg, tsCalc)
+        mse.initialize(original_timeseries, calculated_timeseries)
 
-        assert str(mse.get_error()) == "5.125"
-
-#    def start_and_enddate_test(self):
-#        """Testing for startDate, endDate exceptions."""
-#        data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
-#        tsOrg  = TimeSeries.from_twodim_list(data)
-#        tsCalc = TimeSeries.from_twodim_list(data)
-
-#        bem = MeanSquaredError()
-#        self.assertEquals(bem.initialize(tsOrg, tsCalc), False)
+        assert mse.get_error() == 5.125

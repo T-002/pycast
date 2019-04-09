@@ -124,20 +124,20 @@ class BaseErrorMeasure(PyCastObject):
         :raise:    Raises a ValueError if startDate or endDate do not represent correct boundaries for error calculation.
         """
         if startDate is not None:
-            possibleDates = filter(lambda date: date >= startDate, self._errorDates)
-            if 0 == len(possibleDates):
+            possible_dates = list(filter(lambda date: date >= startDate, self._errorDates))
+            if 0 == len(possible_dates):
                 raise ValueError("%s does not represent a valid startDate." % startDate)
 
-            startIdx = self._errorDates.index(min(possibleDates))
+            startIdx = self._errorDates.index(min(possible_dates))
         else:
             startIdx = int((startingPercentage * len(self._errorValues)) / 100.0)
 
         if endDate is not None:
-            possibleDates = filter(lambda date: date <= endDate, self._errorDates)
-            if 0 == len(possibleDates):
+            possible_dates = list(filter(lambda date: date <= endDate, self._errorDates))
+            if 0 == len(possible_dates):
                 raise ValueError("%s does not represent a valid endDate." % endDate)
 
-            endIdx = self._errorDates.index(max(possibleDates)) + 1
+            endIdx = self._errorDates.index(max(possible_dates)) + 1
         else:
             endIdx = int((endPercentage * len(self._errorValues)) / 100.0)
 
