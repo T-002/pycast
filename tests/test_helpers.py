@@ -22,20 +22,17 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# required external modules
-import unittest
-
-from pycast.common.helper import *
+from pycast.common.helper import linear_interpolation
 
 
-class TestHelper(unittest.TestCase):
+class TestHelper:
     """Test class containing all tests for pycasts.common.helper module."""
 
     def test_linear_interpolation(self):
         """Testing linear interpolation."""
         values = [1.0, 3.0, 4.0]
         result = linear_interpolation(values[0], values[1], 1)
-        self.assertEqual([2.0], result)
+        assert [2.0] == result
 
         result = linear_interpolation(values[0], values[2], 2)
-        self.assertEqual([2.0, 3.0], result)
+        assert [2.0, 3.0] == result

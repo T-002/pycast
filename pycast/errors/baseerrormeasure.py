@@ -64,11 +64,11 @@ class BaseErrorMeasure(PyCastObject):
             otherwise based on the minimalErrorCalculationPercentage.
         :rtype: boolean
 
-        :raise:    Raises a :py:exc:`StandardError` if the error measure is initialized multiple times.
+        :raise:    Raises an Exception if the error measure is initialized multiple times.
         """
         # ErrorMeasure was already initialized.
         if 0 < len(self._errorValues):
-            raise StandardError("An ErrorMeasure can only be initialized once.")
+            raise Exception("An ErrorMeasure can only be initialized once.")
 
         # sort the TimeSeries to reduce the required comparison operations
         originalTimeSeries.sort_timeseries()
@@ -83,7 +83,7 @@ class BaseErrorMeasure(PyCastObject):
 
         # calculate all valid local errors
         for orgPair in originalTimeSeries:
-            for calcIdx in xrange(minCalcIdx, len(calculatedTimeSeries)):
+            for calcIdx in range(minCalcIdx, len(calculatedTimeSeries)):
                 calcPair = calculatedTimeSeries[calcIdx]
 
                 # Skip values that can not be compared
@@ -94,7 +94,7 @@ class BaseErrorMeasure(PyCastObject):
                 appendDate(orgPair[0])
 
         # return False, if the error cannot be calculated
-        calculatedErrors    = len(filter(lambda item: item is not None, self._errorValues))
+        calculatedErrors    = len(list(filter(lambda item: item is not None, self._errorValues)))
         minCalculatedErrors = self._minimalErrorCalculationPercentage * len(originalTimeSeries)
 
         if  calculatedErrors < minCalculatedErrors:
@@ -169,7 +169,7 @@ class BaseErrorMeasure(PyCastObject):
         """
         # not initialized:
         if len(self._errorValues) == 0:
-            raise StandardError("The last call of initialize(...) was not successfull.")
+            raise Exception("The last call of initialize(...) was not successfull.")
 
         # check for wrong parameters
         if not (0.0 <= startingPercentage <= 100.0):

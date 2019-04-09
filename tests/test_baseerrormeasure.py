@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 #  -*- coding: UTF-8 -*-
 
-# Copyright (c) 2012-2015 Christian Schwarz
+# Copyright (c) 2012-2019 Christian Schwarz
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -23,160 +23,153 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # required external modules
-import unittest
+import pytest
 
 # required modules from pycast
-from pycast.errors.baseerrormeasure import BaseErrorMeasure
 from pycast.common.timeseries import TimeSeries
 from pycast.common.pycastobject import PyCastObject
+from pycast.errors.baseerrormeasure import BaseErrorMeasure
 from pycast.errors.meansquarederror import MeanSquaredError
 
-class BaseErrorMeasureTest(unittest.TestCase):
 
-    """Test class for the BaseErrorMeasure interface."""
+class TestBaseErrorMeasure:
+    """Test cases for the BaseErrorMeasure class."""
 
-    def initialization_test(self):
-        """Test the BaseErrorMeasure initialization."""
+    def test_initialization_without_parameters(self):
+        """Tests the initialization without configured parameters."""
         BaseErrorMeasure()
 
-        for percentage in [-1.2, -0.1, 100.1, 123.9]:
-            try:
-                BaseErrorMeasure(percentage)
-            except ValueError:
-                pass
-            else:
-                assert False    # pragma: no cover
+    @pytest.mark.parametrize("percentage", [0.0, 12.23, 42.12, 100.0])
+    def test_correct_initialization(self, percentage):
+        """Tests the initialization with correct values.
 
-        for percentage in [0.0, 12.3, 53.4, 100.0]:
-            try:
-                BaseErrorMeasure(percentage)
-            except ValueError:    # pragma: no cover
-                assert False      # pragma: no cover
+        Args:
+            percentage (numeric): Value to be tested during the initialization process.
+        """
+        BaseErrorMeasure(percentage)
 
-    def get_error_initialization_test(self):
-        """Test the get_error of BaseErrorMeasure for the initialization exception."""
+    @pytest.mark.parametrize("percentage", [-1.2, -0.1, 100.1, 123.42])
+    def test_initialization_with_invalid_parameters(self, percentage):
+        """Tests the initialization with invalid parameters.
+
+        Args:
+            percentage (numeric): Value to be tested during the initialization process.
+        """
+        with pytest.raises(Exception):
+            BaseErrorMeasure(percentage)
+
+    def test_get_error_initialization(self):
+        """Test the get_error of BaseErrorMeasure for the expected exception."""
         bem = BaseErrorMeasure()
 
-        try:
+        with pytest.raises(Exception):
             bem.get_error()
-        except StandardError:
-            pass
-        else:
-            assert False    # pragma: no cover
 
-    def double_initialize_test(self):
-        """Test for the error ocuring when the same error measure is initialized twice."""
-        data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
-        tsOrg  = TimeSeries.from_twodim_list(data)
-        tsCalc = TimeSeries.from_twodim_list(data)
-
+    # todo: Add a mock here for _calculate and local_error
+    def test_double_initialization(self):
+        """Test for the error occurring when the same error measure is initialized twice."""
+        data = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
+        original_timeseries = TimeSeries.from_twodim_list(data)
+        calculated_timeseries = TimeSeries.from_twodim_list(data)
 
         bem = BaseErrorMeasure()
 
-        bem_calculate  = bem._calculate
+        bem_calculate = bem._calculate
         bem_local_error = bem.local_error
 
-        def return_zero(ignoreMe, ignoreMeToo):
+        def return_zero(*args):
             return 0
 
         # remove the NotImplementedErrors for initialization
         bem.local_error = return_zero
-        bem._calculate   = return_zero
+        bem._calculate = return_zero
 
         # correct initialize call
-        bem.initialize(tsOrg, tsCalc)
+        bem.initialize(original_timeseries, calculated_timeseries)
 
-        # incorrect initialize call
-        for cnt in xrange(10):
-            try:
-                bem.initialize(tsOrg, tsCalc)
-            except StandardError:
-                pass
-            else:
-                assert False    # pragma: no cover
+        # duplicated call that should raise the exception
+        with pytest.raises(Exception):
+            bem.initialize(original_timeseries, calculated_timeseries)
 
         bem.local_error = bem_calculate
-        bem._calculate   = bem_local_error
+        bem._calculate = bem_local_error
 
-    def initialize_test(self):
+    def test_initialization(self):
         """Test if calculate throws an error as expected."""
-        data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
-        tsOrg  = TimeSeries.from_twodim_list(data)
-        tsCalc = TimeSeries.from_twodim_list(data)
+        data = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
+        original_timeseries = TimeSeries.from_twodim_list(data)
+        calculated_timeseries = TimeSeries.from_twodim_list(data)
 
         bem = BaseErrorMeasure()
 
         try:
-            bem.initialize(tsOrg, tsCalc)
+            bem.initialize(original_timeseries, calculated_timeseries)
         except NotImplementedError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False, "A NotImplementedError should have occurred."
 
-        assert not bem.initialize(tsOrg, TimeSeries())
+        assert not bem.initialize(original_timeseries, TimeSeries())
 
-    def get_error_parameter_test(self):
+    # todo: Add mock here
+    @pytest.mark.xfail(raises=ValueError)
+    def test_get_error_parameter(self):
         """Test for the parameter validity of get_error()."""
         data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
-        tsOrg  = TimeSeries.from_twodim_list(data)
-        tsCalc = TimeSeries.from_twodim_list(data)
+        original_timeseries = TimeSeries.from_twodim_list(data)
+        calculated_timeseries = TimeSeries.from_twodim_list(data)
 
         bem = BaseErrorMeasure()
 
-        bem_calculate  = bem._calculate
+        bem_calculate = bem._calculate
         bem_local_error = bem.local_error
 
-        def return_zero(ignoreMe, ignoreMeToo, andMe=None, andMeToo=None):
+        def return_zero(*args):
             return 0
 
         # remove the NotImplementedErrors for initialization
         bem.local_error = return_zero
-        bem._calculate   = return_zero
-        bem.initialize(tsOrg, tsCalc)
+        bem._calculate = return_zero
+        bem.initialize(original_timeseries, calculated_timeseries)
 
         bem.local_error = bem_local_error
-        bem._calculate  = bem_calculate
+        bem._calculate = bem_calculate
 
         try:
             bem.get_error(10.0, 90.0)
         except NotImplementedError:
             pass
         else:
-            assert False    # pragma: no cover
+            assert False, "A NotImplementedError should have occurred."
 
         for start in [-1.0, 80.0, 103.0]:
             for end in [-5.0, 10.0, 105.0]:
-                try:
-                    bem.get_error(start, end)
-                except ValueError:
-                    pass
-                else:
-                    assert False    # pragma: no cover
+                 bem.get_error(start, end)
 
-    def local_error_test(self):
+    def test_local_error(self):
         """Test local_error of BaseErrorMeasure."""
-        data   = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
-        tsOrg  = TimeSeries.from_twodim_list(data)
-        tsCalc = TimeSeries.from_twodim_list(data)
+        data = [[0.0, 0.0], [1, 0.1], [2, 0.2], [3, 0.3], [4, 0.4]]
+        original_timeseries  = TimeSeries.from_twodim_list(data)
+        calculated_timeseries = TimeSeries.from_twodim_list(data)
 
         bem = BaseErrorMeasure()
 
-        for idx in xrange(len(tsOrg)):
-            try:
-                bem.local_error([tsOrg[idx][1]], [tsCalc[idx][1]])
-            except NotImplementedError:
-                pass
-            else:
-                assert False    # pragma: no cover
+        for idx in range(len(original_timeseries)):
+            with pytest.raises(NotImplementedError):
+                bem.local_error([original_timeseries[idx][1]], [calculated_timeseries[idx][1]])
 
-    def optimized_test(self):
+    def test_optimized(self):
         """Check if all tests are passed, using optimized implementations."""
         PyCastObject.enable_global_optimization()
-        self.get_error_initialization_test()
-        self.initialization_test()
-        # self.initialize_test()
-        self.double_initialize_test()
+        self.test_get_error_initialization()
+        self.test_initialization()
+        self.test_double_initialization()
         PyCastObject.disable_global_optimization()
+
+
+
+
+
 
     def confidence_interval_test(self):
         bem = BaseErrorMeasure()

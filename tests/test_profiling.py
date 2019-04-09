@@ -22,20 +22,20 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import unittest
 import os
+import pytest
 
 from pycast.common.profiling import profile_me
 
 
-class TestProfileMeDecorator(unittest.TestCase):
+class TestProfileMeDecorator:
     """Test class containing all tests for the @profile_me decorator."""
 
-    def setUp(self):
+    def setup(self):
         """Initializes the environment for each test."""
         self.stat_file = f"{os.path.dirname(__file__)}/../_build/tests/statfile1.stats"
 
-    def tearDown(self):
+    def teardown(self):
         """This function gets called after each test function."""
         if os.path.isfile(self.stat_file):
             os.remove(self.stat_file)
@@ -55,8 +55,8 @@ class TestProfileMeDecorator(unittest.TestCase):
 
             return gauss_sum == brute_force_sum
 
-        self.assertTrue(calculate_gauss_sum(), msg="Dummy function did not return True. Please check the dummy.")
-        self.assertTrue(os.path.isfile(self.stat_file), msg=f"Data file was not created at *{self.stat_file}*.")
+        assert calculate_gauss_sum(), "Dummy function did not return True. Please check the dummy."
+        assert os.path.isfile(self.stat_file), f"Data file was not created at *{self.stat_file}*."
 
     def test_profile_function_name(self):
         """Test the validity of __name__ for any decorated function."""
@@ -69,8 +69,8 @@ class TestProfileMeDecorator(unittest.TestCase):
             """
             return 42
 
-        self.assertEqual(42, return_42(), msg="Dummy function did not return the correct answer.")
-        self.assertEqual("return_42", return_42.__name__)
+        assert 42 == return_42(), "Dummy function did not return the correct answer."
+        assert "return_42" == return_42.__name__
 
     def test_profile_doc_string(self):
         """Test the validity of __doc__ for any decorated function."""
@@ -78,4 +78,4 @@ class TestProfileMeDecorator(unittest.TestCase):
         def dummy_func():
             """StupidDocString"""
 
-        self.assertEqual("""StupidDocString""", dummy_func.__doc__)
+        assert """StupidDocString""" == dummy_func.__doc__

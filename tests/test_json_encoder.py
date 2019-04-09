@@ -22,14 +22,13 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import unittest
 import json
 
 from pycast.common.timeseries import TimeSeries
 from pycast.common.json_encoder import PycastEncoder
 
 
-class TestPycastEncoder(unittest.TestCase):
+class TestPycastEncoder:
 	""" Test class containing all the tests for pycast.common.json_encoder.PycastEncoder."""
 
 	def test_encode_timeseries(self):
@@ -39,9 +38,7 @@ class TestPycastEncoder(unittest.TestCase):
 
 		data_json = json.dumps(ts, cls=PycastEncoder)
 
-		self.assertEqual(
-			"[[1.5, 152.0], [2.5, 172.8], [3.5, 195.07200000000003], [4.5, 218.30528000000004]]",
-			data_json)
+		assert "[[1.5, 152.0], [2.5, 172.8], [3.5, 195.07200000000003], [4.5, 218.30528000000004]]" == data_json
 
 	def test_encode_normal_object(self):
 		"""Test if our encoder encodes regular python objects just like the default encoder."""
@@ -50,4 +47,4 @@ class TestPycastEncoder(unittest.TestCase):
 
 		our_encode = json.dumps(obj, cls=PycastEncoder)
 
-		self.assertEqual(normal_encode, our_encode)
+		assert normal_encode == our_encode
