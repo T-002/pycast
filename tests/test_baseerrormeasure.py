@@ -246,7 +246,7 @@ class TestBaseErrorMeasure:
         original_timeseries = TimeSeries.from_twodim_list(original_data)
         calculated_timeseries = TimeSeries.from_twodim_list(calculated_data)
 
-        mse = MeanSquaredError(80.0)
-        mse.initialize(original_timeseries, calculated_timeseries)
+        error_measure = MeanSquaredError(80.0)
+        error_measure.initialize(original_timeseries, calculated_timeseries)
 
-        assert mse.get_error() == 5.125
+        assert error_measure.get_error() == 5.125
