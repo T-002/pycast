@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 #  -*- coding: UTF-8 -*-
 
-# Copyright (c) 2012-2015 Christian Schwarz
+# Copyright (c) 2012-2019 Christian Schwarz
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -27,25 +27,26 @@ from pycast.common.decorators import optimized
 
 class BaseErrorMeasure(PyCastObject):
 
-    """Baseclass for all error measures."""
+    """Base class for all error measures."""
 
-    def __init__(self, minimalErrorCalculationPercentage=60):
+    def __init__(self, minimal_error_calculation_percentage: float = 60.0):
         """Initializes the error measure.
 
-        :param integer minimalErrorCalculationPercentage:    The number of entries in an
-            original TimeSeries that have to have corresponding partners in the calculated
-            TimeSeries. Corresponding partners have the same time stamp.
-            Valid values are in [0.0, 100.0].
+        Args:
+            minimal_error_calculation_percentage (float): The number of entries in an
+                original TimeSeries that have to have corresponding partners in the calculated
+                TimeSeries. Corresponding partners have the same time stamp.
+                Valid values are in [0.0, 100.0].
 
-        :raise: Raises a :py:exc:`ValueError` if minimalErrorCalculationPercentage is not
-            in [0.0, 100.0].
+        Raise:
+            ValueError: Raises a ValueError if minimalErrorCalculationPercentage is not in [0.0, 100.0].
         """
         super(BaseErrorMeasure, self).__init__()
 
-        if not 0.0 <= minimalErrorCalculationPercentage <= 100.0:
+        if not 0.0 <= minimal_error_calculation_percentage <= 100.0:
             raise ValueError("minimalErrorCalculationPercentage has to be in [0.0, 100.0].")
 
-        self._minimalErrorCalculationPercentage = minimalErrorCalculationPercentage / 100.0
+        self._minimalErrorCalculationPercentage = minimal_error_calculation_percentage / 100.0
 
         self._errorValues = []
         self._errorDates  = []

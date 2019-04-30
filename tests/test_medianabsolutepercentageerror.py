@@ -32,8 +32,8 @@ class TestMedianAbsolutePercentageError:
 
     def setup(self):
         """Sets up a test case."""
-        self.original_data = [1.0,    2.3,    0.1,    -2.0,   -1.0,   0.0,    -0.2,   -0.3,   0.15,   -0.2,   0]
-        self.calculated_data = [1.2,   2.0,    -0.3,   -1.5,   -1.5,   0.3,    0.0,    0.3,    -0.15,  0.3,   0]
+        self.original_data = [1.0, 2.3, 0.1, -2.0, -1.0, 0.0, -0.2, -0.3, 0.15, -0.2, 0]
+        self.calculated_data = [1.2, 2.0, -0.3, -1.5, -1.5, 0.3, 0.0, 0.3, -0.15, 0.3, 0]
         # localErrors:   20     13.04   400     25      50      NA      100     200     200     250     NA
 
     def test_error_calculation(self):
