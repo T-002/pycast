@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 #  -*- coding: UTF-8 -*-
 
-# Copyright (c) 2012-2015 Christian Schwarz
+# Copyright (c) 2012-2019 Christian Schwarz
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -23,13 +23,18 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import json
-from pycastobject import PyCastObject
+from pycast.common.pycastobject import PyCastObject
+
 
 class PycastEncoder(json.JSONEncoder, PyCastObject):
-
     """Encodes a PyCastObject to json."""
 
-    def default(self, obj):
+    def default(self, obj: PyCastObject):
+        """Encodes the object.
+
+        Args:
+            obj (PyCastObject): Object to be encoded.
+        """
         # Cannot use the to_json method, because it returns a string rather
         # than a serializable list.
         return obj.to_twodim_list()

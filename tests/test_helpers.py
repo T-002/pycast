@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 #  -*- coding: UTF-8 -*-
 
-# Copyright (c) 2012-2015 Christian Schwarz
+# Copyright (c) 2012-2019 Christian Schwarz
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -22,24 +22,17 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# required external modules
-import unittest
+from pycast.common.helper import linear_interpolation
 
-# required modules from pycast
-from pycast.common.helper import *
 
-class HelperTest(unittest.TestCase):
+class TestHelper:
+    """Test class containing all tests for pycasts.common.helper module."""
 
-    """Test class containing all tests for pycasts helper module."""
-
-    def linear_interpolation_test(self):
+    def test_linear_interpolation(self):
         """Testing linear interpolation."""
-        val1 = 1.0
+        values = [1.0, 3.0, 4.0]
+        result = linear_interpolation(values[0], values[1], 1)
+        assert [2.0] == result
 
-        val2 = 3.0
-        result = linear_interpolation(val1, val2, 1)
-        if not result == [2.0]:      raise AssertionError
-
-        val2 = 4.0
-        result = linear_interpolation(val1, val2, 2)
-        if not result == [2.0, 3.0]: raise AssertionError
+        result = linear_interpolation(values[0], values[2], 2)
+        assert [2.0, 3.0] == result

@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 #  -*- coding: UTF-8 -*-
 
-# Copyright (c) 2012-2015 Christian Schwarz
+# Copyright (c) 2012-2019 Christian Schwarz
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -22,58 +22,42 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# required external modules
-import unittest
-
 # required modules from pycast
 from pycast.errors.meansquarederror import MeanSquaredError
 from pycast.common.timeseries import TimeSeries
 
-class MeanSquaredErrorTest(unittest.TestCase):
 
-    """Testing MeanSquaredError."""
+class TestMeanSquaredErrorTest:
+    """Testing the MeanSquaredError."""
 
-    def setUp(self):
-        self.dataOrg = [1.0,    2.3,    0.1,    -2.0,   -1.0,   0.0,    -0.2,   -0.3,   0.15,   -0.2,   0]
-        self.dataCalc = [1.2,   2.0,    -0.3,   -1.5,   -1.5,   0.3,    0.0,    0.3,    -0.15,  0.3,   0]
+    def setup(self):
+        """Sets up a test case."""
+        self.original_data = [1.0, 2.3, 0.1, -2.0, -1.0, 0.0, -0.2, -0.3, 0.15, -0.2, 0]
+        self.calculated_data = [1.2, 2.0, -0.3, -1.5, -1.5, 0.3, 0.0, 0.3, -0.15, 0.3, 0]
 
-    def tearDown(self):
-        pass
-
-    def local_error_test(self):
+    def test_local_error(self):
         """Test MeanSquaredError.local_error."""
-        localErrors = [0.04, 0.09, 0.16, 0.25, 0.25, 0.09, 0.04, 0.36, 0.09, 0.25, 0]
+        error_measure = MeanSquaredError()
 
-        mse = MeanSquaredError()
+        for idx in range(len(self.original_data)):
+            calc_local_error = error_measure.local_error([self.original_data[idx]], [self.calculated_data[idx]])
+            expected_error = (self.calculated_data[idx] - self.original_data[idx]) ** 2
+            assert expected_error == calc_local_error
 
-        for i in xrange(len(self.dataOrg)):
-            calc_local_error = mse.local_error([self.dataOrg[i]], [self.dataCalc[i]])
-            self.assertEquals("%.3f" % calc_local_error,"%.3f" % localErrors[i])
-
-    def error_calculation_test(self):
+    def test_error_calculation(self):
         """Test the calculation of the MeanSquaredError."""
-        tsOrg  = TimeSeries()
-        tsCalc = TimeSeries()
+        original_timeseries  = TimeSeries()
+        calculated_timeseries = TimeSeries()
 
-        for idx in xrange(len(self.dataOrg)):
-            tsOrg.add_entry(float(idx),  self.dataOrg[idx])
-            tsCalc.add_entry(float(idx), self.dataCalc[idx])
+        for idx in range(len(self.original_data)):
+            original_timeseries.add_entry(float(idx),  self.original_data[idx])
+            calculated_timeseries.add_entry(float(idx), self.calculated_data[idx])
 
-        mse = MeanSquaredError()
-        mse.initialize(tsOrg, tsCalc)
+        error_measure = MeanSquaredError()
+        error_measure.initialize(original_timeseries, calculated_timeseries)
 
-        self.assertEquals("0.1472", str(mse.get_error())[:6])
+        assert 0.14727272727272725 == error_measure.get_error()
 
-#    def local_error_test(self):
-#        """Test the local error of MeanSquaredError."""
-#        orgValues = [11, 33.1, 2.3, 6.54, 123.1, 12.54, 12.9]
-#        calValues = [24, 1.23, 342, 1.21, 4.112, 9.543, 3.54]
-#
-#        mse = MeanSquaredError()
-#        for idx in xrange(len(orgValues)):
-#            res = (calValues[idx] - orgValues[idx])**2.0
-#            assert  str(res)[:6] == str(mse.local_error([orgValues[idx]], [calValues[idx]]))[:6]
-#
 #    def number_of_comparisons_test(self):
 #        """Test MeanSquaredError for a valid response to the minimalErrorCalculationPercentage."""
 #        dataOrg  = [[0,0],[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9]]

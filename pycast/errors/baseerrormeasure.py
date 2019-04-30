@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 #  -*- coding: UTF-8 -*-
 
-# Copyright (c) 2012-2015 Christian Schwarz
+# Copyright (c) 2012-2019 Christian Schwarz
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -27,25 +27,26 @@ from pycast.common.decorators import optimized
 
 class BaseErrorMeasure(PyCastObject):
 
-    """Baseclass for all error measures."""
+    """Base class for all error measures."""
 
-    def __init__(self, minimalErrorCalculationPercentage=60):
+    def __init__(self, minimal_error_calculation_percentage: float = 60.0):
         """Initializes the error measure.
 
-        :param integer minimalErrorCalculationPercentage:    The number of entries in an
-            original TimeSeries that have to have corresponding partners in the calculated
-            TimeSeries. Corresponding partners have the same time stamp.
-            Valid values are in [0.0, 100.0].
+        Args:
+            minimal_error_calculation_percentage (float): The number of entries in an
+                original TimeSeries that have to have corresponding partners in the calculated
+                TimeSeries. Corresponding partners have the same time stamp.
+                Valid values are in [0.0, 100.0].
 
-        :raise: Raises a :py:exc:`ValueError` if minimalErrorCalculationPercentage is not
-            in [0.0, 100.0].
+        Raise:
+            ValueError: Raises a ValueError if minimalErrorCalculationPercentage is not in [0.0, 100.0].
         """
         super(BaseErrorMeasure, self).__init__()
 
-        if not 0.0 <= minimalErrorCalculationPercentage <= 100.0:
+        if not 0.0 <= minimal_error_calculation_percentage <= 100.0:
             raise ValueError("minimalErrorCalculationPercentage has to be in [0.0, 100.0].")
 
-        self._minimalErrorCalculationPercentage = minimalErrorCalculationPercentage / 100.0
+        self._minimalErrorCalculationPercentage = minimal_error_calculation_percentage / 100.0
 
         self._errorValues = []
         self._errorDates  = []
@@ -64,11 +65,11 @@ class BaseErrorMeasure(PyCastObject):
             otherwise based on the minimalErrorCalculationPercentage.
         :rtype: boolean
 
-        :raise:    Raises a :py:exc:`StandardError` if the error measure is initialized multiple times.
+        :raise:    Raises an Exception if the error measure is initialized multiple times.
         """
         # ErrorMeasure was already initialized.
         if 0 < len(self._errorValues):
-            raise StandardError("An ErrorMeasure can only be initialized once.")
+            raise Exception("An ErrorMeasure can only be initialized once.")
 
         # sort the TimeSeries to reduce the required comparison operations
         originalTimeSeries.sort_timeseries()
@@ -83,7 +84,7 @@ class BaseErrorMeasure(PyCastObject):
 
         # calculate all valid local errors
         for orgPair in originalTimeSeries:
-            for calcIdx in xrange(minCalcIdx, len(calculatedTimeSeries)):
+            for calcIdx in range(minCalcIdx, len(calculatedTimeSeries)):
                 calcPair = calculatedTimeSeries[calcIdx]
 
                 # Skip values that can not be compared
@@ -94,7 +95,7 @@ class BaseErrorMeasure(PyCastObject):
                 appendDate(orgPair[0])
 
         # return False, if the error cannot be calculated
-        calculatedErrors    = len(filter(lambda item: item is not None, self._errorValues))
+        calculatedErrors    = len(list(filter(lambda item: item is not None, self._errorValues)))
         minCalculatedErrors = self._minimalErrorCalculationPercentage * len(originalTimeSeries)
 
         if  calculatedErrors < minCalculatedErrors:
@@ -124,20 +125,20 @@ class BaseErrorMeasure(PyCastObject):
         :raise:    Raises a ValueError if startDate or endDate do not represent correct boundaries for error calculation.
         """
         if startDate is not None:
-            possibleDates = filter(lambda date: date >= startDate, self._errorDates)
-            if 0 == len(possibleDates):
+            possible_dates = list(filter(lambda date: date >= startDate, self._errorDates))
+            if 0 == len(possible_dates):
                 raise ValueError("%s does not represent a valid startDate." % startDate)
 
-            startIdx = self._errorDates.index(min(possibleDates))
+            startIdx = self._errorDates.index(min(possible_dates))
         else:
             startIdx = int((startingPercentage * len(self._errorValues)) / 100.0)
 
         if endDate is not None:
-            possibleDates = filter(lambda date: date <= endDate, self._errorDates)
-            if 0 == len(possibleDates):
+            possible_dates = list(filter(lambda date: date <= endDate, self._errorDates))
+            if 0 == len(possible_dates):
                 raise ValueError("%s does not represent a valid endDate." % endDate)
 
-            endIdx = self._errorDates.index(max(possibleDates)) + 1
+            endIdx = self._errorDates.index(max(possible_dates)) + 1
         else:
             endIdx = int((endPercentage * len(self._errorValues)) / 100.0)
 
@@ -169,7 +170,7 @@ class BaseErrorMeasure(PyCastObject):
         """
         # not initialized:
         if len(self._errorValues) == 0:
-            raise StandardError("The last call of initialize(...) was not successfull.")
+            raise Exception("The last call of initialize(...) was not successfull.")
 
         # check for wrong parameters
         if not (0.0 <= startingPercentage <= 100.0):
@@ -260,7 +261,7 @@ class BaseErrorMeasure(PyCastObject):
         if overIdx >= 0:
             overestimation = overestimations[overIdx]
         else:
-            print len(overestimations), confidenceLevel
+            print(len(overestimations), confidenceLevel)
 
         if underIdx >= 0:
             underestimation = underestimations[underIdx]

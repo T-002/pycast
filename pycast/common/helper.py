@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 #  -*- coding: UTF-8 -*-
 
-# Copyright (c) 2012-2015 Christian Schwarz
+# Copyright (c) 2012-2019 Christian Schwarz
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -22,26 +22,25 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# This module contains helper functions that will be moved later
 
-def linear_interpolation(first, last, steps):
+def linear_interpolation(first_value, last_value, steps: int):
     """Interpolates all missing values using linear interpolation.
 
-    :param numeric first:    Start value for the interpolation.
-    :param numeric last:    End Value for the interpolation
-    :param integer steps:    Number of missing values that have to be calculated.
+    Args:
+        first_value (numeric): Start value for the interpolation.
+        last_value (numeric): Start value for the interpolation.
+        steps (int): Number of values to be generated.
 
-    :return:    Returns a list of floats containing only the missing values.
-    :rtype: list
-
-    :todo:     Define a more general interface!
+    Returns:
+        list: Returns a list containing the missing numeric values between
+            first_value and last_value.
     """
     result = []
 
-    for step in xrange(0, steps):
-        fpart = (steps - step) * first
-        lpart = (step + 1)            * last
-        value = (fpart + lpart) / float(steps + 1)
+    for step in range(0, steps):
+        first_part = (steps - step) * first_value
+        last_part = (step + 1) * last_value
+        value = (first_part + last_part) / float(steps + 1)
         result.append(value)
 
     return result

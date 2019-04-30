@@ -55,7 +55,7 @@ def optimized(fn):
                 function = getattr(imported, fn.__name__)
                 return function(self, *args, **kwargs)
             except ImportError:
-                print  "[WARNING] Could not enable optimization for %s, %s" % (fn.__name__, self)
+                print("[WARNING] Could not enable optimization for %s, %s" % (fn.__name__, self))
                 return fn(self, *args, **kwargs)
         else:
             return fn(self, *args, **kwargs)

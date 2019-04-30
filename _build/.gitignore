@@ -1,2 +1,4 @@
-*
-!.gitignore
+dist/**/*
+doc/**/*
+py_build/**/*
+tests/**/*

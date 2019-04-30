@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 #  -*- coding: UTF-8 -*-
 
-# Copyright (c) 2012-2015 Christian Schwarz
+# Copyright (c) 2012-2019 Christian Schwarz
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -28,6 +28,9 @@ import time
 import random
 import os
 
+from pycast.common.helper import linear_interpolation
+from pycast.common.pycastobject import PyCastObject
+
 # some string constants
 _STR_EPOCHS = "UNIX-epochs"
 
@@ -53,12 +56,11 @@ FusionMethods = {
 }
 
 # Interpolation methods that can be used for interpolation missing data points.
-from helper import linear_interpolation
 InterpolationMethods = {
     "linear": linear_interpolation
 }
 
-from pycastobject import PyCastObject
+
 class TimeSeries(PyCastObject):
 
     """A TimeSeries instance stores all relevant data for a real world time series.
@@ -542,23 +544,24 @@ class TimeSeries(PyCastObject):
     def _check_normalization(self):
         """Checks, if the TimeSeries is normalized.
 
-        :return:    Returns :py:const:`True` if all data entries of the TimeSeries have an equal temporal
-            distance, :py:const:`False` otherwise.
+        Returns:
+            bool: Returns `True` if all data entries of the TimeSeries have an equal temporal
+                distance, False otherwise.
         """
-        lastDistance = None
-        distance     = None
-        for idx in xrange(len(self) - 1):
+        last_distance = None
+
+        for idx in range(len(self) - 1):
             distance = self[idx+1][0] - self[idx][0]
 
             # first run
-            if lastDistance is None:
-                lastDistance = distance
+            if last_distance is None:
+                last_distance = distance
                 continue
 
-            if lastDistance != distance:
+            if last_distance != distance:
                 return False
 
-            lastDistance = distance
+            last_distance = distance
 
         return True
 
