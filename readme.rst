@@ -4,9 +4,9 @@ pycast aims to provide a python module supporting basic, as
 well as advanced smoothing and forecasting methods that can
 be used on time series data.
 
-.. image:: https://circleci.com/gh/T-002/pycast.svg?style=svg
-   :target: https://circleci.com/gh/T-002/pycast
-   :alt: Build Status
+.. image:: https://circleci.com/gh/T-002/pycast/tree/feature%2FPython3.7.svg?style=svg
+     :target: https://circleci.com/gh/T-002/pycast/tree/feature%2FPython3.7
+     :alt: Build Status
 
 Table of Contents
 -----------------
